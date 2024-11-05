@@ -2,19 +2,21 @@ package com.example.hospital.models;
 
 import jakarta.persistence.*;
 
-import com.example.hospital.enums.*;
+import com.example.hospital.models.enums.*;
 
 
 @Entity
 @Table(name = "doctors")
 public class Doctor extends User {
     @Enumerated(EnumType.STRING)
-    public Speciality speciality;
+    private Speciality speciality;
 
-    public Doctor(String firstName, String lastName, String email, String password, int age, Gender gender,
-            Speciality speciality) {
-        super(firstName, lastName, email, password, password, age, gender);
-        this.speciality = speciality;
+    public Doctor() {
+        super();
         this.setRole(Role.DOCTOR);
+    }
+
+    public Speciality getSpeciality() {
+        return this.speciality;
     }
 }

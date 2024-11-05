@@ -1,7 +1,8 @@
 package com.example.hospital.models;
 
+import com.example.hospital.models.enums.*;
+
 import jakarta.persistence.*;
-import com.example.hospital.enums.*;
 
 
 @MappedSuperclass
@@ -26,17 +27,9 @@ public abstract class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public User(String firstName, String lastName, String email, String password, String phone, int age,
-            Gender gender) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.phone = phone;
-        this.age = age;
-        this.gender = gender;
-    }
+    public User() {}
 
+    public Long getId() { return this.id; }
     public String getFirstName() { return this.firstName; }
     public String getLastName() { return this.lastName; }
     public Role getRole() { return this.role; }

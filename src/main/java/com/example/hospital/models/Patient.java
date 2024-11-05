@@ -1,15 +1,14 @@
 package com.example.hospital.models;
 
-import com.example.hospital.enums.*;
+import com.example.hospital.models.enums.*;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "patients")
 public class Patient extends User {
-    public Patient(String firstName, String lastName, String email, String password, String phone, int age,
-            Gender gender) {
-        super(firstName, lastName, email, password, phone, age, gender);
+    public Patient() {
+        super();
         this.setRole(Role.PATIENT);
     }
 }

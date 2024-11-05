@@ -1,4 +1,4 @@
-package com.example.hospital.enums;
+package com.example.hospital.models.enums;
 
 public enum Speciality {
     SURGEON,
