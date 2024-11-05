@@ -5,7 +5,7 @@ import com.example.hospital.models.User;
 import com.example.hospital.repositories.DoctorRepository;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("doctor")
 public class DoctorCreationStrategy implements ICreateUser {
     private DoctorRepository doctorRepository;
 

@@ -5,7 +5,7 @@ import com.example.hospital.models.User;
 import com.example.hospital.repositories.NurseRepository;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("nurse")
 public class NurseCreationStrategy implements ICreateUser {
     private NurseRepository nurseRepository;
 

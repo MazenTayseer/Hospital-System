@@ -1,39 +1,32 @@
 package com.example.hospital.services.users;
 
-import com.example.hospital.models.*;
-import com.example.hospital.services.users.strategy.*;
+import com.example.hospital.models.User;
+import com.example.hospital.services.users.strategy.ICreateUser;
+
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class CreateUserContext {
-    private DoctorCreationStrategy doctorCreationStrategy;
-    private NurseCreationStrategy nurseCreationStrategy;
-    private PatientCreationStrategy patientCreationStrategy;
+    ICreateUser strategy;
+    private final Map<String, ICreateUser> userCreationStrategies;
 
-    public CreateUserContext(
-        DoctorCreationStrategy doctorCreationStrategy, 
-        NurseCreationStrategy nurseCreationStrategy,
-        PatientCreationStrategy patientCreationStrategy
-    ) {
-        this.doctorCreationStrategy = doctorCreationStrategy;
-        this.nurseCreationStrategy = nurseCreationStrategy;
-        this.patientCreationStrategy = patientCreationStrategy;
+    public CreateUserContext(Map<String, ICreateUser> userCreationStrategies) {
+        this.userCreationStrategies = userCreationStrategies;
     }
 
     public User createUser(User user) {
-        ICreateUser strategy = setStrategy(user);
-        return strategy.createUser(user);
+        String userType = user.getClass().getSimpleName().toLowerCase();
+        this.setStrategy(userType);
+        return this.strategy.createUser(user);
     }
 
-    private ICreateUser setStrategy(User user) {
-        if (user instanceof Doctor) {
-            return doctorCreationStrategy;
-        } else if (user instanceof Nurse) {
-            return nurseCreationStrategy;
-        } else if (user instanceof Patient) {
-            return patientCreationStrategy;
-        }
+    public void setStrategy(String strategy) {
+        this.strategy = userCreationStrategies.get(strategy);
 
-        throw new IllegalArgumentException("Unsupported user type");
+        if (this.strategy == null) {
+            throw new IllegalArgumentException("Unsupported user type: " + strategy);
+        }
     }
 }
