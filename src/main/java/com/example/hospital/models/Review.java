@@ -1,15 +1,18 @@
 package com.example.hospital.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "reviews")
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
+    @NotNull(message = "Rating is required")
     private Double rating;
 
     @Column(nullable = true)
@@ -17,18 +20,19 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
-    @Column(nullable = false)
+    @NotNull(message = "Doctor is required for the review")
     private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-    @Column(nullable = false)
+    @NotNull(message = "Patient is required for the review")
     private Patient patient;
 
     public Review() {}
 
     public Long getId() { return this.id; }
     public Double getRating() { return this.rating; }
+    public String getComment() { return this.comment; }
     public Doctor getDoctor() { return this.doctor; }
     public Patient getPatient() { return this.patient; }
 

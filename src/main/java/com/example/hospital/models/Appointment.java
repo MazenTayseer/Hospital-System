@@ -1,13 +1,14 @@
 package com.example.hospital.models;
 
 import jakarta.persistence.*;
-import com.example.hospital.models.enums.*;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.models.enums.AppointmentStatus;
 
 @Entity
 @Table(
@@ -23,27 +24,31 @@ public class Appointment {
     private Long id;
 
     @Column(nullable = false)
+    @NotNull(message = "The appointment date is required")
     @Future(message = "The appointment date must be in the future")
     private LocalDate date;
 
     @Column(nullable = false)
+    @NotNull(message = "The start time of the appointment is required")
     private LocalTime timeFrom;
 
     @Column(nullable = false)
+    @NotNull(message = "The end time of the appointment is required")
     private LocalTime timeTo;
 
     @Column(nullable = false)
+    @NotNull(message = "The status of the appointment is required")
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
-    @Column(nullable = false)
+    @NotNull(message = "The doctor for the appointment is required")
     private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-    @Column(nullable = false)
+    @NotNull(message = "The patient for the appointment is required")
     private Patient patient;
 
     public Appointment() {
