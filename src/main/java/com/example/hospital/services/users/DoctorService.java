@@ -1,5 +1,7 @@
 package com.example.hospital.services.users;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.hospital.dal.AppointmentDAL;
@@ -17,5 +19,13 @@ public class DoctorService {
         Appointment appointment = appointmentDAL.findById(appointmentId);
         appointment.setStatus(AppointmentStatus.COMPLETED);
         return appointmentDAL.save(appointment);
+    }
+
+    public Appointment getAppointments(Long appointmentId) {
+        return appointmentDAL.findById(appointmentId);
+    }
+
+    public List<Appointment> getAllAppointments() {
+        return appointmentDAL.findAll();
     }
 }

@@ -1,12 +1,16 @@
 package com.example.hospital.controllers.users;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hospital.models.Appointment;
 import com.example.hospital.services.users.DoctorService;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -26,4 +30,14 @@ public class DoctorController {
         return ResponseEntity.ok(updatedAppointment);
     }
     
+    @GetMapping("/appointments")
+    public ResponseEntity<?> getAppointments(@RequestParam(required = false) Long appointmentId) {
+        if (appointmentId != null) {
+            Appointment appointment = (Appointment) doctorService.getAppointments(appointmentId);
+            return ResponseEntity.ok(appointment);
+        } else {
+            List<Appointment> appointments = doctorService.getAllAppointments();
+            return ResponseEntity.ok(appointments);
+        }
+    }
 }
