@@ -15,15 +15,18 @@ public class PatientService {
     private DoctorRepository doctorRepository;
     private PatientRepository patientRepository;
     private AppointmentRepository appointmentRepository;
+    private ReviewRepository reviewRepository;
 
     public PatientService(
         DoctorRepository doctorRepository, 
         PatientRepository patientRepository, 
-        AppointmentRepository appointmentRepository
+        AppointmentRepository appointmentRepository,
+        ReviewRepository reviewRepository
     ) {
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.appointmentRepository = appointmentRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @Transactional
@@ -56,5 +59,18 @@ public class PatientService {
 
     public List<Appointment> getAppointmentsByPatientId(Long patientId) {
         return appointmentRepository.findByPatientId(patientId);
+    }
+
+    public Review reviewDoctor(Review review) {
+        boolean canReview = canPatientReviewDoctor(review.getPatient().getId(), review.getDoctor().getId());
+        if (!canReview) {
+            throw new IllegalArgumentException(ResponseMessages.CANNOT_REVIEW_DOCTOR);
+        }
+
+        return reviewRepository.save(review);
+    }
+
+    private boolean canPatientReviewDoctor(Long patientId, Long doctorId) {
+        return appointmentRepository.existsByPatientIdAndDoctorId(patientId, doctorId);
     }
 }

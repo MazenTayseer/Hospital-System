@@ -1,8 +1,8 @@
 package com.example.hospital.models;
 
 import jakarta.persistence.*;
+import com.example.hospital.models.enums.*;
 import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -22,32 +22,39 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Date is required")
+    @Column(nullable = false)
     @Future(message = "The appointment date must be in the future")
     private LocalDate date;
 
-    @NotNull(message = "Start time is required")
+    @Column(nullable = false)
     private LocalTime timeFrom;
 
-    @NotNull(message = "End time is required")
+    @Column(nullable = false)
     private LocalTime timeTo;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
 
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
-    @NotNull(message = "Doctor is required")
+    @Column(nullable = false)
     private Doctor doctor;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-    @NotNull(message = "Patient is required")
+    @Column(nullable = false)
     private Patient patient;
 
-    public Appointment() {}
+    public Appointment() {
+        this.status = AppointmentStatus.SCHEDULED;
+    }
 
     public Long getId() { return this.id; }
     public LocalDate getDate() { return this.date; }
     public LocalTime getTimeFrom() { return this.timeFrom; }
     public LocalTime getTimeTo() { return this.timeTo; }
+    public AppointmentStatus getStatus() { return this.status; }
     public Doctor getDoctor() { return this.doctor; }
     public Patient getPatient() { return this.patient; }
 
@@ -58,6 +65,10 @@ public class Appointment {
         this.timeFrom = timeFrom;
         this.timeTo = timeFrom.plus(1, ChronoUnit.HOURS);
         validateTime();
+    }
+
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
     }
 
     private void validateTime() {

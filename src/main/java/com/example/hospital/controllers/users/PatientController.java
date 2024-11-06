@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.models.Appointment;
+import com.example.hospital.models.Review;
 import com.example.hospital.services.users.PatientService;
 
 
@@ -35,6 +36,12 @@ public class PatientController {
         patientService.cancelAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
     }  
+    
+    @PostMapping("/review-doctor")
+    public ResponseEntity<Review> reviewDoctor(@RequestBody Review review) {
+        Review createdReview = patientService.reviewDoctor(review);
+        return ResponseEntity.ok(createdReview);
+    }
     
 
     @GetMapping("/appointments/{appointmentId}")
