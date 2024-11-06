@@ -1,20 +1,20 @@
 package com.example.hospital.services.users.strategy;
 
+import com.example.hospital.dal.DoctorDAL;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.User;
-import com.example.hospital.repositories.DoctorRepository;
 import org.springframework.stereotype.Component;
 
 @Component("doctor")
 public class DoctorCreationStrategy implements ICreateUser {
-    private DoctorRepository doctorRepository;
+    private DoctorDAL doctorDAL;
 
-    public DoctorCreationStrategy(DoctorRepository doctorRepository) {
-        this.doctorRepository = doctorRepository;
+    public DoctorCreationStrategy(DoctorDAL doctorDAL) {
+        this.doctorDAL = doctorDAL;
     }
 
     @Override
     public User createUser(User user) {
-        return doctorRepository.save((Doctor) user);
+        return doctorDAL.save((Doctor) user);
     }
 }

@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.models.Appointment;
+import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Review;
 import com.example.hospital.services.users.PatientService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -44,16 +47,21 @@ public class PatientController {
     }
     
 
-    @GetMapping("/appointments/{appointmentId}")
-    public ResponseEntity<Appointment> getAppointmentById(@PathVariable Long appointmentId) {
-        Appointment appointment = patientService.getAppointmentById(appointmentId);
-        return ResponseEntity.ok(appointment);
+    @GetMapping("/appointments")
+    public ResponseEntity<?> getAppointments(@RequestParam(required = false) Long appointmentId) {
+        if (appointmentId != null) {
+            Appointment appointment = (Appointment) patientService.getAppointments(appointmentId);
+            return ResponseEntity.ok(appointment);
+        } else {
+            List<Appointment> appointments = patientService.getAllAppointments();
+            return ResponseEntity.ok(appointments);
+        }
     }
 
-    @GetMapping("/{patientId}/appointments")
-    public ResponseEntity<List<Appointment>> getAppointmentsByPatientId(@PathVariable Long patientId) {
-        List<Appointment> appointments = patientService.getAppointmentsByPatientId(patientId);
-        return ResponseEntity.ok(appointments);
+    @GetMapping("/doctors")
+    public ResponseEntity<List<Doctor>> viewDoctors(@RequestParam(required = false) String speciality) {
+        List<Doctor> doctors = patientService.viewDoctors(speciality);
+        return ResponseEntity.ok(doctors);
     }
     
 }

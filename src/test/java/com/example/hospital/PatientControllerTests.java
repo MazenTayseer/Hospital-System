@@ -10,15 +10,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.hospital.dal.AppointmentDAL;
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.PatientDAL;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
-import com.example.hospital.repositories.AppointmentRepository;
-import com.example.hospital.repositories.DoctorRepository;
-import com.example.hospital.repositories.PatientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.MediaType;
@@ -39,13 +39,13 @@ public class PatientControllerTests {
         private ObjectMapper objectMapper;
 
         @Autowired
-        private DoctorRepository doctorRepository;
+        private DoctorDAL doctorDAL;
 
         @Autowired
-        private PatientRepository patientRepository;
+        private PatientDAL patientDAL;
 
         @Autowired
-        private AppointmentRepository appointmentRepository;
+        private AppointmentDAL appointmentDAL;
 
         private Doctor doctor;
         private Patient patient;
@@ -79,8 +79,8 @@ public class PatientControllerTests {
 
         @Test
         public void testBookAppointment() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
 
                 mockMvc.perform(post("/api/patients/book-appointment")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -93,10 +93,10 @@ public class PatientControllerTests {
 
         @Test
         public void testCancelAppointment() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
 
-                appointmentRepository.save(appointment);
+                appointmentDAL.save(appointment);
 
                 mockMvc.perform(post("/api/patients/cancel-appointment/{appointmentId}", appointment.getId()))
                                 .andExpect(status().isOk())
@@ -106,11 +106,11 @@ public class PatientControllerTests {
 
         @Test
         public void testCancelCompletedAppointment() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
 
                 appointment.setStatus(AppointmentStatus.COMPLETED);
-                appointmentRepository.save(appointment);
+                appointmentDAL.save(appointment);
 
                 mockMvc.perform(post("/api/patients/cancel-appointment/{appointmentId}", appointment.getId()))
                                 .andExpect(status().isBadRequest())
@@ -120,35 +120,34 @@ public class PatientControllerTests {
 
         @Test
         public void testGetAppointmentById() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
-                appointmentRepository.save(appointment);
-
-                mockMvc.perform(get("/api/patients/appointments/{appointmentId}", appointment.getId()))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value(appointment.getId()))
-                                .andExpect(jsonPath("$.doctor.id").value(doctor.getId()))
-                                .andExpect(jsonPath("$.patient.id").value(patient.getId()));
+            doctorDAL.save(doctor);
+            patientDAL.save(patient);
+            appointmentDAL.save(appointment);
+        
+            mockMvc.perform(get("/api/patients/appointments")
+                            .param("appointmentId", String.valueOf(appointment.getId())))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(appointment.getId()))
+                    .andExpect(jsonPath("$.doctor.id").value(doctor.getId()))
+                    .andExpect(jsonPath("$.patient.id").value(patient.getId()));
         }
-
+        
         @Test
-        public void testGetAppointmentsByPatientId() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
-                appointmentRepository.save(appointment);
-
-                mockMvc.perform(get("/api/patients/{patientId}/appointments", patient.getId()))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$[0].id").value(appointment.getId()))
-                                .andExpect(jsonPath("$[0].doctor.id").value(doctor.getId()))
-                                .andExpect(jsonPath("$[0].patient.id").value(patient.getId()));
+        public void testGetAllAppointments() throws Exception {
+            doctorDAL.save(doctor);
+            patientDAL.save(patient);
+            appointmentDAL.save(appointment);
+        
+            mockMvc.perform(get("/api/patients/appointments"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()").value(appointmentDAL.count()));
         }
 
         @Test
         public void testReviewDoctor() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
-                appointmentRepository.save(appointment);
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
+                appointmentDAL.save(appointment);
 
                 Review review = new Review(
                         5D, 
@@ -169,8 +168,8 @@ public class PatientControllerTests {
 
         @Test
         public void testReviewDoctorFailed() throws Exception {
-                doctorRepository.save(doctor);
-                patientRepository.save(patient);
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
 
                 Review review = new Review(
                         5D, 
@@ -187,4 +186,13 @@ public class PatientControllerTests {
                                                 .string(ResponseMessages.CANNOT_REVIEW_DOCTOR));
         }
 
+        @Test
+        public void testViewDoctors() throws Exception {
+                doctorDAL.save(doctor);
+
+                mockMvc.perform(get("/api/patients/doctors")
+                                .param("param", "surgeon"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.length()").value(doctorDAL.count()));
+        }
 }

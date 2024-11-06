@@ -1,82 +1,83 @@
 package com.example.hospital.services.users;
 
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.dal.AppointmentDAL;
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.PatientDAL;
+import com.example.hospital.dal.ReviewDAL;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.*;
 import com.example.hospital.models.enums.AppointmentStatus;
-import com.example.hospital.repositories.*;
-
-import java.util.List;
-
+import com.example.hospital.models.enums.Speciality;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 @Service
 public class PatientService {
-    private DoctorRepository doctorRepository;
-    private PatientRepository patientRepository;
-    private AppointmentRepository appointmentRepository;
-    private ReviewRepository reviewRepository;
+    private DoctorDAL doctorDAL;
+    private PatientDAL patientDAL;
+    private AppointmentDAL appointmentDAL;
+    private ReviewDAL reviewDAL;
 
     public PatientService(
-        DoctorRepository doctorRepository, 
-        PatientRepository patientRepository, 
-        AppointmentRepository appointmentRepository,
-        ReviewRepository reviewRepository
-    ) {
-        this.doctorRepository = doctorRepository;
-        this.patientRepository = patientRepository;
-        this.appointmentRepository = appointmentRepository;
-        this.reviewRepository = reviewRepository;
+            DoctorDAL doctorDAL,
+            PatientDAL patientDAL,
+            AppointmentDAL appointmentDAL,
+            ReviewDAL reviewDAL) {
+        this.doctorDAL = doctorDAL;
+        this.patientDAL = patientDAL;
+        this.appointmentDAL = appointmentDAL;
+        this.reviewDAL = reviewDAL;
     }
 
     @Transactional
     public Appointment bookAppointment(Appointment appointment) {
-        Doctor doctor = doctorRepository.findById(appointment.getDoctor().getId()).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Doctor"))
-        );
-        Patient patient = patientRepository.findById(appointment.getPatient().getId()).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Patient"))
-        );
+        Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
+        Patient patient = patientDAL.findById(appointment.getPatient().getId());
 
         appointment.setDoctor(doctor);
         appointment.setPatient(patient);
-        
-        return appointmentRepository.save(appointment);
+
+        return appointmentDAL.save(appointment);
     }
 
     public void cancelAppointment(Long appointmentId) {
-        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Appointment"))
-        );
+        Appointment appointment = appointmentDAL.findById(appointmentId);
 
         if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
             throw new BadRequestException(ResponseMessages.CANNOT_CANCEL_COMPLETED_APPOINTMENT);
         }
 
-        appointmentRepository.delete(appointment);
+        appointmentDAL.delete(appointment);
     }
 
-    public Appointment getAppointmentById(Long appointmentId) {
-        return appointmentRepository.findById(appointmentId).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Appointment"))
-        );
+    public Appointment getAppointments(Long appointmentId) {
+        return appointmentDAL.findById(appointmentId);
     }
 
-    public List<Appointment> getAppointmentsByPatientId(Long patientId) {
-        return appointmentRepository.findByPatientId(patientId);
+    public List<Appointment> getAllAppointments() {
+        return appointmentDAL.findAll();
     }
 
     public Review reviewDoctor(Review review) {
-        boolean canReview = canPatientReviewDoctor(review.getPatient().getId(), review.getDoctor().getId());
+        boolean canReview = appointmentDAL.existsByPatientIdAndDoctorId(review.getPatient().getId(),
+                review.getDoctor().getId());
         if (!canReview) {
             throw new BadRequestException(ResponseMessages.CANNOT_REVIEW_DOCTOR);
         }
 
-        return reviewRepository.save(review);
+        return reviewDAL.save(review);
     }
 
-    private boolean canPatientReviewDoctor(Long patientId, Long doctorId) {
-        return appointmentRepository.existsByPatientIdAndDoctorId(patientId, doctorId);
+    public List<Doctor> viewDoctors(String speciality) {
+        if (speciality != null && !speciality.isEmpty()) {
+            Speciality formattedSpeciality = Speciality.valueOf(speciality.toUpperCase());
+            return doctorDAL.findDoctorsBySpeciality(formattedSpeciality);
+        } else {
+            return doctorDAL.findAllDoctors();
+        }
     }
+
 }

@@ -15,9 +15,9 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
-import com.example.hospital.repositories.AppointmentRepository;
-import com.example.hospital.repositories.DoctorRepository;
-import com.example.hospital.repositories.PatientRepository;
+import com.example.hospital.dal.AppointmentDAL;
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.PatientDAL;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -33,13 +33,13 @@ public class DoctorControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
-    
-    @Autowired
-    private DoctorRepository doctorRepository;
+    private AppointmentDAL appointmentDAL;
 
     @Autowired
-    private PatientRepository patientRepository;
+    private DoctorDAL doctorDAL;
+
+    @Autowired
+    private PatientDAL patientDAL;
 
     private static Doctor doctor;
     private static Patient patient;
@@ -66,8 +66,8 @@ public class DoctorControllerTests {
 
     @Test
     void testCompleteAppointment() throws Exception {
-        doctor = doctorRepository.save(doctor);
-        patient = patientRepository.save(patient);
+        doctor = doctorDAL.save(doctor);
+        patient = patientDAL.save(patient);
         
         Appointment appointment = new Appointment(
                 LocalDate.now().plusDays(1),
@@ -75,7 +75,7 @@ public class DoctorControllerTests {
                 doctor,
                 patient);
         
-        appointment = appointmentRepository.save(appointment);
+        appointment = appointmentDAL.save(appointment);
 
         mockMvc.perform(post("/api/doctors/appointments/{appointmentId}/complete", appointment.getId()))
                .andExpect(status().isOk())
