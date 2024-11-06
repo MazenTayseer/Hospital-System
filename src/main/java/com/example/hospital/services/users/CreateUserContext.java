@@ -1,5 +1,6 @@
 package com.example.hospital.services.users;
 
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.User;
 import com.example.hospital.services.users.strategy.ICreateUser;
 
@@ -26,7 +27,7 @@ public class CreateUserContext {
         this.strategy = userCreationStrategies.get(strategy);
 
         if (this.strategy == null) {
-            throw new IllegalArgumentException("Unsupported user type: " + strategy);
+            throw new BadRequestException("Unsupported user type: " + strategy);
         }
     }
 }

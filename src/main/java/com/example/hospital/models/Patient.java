@@ -11,4 +11,16 @@ public class Patient extends User {
         super();
         this.setRole(Role.PATIENT);
     }
+
+    public Patient(
+        String firstName,
+        String lastName,
+        String email,
+        String password,
+        String phone,
+        int age
+    ) {
+        super(firstName, lastName, email, password, phone, age);
+        this.setRole(Role.PATIENT);
+    }
 }

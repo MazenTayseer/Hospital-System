@@ -3,6 +3,7 @@ package com.example.hospital.services.users;
 import org.springframework.stereotype.Service;
 
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.repositories.AppointmentRepository;
@@ -17,7 +18,7 @@ public class DoctorService {
 
     public Appointment completeAppointment(Long appointmentId) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(
-            () -> new IllegalArgumentException(ResponseMessages.record_not_found("Appointment"))
+            () -> new BadRequestException(ResponseMessages.record_not_found("Appointment"))
         );
         appointment.setStatus(AppointmentStatus.COMPLETED);
         return appointmentRepository.save(appointment);

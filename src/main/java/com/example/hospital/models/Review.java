@@ -30,6 +30,18 @@ public class Review {
 
     public Review() {}
 
+    public Review(
+        Double rating, 
+        String comment,
+        Doctor doctor,
+        Patient patient
+    ) {
+        this.rating = rating;
+        this.comment = comment;
+        this.doctor = doctor;
+        this.patient = patient;
+    }
+
     public Long getId() { return this.id; }
     public Double getRating() { return this.rating; }
     public String getComment() { return this.comment; }

@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.enums.AppointmentStatus;
 
 @Entity
@@ -55,6 +56,19 @@ public class Appointment {
         this.status = AppointmentStatus.SCHEDULED;
     }
 
+    public Appointment(
+        LocalDate date,
+        LocalTime timeFrom,
+        Doctor doctor,
+        Patient patient
+    ) {
+        this.date = date;
+        setTimeFrom(timeFrom);
+        this.doctor = doctor;
+        this.patient = patient;
+        this.status = AppointmentStatus.SCHEDULED;
+    }
+
     public Long getId() { return this.id; }
     public LocalDate getDate() { return this.date; }
     public LocalTime getTimeFrom() { return this.timeFrom; }
@@ -80,7 +94,7 @@ public class Appointment {
         if (this.timeFrom != null && this.timeTo != null) {
             long hoursBetween = ChronoUnit.HOURS.between(this.timeFrom, this.timeTo);
             if (hoursBetween != 1 || this.timeFrom.getMinute() != 0 || this.timeTo.getMinute() != 0) {
-                throw new IllegalArgumentException(ResponseMessages.INVALID_APPOINTMENT_TIME_ERR);
+                throw new BadRequestException(ResponseMessages.INVALID_APPOINTMENT_TIME_ERR);
             }
         }
     }
