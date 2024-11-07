@@ -35,6 +35,10 @@ public class DoctorDAL {
         return doctorRepository.save(doctor);
     }
 
+    public void deleteAll() {
+        doctorRepository.deleteAll();
+    }
+
     public long count() {
         return doctorRepository.count();
     }

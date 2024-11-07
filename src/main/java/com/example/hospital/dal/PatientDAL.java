@@ -26,6 +26,10 @@ public class PatientDAL {
         return patientRepository.save(patient);
     }
 
+    public void deleteAll() {
+        patientRepository.deleteAll();
+    }
+
     public void delete(Patient patient) {
         patientRepository.delete(patient);
     }

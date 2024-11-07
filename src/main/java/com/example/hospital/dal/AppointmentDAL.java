@@ -40,6 +40,10 @@ public class AppointmentDAL {
         return appointmentRepository.count();
     }
 
+    public void deleteAll() {
+        appointmentRepository.deleteAll();
+    }
+
     public boolean existsByPatientIdAndDoctorId(Long patientId, Long doctorId) {
         return appointmentRepository.existsByPatientIdAndDoctorId(patientId, doctorId);
     }

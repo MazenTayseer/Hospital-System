@@ -3,7 +3,6 @@ package com.example.hospital;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,11 +14,15 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
+
+import jakarta.transaction.Transactional;
+
 import com.example.hospital.dal.AppointmentDAL;
 import com.example.hospital.dal.DoctorDAL;
 import com.example.hospital.dal.PatientDAL;
 
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@Transactional
+@WithMockUser(username = "doctor", roles = {"DOCTOR"})
 public class DoctorControllerTests {
         @Autowired
         private MockMvc mockMvc;
@@ -42,47 +47,31 @@ public class DoctorControllerTests {
         @Autowired
         private PatientDAL patientDAL;
 
-        private static Doctor doctor;
-        private static Patient patient;
-        private static Appointment appointment;
-
-        @BeforeAll
-        static void setup() {
-                doctor = new Doctor(
-                                "Doctor",
-                                "Doctor",
-                                "Doctor@Doctor.com",
-                                "password",
-                                "+201000000000",
-                                21,
-                                Speciality.SURGEON);
-
-                patient = new Patient(
-                                "Patient",
-                                "Patient",
-                                "Patient@Patient.com",
-                                "password",
-                                "+201000000001",
-                                21);
-
-                appointment = new Appointment(
-                                LocalDate.now().plusDays(1),
-                                LocalTime.now().plusHours(1).withMinute(0),
-                                doctor,
-                                patient);
-        }
+        private Doctor doctor = new Doctor(
+                        "Doctor",
+                        "Doctor",
+                        "Doctor@Doctor.com",
+                        "password",
+                        "+201000000000",
+                        21,
+                        Speciality.SURGEON);
+        private Patient patient = new Patient(
+                        "Patient",
+                        "Patient",
+                        "Patient@Patient.com",
+                        "password",
+                        "+201000000001",
+                        21);
+        private Appointment appointment = new Appointment(
+                        LocalDate.now().plusDays(1),
+                        LocalTime.now().plusHours(1).withMinute(0),
+                        doctor,
+                        patient);
 
         @Test
         void testCompleteAppointment() throws Exception {
                 doctor = doctorDAL.save(doctor);
                 patient = patientDAL.save(patient);
-
-                Appointment appointment = new Appointment(
-                                LocalDate.now().plusDays(1),
-                                LocalTime.now().plusHours(1).withMinute(0),
-                                doctor,
-                                patient);
-
                 appointment = appointmentDAL.save(appointment);
 
                 mockMvc.perform(post("/api/doctors/appointments/{appointmentId}/complete", appointment.getId()))

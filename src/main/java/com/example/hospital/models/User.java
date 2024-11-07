@@ -3,28 +3,45 @@ package com.example.hospital.models;
 import com.example.hospital.models.enums.*;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
-
-@MappedSuperclass
-public abstract class User {
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(nullable = false)
     private String firstName;
+
+    @NotNull
+    @Column(nullable = false)
     private String lastName;
+
+    @NotNull
+    @Column(unique = true, nullable = false)
     private String email;
-    
-    @SuppressWarnings("unused")
+
+    @NotNull
+    @Column(nullable = false)
     private String password;
 
+    @Column(unique = true)
     private String phone;
+
+    @NotNull
+    @Column(nullable = false)
     private int age;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     public User() {}
@@ -52,8 +69,13 @@ public abstract class User {
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public int getAge() { return this.age; }
+    public String getPassword() { return this.password; }
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

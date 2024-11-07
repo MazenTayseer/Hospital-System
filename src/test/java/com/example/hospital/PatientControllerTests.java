@@ -3,7 +3,6 @@ package com.example.hospital;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +20,10 @@ import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
+@WithMockUser(username = "patient", roles = {"PATIENT"})
 public class PatientControllerTests {
         @Autowired
         private MockMvc mockMvc;
@@ -47,35 +51,27 @@ public class PatientControllerTests {
         @Autowired
         private AppointmentDAL appointmentDAL;
 
-        private Doctor doctor;
-        private Patient patient;
-        private Appointment appointment;
 
-        @BeforeEach
-        void setup() {
-                doctor = new Doctor(
-                                "Doctor",
-                                "Doctor",
-                                "Doctor@Doctor.com",
-                                "password",
-                                "+201000000000",
-                                21,
-                                Speciality.SURGEON);
-
-                patient = new Patient(
-                                "Patient",
-                                "Patient",
-                                "Patient@Patient.com",
-                                "password",
-                                "+201000000001",
-                                21);
-
-                appointment = new Appointment(
-                                LocalDate.now().plusDays(1),
-                                LocalTime.now().plusHours(1).withMinute(0),
-                                doctor,
-                                patient);
-        }
+        private Doctor doctor = new Doctor(
+                        "Doctor",
+                        "Doctor",
+                        "Doctor@Doctor.com",
+                        "password",
+                        "+201000000000",
+                        21,
+                        Speciality.SURGEON);
+        private Patient patient = new Patient(
+                        "Patient",
+                        "Patient",
+                        "Patient@Patient.com",
+                        "password",
+                        "+201000000001",
+                        21);
+        private Appointment appointment = new Appointment(
+                        LocalDate.now().plusDays(1),
+                        LocalTime.now().plusHours(1).withMinute(0),
+                        doctor,
+                        patient);
 
         @Test
         public void testBookAppointment() throws Exception {

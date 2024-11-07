@@ -18,4 +18,8 @@ public class NurseDAL {
         return nurseRepository.save(patient);
     }
 
+    public void deleteAll() {
+        nurseRepository.deleteAll();
+    }
+
 }
