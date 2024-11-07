@@ -3,7 +3,7 @@ package com.example.hospital;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
-
+import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Role;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +43,7 @@ class ManagerControllerTests {
                                 "password",
                                 "+201279936001",
                                 21,
+                                Gender.MALE,
                                 Speciality.SURGEON);
 
                 mockMvc.perform(post("/api/managers/create-doctor")
@@ -62,7 +63,8 @@ class ManagerControllerTests {
                                 "nurse@eng.asu.edu.eg",
                                 "password",
                                 "+201279936002",
-                                21);
+                                21,
+                                Gender.MALE);
 
                 mockMvc.perform(post("/api/managers/create-nurse")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -80,7 +82,8 @@ class ManagerControllerTests {
                                 "patient@eng.asu.edu.eg",
                                 "password",
                                 "+201279936003",
-                                21);
+                                21,
+                                Gender.MALE);
 
                 mockMvc.perform(post("/api/managers/create-nurse")
                                 .contentType(MediaType.APPLICATION_JSON)

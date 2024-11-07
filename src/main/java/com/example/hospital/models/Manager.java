@@ -19,9 +19,10 @@ public class Manager extends User {
         String email,
         String password,
         String phone,
-        int age
+        int age,
+        Gender gender
     ) {
-        super(firstName, lastName, email, password, phone, age);
+        super(firstName, lastName, email, password, phone, age, gender);
         this.setRole(Role.MANAGER);
     }
 }

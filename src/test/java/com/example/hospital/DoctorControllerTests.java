@@ -13,6 +13,7 @@ import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.enums.AppointmentStatus;
+import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Speciality;
 
 import jakarta.transaction.Transactional;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
-@WithMockUser(username = "doctor", roles = {"DOCTOR"})
+@WithMockUser(username = "doctor", roles = { "DOCTOR" })
 public class DoctorControllerTests {
         @Autowired
         private MockMvc mockMvc;
@@ -54,6 +55,7 @@ public class DoctorControllerTests {
                         "password",
                         "+201000000000",
                         21,
+                        Gender.MALE,
                         Speciality.SURGEON);
         private Patient patient = new Patient(
                         "Patient",
@@ -61,7 +63,8 @@ public class DoctorControllerTests {
                         "Patient@Patient.com",
                         "password",
                         "+201000000001",
-                        21);
+                        21,
+                        Gender.MALE);
         private Appointment appointment = new Appointment(
                         LocalDate.now().plusDays(1),
                         LocalTime.now().plusHours(1).withMinute(0),

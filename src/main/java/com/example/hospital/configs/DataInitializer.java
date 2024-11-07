@@ -1,6 +1,7 @@
 package com.example.hospital.configs;
 
 import com.example.hospital.models.Manager;
+import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Role;
 import com.example.hospital.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -22,7 +23,8 @@ public class DataInitializer {
                     "maziiin360@gmail.com",
                     passwordEncoder.encode("test1234"),
                     "1234567890",
-                    40
+                    40,
+                    Gender.MALE
                 );
                 defaultManager.setRole(Role.MANAGER);
 

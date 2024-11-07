@@ -1,6 +1,7 @@
 package com.example.hospital.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import com.example.hospital.models.enums.*;
 
@@ -9,6 +10,8 @@ import com.example.hospital.models.enums.*;
 @Table(name = "doctors")
 public class Doctor extends User {
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @NotNull(message = "The speciality is required")
     private Speciality speciality;
 
     public Doctor() {
@@ -23,9 +26,10 @@ public class Doctor extends User {
         String password,
         String phone,
         int age,
+        Gender gender,
         Speciality speciality
     ) {
-        super(firstName, lastName, email, password, phone, age);
+        super(firstName, lastName, email, password, phone, age, gender);
         this.setRole(Role.DOCTOR);
         this.speciality = speciality;
     }
