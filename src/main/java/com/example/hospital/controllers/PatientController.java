@@ -59,7 +59,6 @@ public class PatientController {
         }
     }
 
-    // TODO: Test speciality filter
     @GetMapping("/doctors")
     public ResponseEntity<List<Doctor>> viewDoctors(@RequestParam(required = false) String speciality) {
         List<Doctor> doctors = patientService.viewDoctors(speciality);
