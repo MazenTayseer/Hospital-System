@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 public class Manager extends User {
     public Manager() {
         super();
-        this.setRole(Role.MANAGER);
     }
 
     public Manager(
@@ -23,6 +22,5 @@ public class Manager extends User {
         Gender gender
     ) {
         super(firstName, lastName, email, password, phone, age, gender);
-        this.setRole(Role.MANAGER);
     }
 }

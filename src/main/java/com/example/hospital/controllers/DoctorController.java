@@ -1,11 +1,11 @@
-package com.example.hospital.controllers.users;
+package com.example.hospital.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hospital.models.Appointment;
-import com.example.hospital.services.users.DoctorService;
+import com.example.hospital.services.DoctorService;
 
 import java.util.List;
 

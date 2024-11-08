@@ -1,4 +1,4 @@
-package com.example.hospital.services.users;
+package com.example.hospital.services;
 
 import java.util.List;
 

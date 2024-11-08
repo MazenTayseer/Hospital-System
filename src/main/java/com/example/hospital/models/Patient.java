@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 public class Patient extends User {
     public Patient() {
         super();
-        this.setRole(Role.PATIENT);
     }
 
     public Patient(
@@ -22,6 +21,5 @@ public class Patient extends User {
         Gender gender
     ) {
         super(firstName, lastName, email, password, phone, age, gender);
-        this.setRole(Role.PATIENT);
     }
 }

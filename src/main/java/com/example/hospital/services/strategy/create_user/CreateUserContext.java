@@ -1,8 +1,7 @@
-package com.example.hospital.services.users;
+package com.example.hospital.services.strategy.create_user;
 
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.User;
-import com.example.hospital.services.users.strategy.ICreateUser;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

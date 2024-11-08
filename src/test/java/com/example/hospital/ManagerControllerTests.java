@@ -4,7 +4,6 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.enums.Gender;
-import com.example.hospital.models.enums.Role;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,7 +50,7 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(doctor)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.role").value(Role.DOCTOR.toString()))
+                                .andExpect(jsonPath("$.roles[?(@.name == 'DOCTOR')]").exists())
                                 .andExpect(jsonPath("$.speciality").value(Speciality.SURGEON.toString()));
         }
 
@@ -71,7 +70,7 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(nurse)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.role").value(Role.NURSE.toString()));
+                                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists()); 
         }
 
         @Test
@@ -85,11 +84,11 @@ class ManagerControllerTests {
                                 21,
                                 Gender.MALE);
 
-                mockMvc.perform(post("/api/managers/create-nurse")
+                mockMvc.perform(post("/api/managers/create-patient")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(patient)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.role").value(Role.PATIENT.toString()));
+                                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists()); 
         }
 }

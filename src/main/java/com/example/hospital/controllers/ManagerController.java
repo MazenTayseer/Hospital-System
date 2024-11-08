@@ -1,9 +1,9 @@
-package com.example.hospital.controllers.users;
+package com.example.hospital.controllers;
 
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
-import com.example.hospital.services.users.ManagerService;
+import com.example.hospital.services.ManagerService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

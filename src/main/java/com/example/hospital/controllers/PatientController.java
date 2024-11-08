@@ -1,4 +1,4 @@
-package com.example.hospital.controllers.users;
+package com.example.hospital.controllers;
 
 import java.util.List;
 
@@ -14,7 +14,8 @@ import com.example.hospital.ResponseMessages;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Review;
-import com.example.hospital.services.users.PatientService;
+import com.example.hospital.services.PatientService;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 

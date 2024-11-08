@@ -1,4 +1,4 @@
-package com.example.hospital.services.users;
+package com.example.hospital.services;
 
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.dal.AppointmentDAL;

@@ -1,4 +1,5 @@
-package com.example.hospital.services.users.strategy;
+package com.example.hospital.services.strategy.create_user;
+
 
 import com.example.hospital.models.User;
 

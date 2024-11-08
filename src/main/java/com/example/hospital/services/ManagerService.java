@@ -1,8 +1,9 @@
-package com.example.hospital.services.users;
+package com.example.hospital.services;
 
 import org.springframework.stereotype.Service;
 
 import com.example.hospital.models.User;
+import com.example.hospital.services.strategy.create_user.CreateUserContext;
 
 @Service
 public class ManagerService {

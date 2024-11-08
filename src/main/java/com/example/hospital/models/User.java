@@ -1,5 +1,8 @@
 package com.example.hospital.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.example.hospital.models.enums.*;
 
 import jakarta.persistence.*;
@@ -42,10 +45,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @NotNull(message = "The role is required")
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public User() {}
 
@@ -70,18 +76,18 @@ public class User {
     public Long getId() { return this.id; }
     public String getFirstName() { return this.firstName; }
     public String getLastName() { return this.lastName; }
-    public Role getRole() { return this.role; }
+    public Set<Role> getRoles() { return this.roles; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public int getAge() { return this.age; }
     public String getPassword() { return this.password; }
     public Gender getGender() { return this.gender; }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void addRole(Role role) {
+        this.roles.add(role);
     }
 }

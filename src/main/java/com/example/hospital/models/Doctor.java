@@ -16,7 +16,6 @@ public class Doctor extends User {
 
     public Doctor() {
         super();
-        this.setRole(Role.DOCTOR);
     }
 
     public Doctor(
@@ -30,7 +29,6 @@ public class Doctor extends User {
         Speciality speciality
     ) {
         super(firstName, lastName, email, password, phone, age, gender);
-        this.setRole(Role.DOCTOR);
         this.speciality = speciality;
     }
 

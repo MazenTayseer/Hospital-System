@@ -1,7 +1,5 @@
 package com.example.hospital.configs;
 
-import com.example.hospital.models.enums.Role;
-import com.example.hospital.services.users.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +12,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.example.hospital.services.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -36,11 +36,11 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
+        http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/managers/**").hasRole(Role.MANAGER.name())
-                .requestMatchers("/api/doctor/**").hasRole(Role.DOCTOR.name())
-                .requestMatchers("/api/patient/**").hasRole(Role.PATIENT.name())
+                .requestMatchers("/api/managers/**").hasRole("MANAGER")
+                .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
+                .requestMatchers("/api/patient/**").hasRole("PATIENT")
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults());
