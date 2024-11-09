@@ -3,6 +3,7 @@ package com.example.hospital;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.Volunteer;
 import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,7 +71,7 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(nurse)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists()); 
+                                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists());
         }
 
         @Test
@@ -89,6 +90,30 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(patient)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists()); 
+                                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists());
+        }
+
+        @Test
+        void testCreateVolunteer() throws Exception {
+                Volunteer volunteer = new Volunteer(
+                                "VolunteerFirstName",
+                                "VolunteerLastName",
+                                "volunteer@example.com",
+                                "password123",
+                                "+201000000002",
+                                25,
+                                Gender.MALE,
+                                "First Aid, Communication",
+                                "Weekends");
+
+                mockMvc.perform(post("/api/managers/create-volunteer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(volunteer)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.firstName").value("VolunteerFirstName"))
+                                .andExpect(jsonPath("$.skills").value("First Aid, Communication"))
+                                .andExpect(jsonPath("$.availability").value("Weekends"))
+                                .andExpect(jsonPath("$.roles[?(@.name == 'VOLUNTEER')]").exists());
         }
 }

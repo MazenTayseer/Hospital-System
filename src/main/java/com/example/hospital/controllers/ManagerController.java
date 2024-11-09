@@ -3,6 +3,7 @@ package com.example.hospital.controllers;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.ManagerService;
 
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,12 @@ public class ManagerController {
     @PostMapping("/create-patient")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
         Patient createdUser = (Patient) managerService.createUser(patient);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @PostMapping("/create-volunteer")
+    public ResponseEntity<Volunteer> createVolunteer(@RequestBody Volunteer volunteer) {
+        Volunteer createdUser = (Volunteer) managerService.createUser(volunteer);
         return ResponseEntity.ok(createdUser);
     }
 }

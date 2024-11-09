@@ -30,7 +30,7 @@ public class DataInitializer {
         RoleDAL roleDAL
     ) {
         return args -> {
-            String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR"};
+            String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR","VOLUNTEER"};
             for (String roleName : roles) {
                 if (roleRepository.findByName(roleName).isEmpty()) {
                     roleRepository.save(new Role(roleName));
