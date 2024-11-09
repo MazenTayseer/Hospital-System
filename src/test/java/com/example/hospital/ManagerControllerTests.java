@@ -1,5 +1,6 @@
 package com.example.hospital;
 
+import com.example.hospital.dal.UserDAL;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,18 +37,21 @@ class ManagerControllerTests {
         @Autowired
         private ObjectMapper objectMapper;
 
+        @Autowired
+        private UserDAL userDAL;
+
+        private Doctor doctor = new Doctor(
+                "doctor",
+                "doctor",
+                "doctor@eng.asu.edu.eg",
+                "password",
+                "+201279936001",
+                21,
+                Gender.MALE,
+                Speciality.SURGEON);
+
         @Test
         void testCreateDoctor() throws Exception {
-                Doctor doctor = new Doctor(
-                                "doctor",
-                                "doctor",
-                                "doctor@eng.asu.edu.eg",
-                                "password",
-                                "+201279936001",
-                                21,
-                                Gender.MALE,
-                                Speciality.SURGEON);
-
                 mockMvc.perform(post("/api/managers/create-doctor")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(doctor)))
@@ -119,9 +124,9 @@ class ManagerControllerTests {
         }
         @Test
         public void testDeleteUser() throws Exception {
-            User savedUser = userDAL.save(user);
+            User savedUser = userDAL.save(this.doctor);
     
-            mockMvc.perform(delete("/api/volunteers/{id}", savedUser.getId()))
+            mockMvc.perform(delete("/api/managers/delete/{userId}", savedUser.getId()))
                     .andExpect(status().isNoContent());
         }
 }

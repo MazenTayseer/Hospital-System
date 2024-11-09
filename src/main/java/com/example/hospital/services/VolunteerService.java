@@ -1,8 +1,6 @@
 package com.example.hospital.services;
 
-import com.example.hospital.ResponseMessages;
 import com.example.hospital.dal.VolunteerDAL;
-import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Volunteer;
 import org.springframework.stereotype.Service;
 
