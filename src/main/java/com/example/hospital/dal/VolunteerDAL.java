@@ -27,14 +27,6 @@ public class VolunteerDAL {
         return volunteerRepository.save(volunteer);
     }
 
-    public void deleteAll() {
-        volunteerRepository.deleteAll();
-    }
-
-    public void delete(Volunteer volunteer) {
-        volunteerRepository.delete(volunteer);
-    }
-
     // Add this method to enable findAll() functionality
     public List<Volunteer> findAll() {
         return volunteerRepository.findAll();

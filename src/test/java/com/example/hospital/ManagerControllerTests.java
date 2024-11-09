@@ -4,6 +4,7 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.Volunteer;
+import com.example.hospital.models.User;
 import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -115,5 +116,12 @@ class ManagerControllerTests {
                                 .andExpect(jsonPath("$.skills").value("First Aid, Communication"))
                                 .andExpect(jsonPath("$.availability").value("Weekends"))
                                 .andExpect(jsonPath("$.roles[?(@.name == 'VOLUNTEER')]").exists());
+        }
+        @Test
+        public void testDeleteUser() throws Exception {
+            User savedUser = userDAL.save(user);
+    
+            mockMvc.perform(delete("/api/volunteers/{id}", savedUser.getId()))
+                    .andExpect(status().isNoContent());
         }
 }

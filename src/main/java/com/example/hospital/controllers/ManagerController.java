@@ -42,4 +42,10 @@ public class ManagerController {
         Volunteer createdUser = (Volunteer) managerService.createUser(volunteer);
         return ResponseEntity.ok(createdUser);
     }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        managerService.deleteUser(userId);
+        return ResponseEntity.noContent().build(); 
+    }
 }

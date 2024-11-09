@@ -16,18 +16,6 @@ public class VolunteerController {
         this.volunteerService = volunteerService;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<Volunteer> addVolunteer(@RequestBody Volunteer volunteer) {
-        Volunteer savedVolunteer = volunteerService.saveVolunteer(volunteer);
-        return ResponseEntity.ok(savedVolunteer);
-    }
-
-    @DeleteMapping("/delete/{volunteerId}")
-    public ResponseEntity<Void> deleteVolunteer(@PathVariable Long volunteerId) {
-        volunteerService.deleteVolunteer(volunteerId);
-        return ResponseEntity.noContent().build(); // Return 204 No Content status
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Volunteer> getVolunteerById(@PathVariable Long id) {
         Volunteer volunteer = volunteerService.getVolunteer(id);
