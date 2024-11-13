@@ -67,7 +67,7 @@ public class DoctorControllerTests {
                         Gender.MALE);
         private Appointment appointment = new Appointment(
                         LocalDate.now().plusDays(1),
-                        LocalTime.now().plusHours(1).withMinute(0),
+                        LocalTime.of(10, 0),
                         doctor,
                         patient);
 
