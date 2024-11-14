@@ -53,6 +53,14 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_notification_services",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "notification_service_id")
+    )
+    private Set<NotificationService> notificationServices = new HashSet<>();
+
     public User() {}
 
     public User(
@@ -77,6 +85,7 @@ public class User {
     public String getFirstName() { return this.firstName; }
     public String getLastName() { return this.lastName; }
     public Set<Role> getRoles() { return this.roles; }
+    public Set<NotificationService> getNotificationServices() { return this.notificationServices; }
     public String getEmail() { return this.email; }
     public String getPhone() { return this.phone; }
     public int getAge() { return this.age; }
@@ -85,6 +94,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void addNotificationService(NotificationService notificationService) {
+        this.notificationServices.add(notificationService);
     }
 
     public void addRole(Role role) {

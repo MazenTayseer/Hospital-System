@@ -2,6 +2,8 @@ package com.example.hospital.dal;
 
 import com.example.hospital.models.User;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.UserRepository;
@@ -22,5 +24,9 @@ public class UserDAL {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public List<User> getUsersByNotificationService(String serviceName) {
+        return userRepository.getUsersByNotificationService(serviceName);
     }
 }
