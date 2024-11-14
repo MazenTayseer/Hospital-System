@@ -26,27 +26,30 @@ public class PatientController {
     private final PatientService patientService;
 
     public PatientController(PatientService patientService) {
-        this.patientService = patientService;
+      this.patientService = patientService;
     }
+
+
+
 
     @PostMapping("/book-appointment")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) {
         Appointment bookedAppointment = patientService.bookAppointment(appointment);
         return ResponseEntity.ok(bookedAppointment);
-    }    
+    }
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> bookAppointment(@PathVariable Long appointmentId) {
         patientService.cancelAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
-    }  
-    
+    }
+
     @PostMapping("/review-doctor")
     public ResponseEntity<Review> reviewDoctor(@RequestBody Review review) {
         Review createdReview = patientService.reviewDoctor(review);
         return ResponseEntity.ok(createdReview);
     }
-    
+
 
     @GetMapping("/appointments")
     public ResponseEntity<?> getAppointments(@RequestParam(required = false) Long appointmentId) {
@@ -64,5 +67,5 @@ public class PatientController {
         List<Doctor> doctors = patientService.viewDoctors(speciality);
         return ResponseEntity.ok(doctors);
     }
-    
+
 }
