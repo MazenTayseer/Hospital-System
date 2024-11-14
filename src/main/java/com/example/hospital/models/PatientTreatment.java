@@ -1,23 +1,42 @@
 package com.example.hospital.models;
 
+import java.time.LocalDate;
+
+import com.example.hospital.models.enums.TreatmentType;
+
 import jakarta.persistence.*;
-import java.time.LocalDate;  // Import LocalDate for the treatment date
 
 @Entity
 public class PatientTreatment {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    private String treatmentType;
-    private String treatmentDetails;
+    @Enumerated(EnumType.STRING)
+    private TreatmentType treatmentType;
 
-    @Column(name = "treatment_date")  // Optional if the column name is different from the field name
-    private LocalDate treatmentDate;  // Add the treatmentDate field
+    private String description;
+
+    private String dateApplied;
+
+    // Constructors
+    public PatientTreatment() {}
+
+    public PatientTreatment(Patient patient, TreatmentType treatmentType, String description) {
+    this.patient = patient;
+    this.treatmentType = treatmentType;
+    this.description = description;
+    this.dateApplied = LocalDate.now().toString();
+}
+
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -34,27 +53,27 @@ public class PatientTreatment {
         this.patient = patient;
     }
 
-    public String getTreatmentType() {
+    public TreatmentType getTreatmentType() {
         return treatmentType;
     }
 
-    public void setTreatmentType(String treatmentType) {
+    public void setTreatmentType(TreatmentType treatmentType) {
         this.treatmentType = treatmentType;
     }
 
-    public String getTreatmentDetails() {
-        return treatmentDetails;
+    public String getdescription() {
+        return description;
     }
 
-    public void setTreatmentDetails(String treatmentDetails) {
-        this.treatmentDetails = treatmentDetails;
+    public void setdescription(String description) {
+        this.description = description;
     }
 
-    public LocalDate getTreatmentDate() {
-        return treatmentDate;
+    public String getDateApplied() {
+        return dateApplied;
     }
 
-    public void setTreatmentDate(LocalDate treatmentDate) {
-        this.treatmentDate = treatmentDate;
+    public void setDateApplied(String dateApplied) {
+        this.dateApplied = dateApplied;
     }
 }

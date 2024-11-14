@@ -1,24 +1,27 @@
 package com.example.hospital.services.strategy.patient_treatment;
 
-import org.springframework.stereotype.Component;
-
 import com.example.hospital.models.Patient;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TreatmentContext {
 
     private TreatmentStrategy strategy;
 
-    // Dynamically set the strategy (the treatment type can be passed in the service layer)
+    // Method to set the treatment strategy at runtime
     public void setStrategy(TreatmentStrategy strategy) {
-        this.strategy = strategy;
+      this.strategy = strategy;
     }
 
-    // Apply the treatment using the currently set strategy
-    public void applyTreatment(Patient patient, String treatmentDetails) {
-        if (this.strategy == null) {
-            throw new IllegalStateException("Treatment strategy not set.");
+    public TreatmentStrategy getStrategy() {
+      return strategy;
+  }
+
+    // Method to apply the treatment
+    public void applyTreatment(Patient patient) {
+        if (strategy == null) {
+            throw new IllegalStateException("Treatment strategy not set");
         }
-        this.strategy.applyTreatment(patient, treatmentDetails);
+        strategy.applyTreatment(patient);
     }
 }
