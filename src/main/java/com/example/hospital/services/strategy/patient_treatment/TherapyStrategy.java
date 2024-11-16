@@ -1,9 +1,9 @@
 package com.example.hospital.services.strategy.patient_treatment;
 
 import com.example.hospital.models.Patient;
-import com.example.hospital.models.PatientTreatment;
-import com.example.hospital.models.enums.TreatmentType;
-import com.example.hospital.repositories.PatientTreatmentRepository;
+import com.example.hospital.models.TherapyTreatment;
+import com.example.hospital.repositories.TherapyTreatmentRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class TherapyStrategy implements TreatmentStrategy {
 
     @Autowired
-    private PatientTreatmentRepository patientTreatmentRepository;
+    private TherapyTreatmentRepository therapyRepository;
 
     @Override
     public void applyTreatment(Patient patient, Object... args) {
@@ -20,12 +20,13 @@ public class TherapyStrategy implements TreatmentStrategy {
         String frequency = (String) args[2];
         String notes = (String) args[3];
 
-        PatientTreatment treatment = new PatientTreatment();
+        TherapyTreatment treatment = new TherapyTreatment();
         treatment.setPatient(patient);
-        treatment.setTreatmentType(TreatmentType.THERAPY);
-        treatment.setdescription(String.format("Therapy: %s, Duration: %d days, Frequency: %s, Notes: %s",
-                therapyType, duration, frequency, notes));
+        treatment.setTherapyType(therapyType);
+        treatment.setDuration(duration);
+        treatment.setFrequency(frequency);
+        treatment.setNotes(notes);
 
-        patientTreatmentRepository.save(treatment);
+        therapyRepository.save(treatment);
     }
 }

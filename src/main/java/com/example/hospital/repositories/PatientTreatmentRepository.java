@@ -1,6 +1,7 @@
 package com.example.hospital.repositories;
 
 import com.example.hospital.models.PatientTreatment;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,5 @@ public interface PatientTreatmentRepository extends JpaRepository<PatientTreatme
 
   @Query("SELECT t FROM PatientTreatment t WHERE t.patient.id = :patientId ORDER BY t.date DESC")
   Optional<PatientTreatment> findMostRecentTreatment(@Param("patientId") Long patientId);
-
-
 
 }
