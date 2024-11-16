@@ -1,4 +1,4 @@
-package com.example.hospital.models;
+package com.example.hospital.models.request;
 
 import com.example.hospital.models.enums.TreatmentType;
 

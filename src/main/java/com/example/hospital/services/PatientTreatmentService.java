@@ -2,7 +2,7 @@ package com.example.hospital.services;
 
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.PatientTreatment;
-import com.example.hospital.models.TreatmentRequest;
+import com.example.hospital.models.request.TreatmentRequest;
 import com.example.hospital.repositories.PatientRepository;
 import com.example.hospital.repositories.PatientTreatmentRepository;
 import com.example.hospital.services.strategy.patient_treatment.TreatmentStrategyFactory;
