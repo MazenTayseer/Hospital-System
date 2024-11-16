@@ -8,20 +8,16 @@ public class TreatmentContext {
 
     private TreatmentStrategy strategy;
 
-    // Method to set the treatment strategy at runtime
+    // Set the strategy dynamically
     public void setStrategy(TreatmentStrategy strategy) {
-      this.strategy = strategy;
+        this.strategy = strategy;
     }
 
-    public TreatmentStrategy getStrategy() {
-      return strategy;
-  }
-
-    // Method to apply the treatment
+    // Apply the strategy to the patient
     public void applyTreatment(Patient patient) {
         if (strategy == null) {
             throw new IllegalStateException("Treatment strategy not set");
         }
-        strategy.applyTreatment(patient);
+        strategy.applyTreatment(patient);  // Delegate to the selected strategy
     }
 }

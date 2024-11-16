@@ -22,7 +22,8 @@ public class PatientTreatment {
 
     private String description;
 
-    private String dateApplied;
+    @Column(name = "date")
+    private LocalDate date;
 
     // Constructors
     public PatientTreatment() {}
@@ -31,7 +32,7 @@ public class PatientTreatment {
     this.patient = patient;
     this.treatmentType = treatmentType;
     this.description = description;
-    this.dateApplied = LocalDate.now().toString();
+    this.date = LocalDate.now();
 }
 
 
@@ -69,11 +70,9 @@ public class PatientTreatment {
         this.description = description;
     }
 
-    public String getDateApplied() {
-        return dateApplied;
+    public LocalDate getDateApplied() {
+        return date;
     }
 
-    public void setDateApplied(String dateApplied) {
-        this.dateApplied = dateApplied;
-    }
+
 }

@@ -2,53 +2,65 @@ package com.example.hospital.services;
 
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.PatientTreatment;
+import com.example.hospital.models.TreatmentRequest;
 import com.example.hospital.repositories.PatientRepository;
 import com.example.hospital.repositories.PatientTreatmentRepository;
-import com.example.hospital.services.strategy.patient_treatment.TreatmentContext;
-import com.example.hospital.services.strategy.patient_treatment.TreatmentStrategy;
-import com.example.hospital.models.enums.TreatmentType;
+import com.example.hospital.services.strategy.patient_treatment.TreatmentStrategyFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientTreatmentService {
 
     @Autowired
-    private PatientTreatmentRepository patientTreatmentRepository;
+    private PatientTreatmentRepository treatmentRepository;
 
     @Autowired
     private PatientRepository patientRepository;
 
     @Autowired
-    private TreatmentContext treatmentContext;
+    private TreatmentStrategyFactory strategyFactory;
 
-    // Apply treatment to a patient by passing strategy as parameter
-    public void applyTreatment(Long patientId, TreatmentType treatmentType, String details, TreatmentStrategy strategy) {
-        Optional<Patient> patientOpt = patientRepository.findById(patientId);
-        if (patientOpt.isPresent()) {
-            Patient patient = patientOpt.get();
+    public void assignTreatmentToPatient(TreatmentRequest request) {
+        Patient patient = getPatientFromRequest(request);
 
-            // Set the appropriate strategy dynamically
-            treatmentContext.setStrategy(strategy);
+        switch (request.getTreatmentType()) {
+            case MEDICATION:
+                strategyFactory.getMedicationStrategy()
+                        .applyTreatment(patient, request.getMedicationName(), request.getDosage(),
+                                request.getDuration(), request.getFrequency());
+                break;
 
-            // Apply the treatment using the strategy
-            treatmentContext.applyTreatment(patient);
+            case SURGERY:
+                strategyFactory.getSurgeryStrategy()
+                        .applyTreatment(patient, request.getSurgeryType(), request.getLocation(),
+                                request.getSurgeon(), request.getDate());
+                break;
 
-            // Create and save a PatientTreatment record
-            PatientTreatment treatmentRecord = new PatientTreatment(patient, treatmentType, details);
-            treatmentRecord.setDateApplied(LocalDate.now().toString());
-            patientTreatmentRepository.save(treatmentRecord);
-        } else {
-            throw new RuntimeException("Patient not found with ID: " + patientId);
+            case THERAPY:
+                strategyFactory.getTherapyStrategy()
+                        .applyTreatment(patient, request.getTherapyType(), request.getDuration(),
+                                request.getFrequency(), request.getTherapyNotes());
+                break;
+
+            default:
+                throw new IllegalArgumentException("Invalid treatment type");
         }
     }
 
-    // Retrieve all treatments for a patient
-    public List<PatientTreatment> getAllTreatmentsForPatient(Long patientId) {
-        return patientTreatmentRepository.findByPatientId(patientId);
+    private Patient getPatientFromRequest(TreatmentRequest request) {
+      return patientRepository.findById(request.getPatientId())
+          .orElseThrow(() -> new RuntimeException("Patient not found"));
+
     }
+
+    public List<PatientTreatment> getTreatmentsForPatient(Long patientId) {
+       patientRepository.findById(patientId)
+              .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+      return treatmentRepository.findByPatientId(patientId);
+  }
 }

@@ -13,22 +13,19 @@ public class SurgeryStrategy implements TreatmentStrategy {
     @Autowired
     private PatientTreatmentRepository patientTreatmentRepository;
 
-    private String surgeryType;
-    private String location;
-    private String surgeon;
-    private String date;
-
-    // Setters
-    public void setSurgeryType(String surgeryType) { this.surgeryType = surgeryType; }
-    public void setLocation(String location) { this.location = location; }
-    public void setSurgeon(String surgeon) { this.surgeon = surgeon; }
-    public void setDate(String date) { this.date = date; }
-
     @Override
-    public void applyTreatment(Patient patient) {
-        String description = "Surgery: " + surgeryType + ", Location: " + location +
-                             ", Surgeon: " + surgeon + ", Date: " + date;
-        PatientTreatment treatment = new PatientTreatment(patient,TreatmentType.SURGERY, description );
+    public void applyTreatment(Patient patient, Object... args) {
+        String surgeryType = (String) args[0];
+        String location = (String) args[1];
+        String surgeon = (String) args[2];
+        String date = (String) args[3];
+
+        PatientTreatment treatment = new PatientTreatment();
+        treatment.setPatient(patient);
+        treatment.setTreatmentType(TreatmentType.SURGERY);
+        treatment.setdescription(String.format("Surgery: %s, Location: %s, Surgeon: %s, Date: %s",
+                surgeryType, location, surgeon, date));
+
         patientTreatmentRepository.save(treatment);
     }
 }

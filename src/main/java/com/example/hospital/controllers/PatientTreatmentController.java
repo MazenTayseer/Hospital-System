@@ -1,45 +1,34 @@
 package com.example.hospital.controllers;
 
 import com.example.hospital.models.PatientTreatment;
-import com.example.hospital.models.enums.TreatmentType;
-import com.example.hospital.services.strategy.patient_treatment.TreatmentContext;
-import com.example.hospital.services.strategy.patient_treatment.TreatmentStrategy;
+import com.example.hospital.models.TreatmentRequest;
 import com.example.hospital.services.PatientTreatmentService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/treatment")
 public class PatientTreatmentController {
 
     @Autowired
-    private PatientTreatmentService patientTreatmentService;
+    private PatientTreatmentService treatmentService;
 
-    @Autowired
-    private TreatmentContext treatmentContext;
-
-
- @PostMapping("/{patientId}/applyTreatment")
-public void applyTreatment(@PathVariable Long patientId,
-                           @RequestParam TreatmentType treatmentType,
-                           @RequestParam String details) {
-    // Determine the appropriate strategy based on the treatment type
-    TreatmentStrategy strategy = treatmentContext.getStrategy();
-
-
-
-    // Now, apply the treatment
-    patientTreatmentService.applyTreatment(patientId, treatmentType, details, strategy);
-}
-
-
-    // Endpoint to retrieve all treatments for a patient
-    @GetMapping("/{patientId}/treatments")
-    public List<PatientTreatment> getAllTreatmentsForPatient(@PathVariable Long patientId) {
-        return patientTreatmentService.getAllTreatmentsForPatient(patientId);
+    @PostMapping("/apply")
+    public ResponseEntity<String> applyTreatment(@Valid @RequestBody TreatmentRequest treatmentRequest) {
+      treatmentService.assignTreatmentToPatient(treatmentRequest);
+      return ResponseEntity.ok("Treatment applied successfully");
     }
 
+
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<PatientTreatment>> getTreatmentsForPatient(@PathVariable Long patientId) {
+        List<PatientTreatment> treatments = treatmentService.getTreatmentsForPatient(patientId);
+        return ResponseEntity.ok(treatments);
+    }
 }
