@@ -14,10 +14,10 @@ public class TreatmentContext {
     }
 
     // Apply the strategy to the patient
-    public void applyTreatment(Patient patient) {
+    public void applyTreatment(Patient patient, Object... args) {
         if (strategy == null) {
             throw new IllegalStateException("Treatment strategy not set");
         }
-        strategy.applyTreatment(patient);  // Delegate to the selected strategy
+        strategy.applyTreatment(patient, args); // Delegate to the selected strategy
     }
 }
