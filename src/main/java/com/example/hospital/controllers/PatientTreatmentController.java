@@ -21,25 +21,38 @@ public class PatientTreatmentController {
     @Autowired
     private PatientTreatmentService treatmentService;
 
-    @PostMapping("/apply")
-    public ResponseEntity<String> applyTreatment(@Valid @RequestBody TreatmentRequest treatmentRequest) {
-      treatmentService.assignTreatmentToPatient(treatmentRequest);
-      return ResponseEntity.ok("Treatment applied successfully");
+    // Apply Medication treatment
+    @PostMapping("/apply/medication")
+    public ResponseEntity<String> applyMedicationTreatment(@Valid @RequestBody TreatmentRequest treatmentRequest) {
+        treatmentService.assignMedicationTreatmentToPatient(treatmentRequest);
+        return ResponseEntity.ok("Medication treatment applied successfully");
     }
 
+    // Apply Surgery treatment
+    @PostMapping("/apply/surgery")
+    public ResponseEntity<String> applySurgeryTreatment(@Valid @RequestBody TreatmentRequest treatmentRequest) {
+        treatmentService.assignSurgeryTreatmentToPatient(treatmentRequest);
+        return ResponseEntity.ok("Surgery treatment applied successfully");
+    }
 
- @GetMapping("/patient/{patientId}")
-public ResponseEntity<List<PatientTreatmentDTO>> getTreatmentsForPatient(@PathVariable Long patientId) {
-    List<PatientTreatment> treatments = treatmentService.getTreatmentsForPatient(patientId);
-    // Map PatientTreatment entities to PatientTreatmentDTO
-    List<PatientTreatmentDTO> treatmentDTOs = treatments.stream()
-        .map(treatment -> new PatientTreatmentDTO(
-            treatment.getId(),
-            treatment.getTreatmentType(),
-            treatment.getdescription(),
-            treatment.getDateApplied()))
-        .collect(Collectors.toList());
-    return ResponseEntity.ok(treatmentDTOs);
-}
+    // Apply Therapy treatment
+    @PostMapping("/apply/therapy")
+    public ResponseEntity<String> applyTherapyTreatment(@Valid @RequestBody TreatmentRequest treatmentRequest) {
+        treatmentService.assignTherapyTreatmentToPatient(treatmentRequest);
+        return ResponseEntity.ok("Therapy treatment applied successfully");
+    }
 
+    // Get all treatments for a patient
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<PatientTreatmentDTO>> getTreatmentsForPatient(@PathVariable Long patientId) {
+        List<PatientTreatment> treatments = treatmentService.getTreatmentsForPatient(patientId);
+        List<PatientTreatmentDTO> treatmentDTOs = treatments.stream()
+            .map(treatment -> new PatientTreatmentDTO(
+                treatment.getId(),
+                treatment.getTreatmentType(),
+                treatment.getdescription(),
+                treatment.getDateApplied()))
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(treatmentDTOs);
+    }
 }

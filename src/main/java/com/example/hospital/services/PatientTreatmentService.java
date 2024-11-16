@@ -26,45 +26,53 @@ public class PatientTreatmentService {
     private TreatmentStrategyFactory strategyFactory;
 
     @Autowired
-    private TreatmentContext treatmentContext; // Inject the context
+    private TreatmentContext treatmentContext;
 
-    public void assignTreatmentToPatient(TreatmentRequest request) {
+    // Apply Medication treatment
+    public void assignMedicationTreatmentToPatient(TreatmentRequest request) {
         Patient patient = getPatientFromRequest(request);
 
-        // Set the appropriate strategy in the context
-        switch (request.getTreatmentType()) {
-            case MEDICATION:
-                treatmentContext.setStrategy(strategyFactory.getMedicationStrategy());
-                treatmentContext.applyTreatment(patient, request.getMedicationName(), request.getDosage(),
-                        request.getDuration(), request.getFrequency());
-                break;
+        // Set strategy in the context
+        treatmentContext.setStrategy(strategyFactory.getMedicationStrategy());
 
-            case SURGERY:
-                treatmentContext.setStrategy(strategyFactory.getSurgeryStrategy());
-                treatmentContext.applyTreatment(patient, request.getSurgeryType(), request.getLocation(),
-                        request.getSurgeon(), request.getDate());
-                break;
+        // Apply the treatment with relevant details
+        treatmentContext.applyTreatment(patient, request.getMedicationName(),
+                request.getDosage(), request.getDuration(), request.getFrequency());
+    }
 
-            case THERAPY:
-                treatmentContext.setStrategy(strategyFactory.getTherapyStrategy());
-                treatmentContext.applyTreatment(patient, request.getTherapyType(), request.getDuration(),
-                        request.getFrequency(), request.getTherapyNotes());
-                break;
+    // Apply Surgery treatment
+    public void assignSurgeryTreatmentToPatient(TreatmentRequest request) {
+        Patient patient = getPatientFromRequest(request);
 
-            default:
-                throw new IllegalArgumentException("Invalid treatment type");
-        }
+        // Set strategy in the context
+        treatmentContext.setStrategy(strategyFactory.getSurgeryStrategy());
+
+        // Apply the treatment with relevant details
+        treatmentContext.applyTreatment(patient, request.getSurgeryType(),
+                request.getLocation(), request.getSurgeon(), request.getDate());
+    }
+
+    // Apply Therapy treatment
+    public void assignTherapyTreatmentToPatient(TreatmentRequest request) {
+        Patient patient = getPatientFromRequest(request);
+
+        // Set strategy in the context
+        treatmentContext.setStrategy(strategyFactory.getTherapyStrategy());
+
+        // Apply the treatment with relevant details
+        treatmentContext.applyTreatment(patient, request.getTherapyType(),
+                request.getDuration(), request.getFrequency(), request.getTherapyNotes());
     }
 
     private Patient getPatientFromRequest(TreatmentRequest request) {
         return patientRepository.findById(request.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
+            .orElseThrow(() -> new RuntimeException("Patient not found"));
     }
 
+    // Get treatments for a patient
     public List<PatientTreatment> getTreatmentsForPatient(Long patientId) {
         patientRepository.findById(patientId)
-                .orElseThrow(() -> new RuntimeException("Patient not found"));
-
+            .orElseThrow(() -> new RuntimeException("Patient not found"));
         return treatmentRepository.findByPatientId(patientId);
     }
 }
