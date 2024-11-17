@@ -31,11 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PatientController {
     private final PatientService patientService;
 
-
-    public PatientController(PatientService patientService) {
-      this.patientService = patientService;
-    }
-
     public PatientController(
             DoctorDAL doctorDAL,
             PatientDAL patientDAL,
@@ -50,9 +45,6 @@ public class PatientController {
         );
 
     }
-
-
-
 
     @PostMapping("/book-appointment")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) {
