@@ -1,16 +1,20 @@
 package com.example.hospital.models;
 
-import com.example.hospital.models.enums.*;
-
 import jakarta.persistence.*;
+import com.example.hospital.models.enums.Gender;
 
 @Entity
 @Table(name = "patients")
+
 public class Patient extends User {
+
+
+    // Default constructor
     public Patient() {
         super();
     }
 
+    // Parameterized constructor
     public Patient(
         String firstName,
         String lastName,
@@ -22,4 +26,6 @@ public class Patient extends User {
     ) {
         super(firstName, lastName, email, password, phone, age, gender);
     }
+
+
 }

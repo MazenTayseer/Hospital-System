@@ -9,10 +9,14 @@ import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.*;
 import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
+import com.example.hospital.repositories.PatientRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -20,6 +24,9 @@ public class PatientService {
     private PatientDAL patientDAL;
     private AppointmentDAL appointmentDAL;
     private ReviewDAL reviewDAL;
+
+    @Autowired
+    private PatientRepository patientRepository;
 
     public PatientService(
             DoctorDAL doctorDAL,
@@ -34,14 +41,20 @@ public class PatientService {
 
     @Transactional
     public Appointment bookAppointment(Appointment appointment) {
-        Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
-        Patient patient = patientDAL.findById(appointment.getPatient().getId());
+      Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
+      Patient patient = patientDAL.findById(appointment.getPatient().getId());
 
-        appointment.setDoctor(doctor);
-        appointment.setPatient(patient);
+      appointment.setDoctor(doctor);
+      appointment.setPatient(patient);
 
-        return appointmentDAL.save(appointment);
+      return appointmentDAL.save(appointment);
     }
+
+   public Patient getPatientById(Long patientId) {
+    Optional<Patient> patient = patientRepository.findById(patientId);
+    return patient.orElse(null); // Return null if patient not found
+}
+
 
     public void cancelAppointment(Long appointmentId) {
         Appointment appointment = appointmentDAL.findById(appointmentId);

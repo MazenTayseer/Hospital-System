@@ -17,6 +17,7 @@ import com.example.hospital.dal.PatientDAL;
 import com.example.hospital.dal.ReviewDAL;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
+import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.services.PatientService;
 import com.example.hospital.services.singleton.PatientServiceSingleton;
@@ -42,26 +43,27 @@ public class PatientController {
             appointmentDAL, 
             reviewDAL
         );
+
     }
 
     @PostMapping("/book-appointment")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) {
         Appointment bookedAppointment = patientService.bookAppointment(appointment);
         return ResponseEntity.ok(bookedAppointment);
-    }    
+    }
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> bookAppointment(@PathVariable Long appointmentId) {
         patientService.cancelAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
-    }  
-    
+    }
+
     @PostMapping("/review-doctor")
     public ResponseEntity<Review> reviewDoctor(@RequestBody Review review) {
         Review createdReview = patientService.reviewDoctor(review);
         return ResponseEntity.ok(createdReview);
     }
-    
+
 
     @GetMapping("/appointments")
     public ResponseEntity<?> getAppointments(@RequestParam(required = false) Long appointmentId) {
@@ -76,8 +78,17 @@ public class PatientController {
 
     @GetMapping("/doctors")
     public ResponseEntity<List<Doctor>> viewDoctors(@RequestParam(required = false) String speciality) {
-        List<Doctor> doctors = patientService.viewDoctors(speciality);
-        return ResponseEntity.ok(doctors);
+      List<Doctor> doctors = patientService.viewDoctors(speciality);
+      return ResponseEntity.ok(doctors);
     }
-    
+
+    @GetMapping("/{patientId}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long patientId) {
+        Patient patient = patientService.getPatientById(patientId);
+        if (patient != null) {
+            return ResponseEntity.ok(patient);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
