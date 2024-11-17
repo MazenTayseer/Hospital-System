@@ -37,6 +37,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults()) // Enable CORS
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/managers/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
@@ -47,4 +48,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
