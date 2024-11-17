@@ -2,16 +2,19 @@ package com.example.hospital.models;
 
 import jakarta.persistence.*;
 import com.example.hospital.models.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "patients")
+
 public class Patient extends User {
 
     // One patient can have multiple treatments
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PatientTreatment> treatments = new ArrayList<>();
 
     // Default constructor

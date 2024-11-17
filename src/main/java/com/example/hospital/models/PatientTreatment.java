@@ -3,6 +3,7 @@ package com.example.hospital.models;
 import java.time.LocalDate;
 
 import com.example.hospital.models.enums.TreatmentType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
 
@@ -15,6 +16,7 @@ public class PatientTreatment {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
+    @JsonBackReference  // Prevents infinite loop by managing the reverse side of the relationship
     private Patient patient;
 
     @Enumerated(EnumType.STRING)
