@@ -4,6 +4,8 @@ import com.example.hospital.ResponseMessages;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.User;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.UserRepository;
@@ -26,11 +28,15 @@ public class UserDAL {
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    public List<User> getUsersByNotificationService(String serviceName) {
+        return userRepository.getUsersByNotificationService(serviceName);
+    }
+
     public void delete(User user) {
         userRepository.delete(user);
     }
 
-        public User findById(Long id) {
+    public User findById(Long id) {
         return userRepository.findById(id).orElseThrow(
             () -> new BadRequestException(ResponseMessages.record_not_found("User"))
         );

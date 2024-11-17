@@ -39,13 +39,16 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/managers/**").hasRole("MANAGER")
+                .requestMatchers("/api/notifications/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
+                .requestMatchers("/api/donations/create").hasRole("DONOR")
                 .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
 }
+

@@ -2,6 +2,7 @@ package com.example.hospital.services;
 
 import org.springframework.stereotype.Service;
 
+import com.example.hospital.dto.UserDto;
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.dal.UserDAL;
 import com.example.hospital.exceptions.BadRequestException;
@@ -18,11 +19,11 @@ public class ManagerService {
         this.userDAL = userDAL;
     }
 
-    public User createUser(User user) {
-        return createUserContext.createUser(user);
+    public User createUser(UserDto<? extends User> request) {
+        return createUserContext.createUser(request);
     }
 
-        public void deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
         User user = userDAL.findById(userId);
 
         if (user == null) {
