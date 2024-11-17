@@ -1,5 +1,6 @@
 package com.example.hospital.controllers;
 
+import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
@@ -19,20 +20,20 @@ public class ManagerController {
     }
 
     @PostMapping("/create-doctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
-        Doctor createdUser = (Doctor) managerService.createUser(doctor);
+    public ResponseEntity<Doctor> createDoctor(@RequestBody UserDto<Doctor> request) {
+        Doctor createdUser = (Doctor) managerService.createUser(request);
         return ResponseEntity.ok(createdUser);
     }
 
     @PostMapping("/create-nurse")
-    public ResponseEntity<Nurse> createNurse(@RequestBody Nurse nurse) {
-        Nurse createdUser = (Nurse) managerService.createUser(nurse);
+    public ResponseEntity<Nurse> createNurse(@RequestBody UserDto<Nurse> request) {
+        Nurse createdUser = (Nurse) managerService.createUser(request);
         return ResponseEntity.ok(createdUser);
     }
 
     @PostMapping("/create-patient")
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        Patient createdUser = (Patient) managerService.createUser(patient);
+    public ResponseEntity<Patient> createPatient(@RequestBody UserDto<Patient> request) {
+        Patient createdUser = (Patient) managerService.createUser(request);
         return ResponseEntity.ok(createdUser);
     }
 }

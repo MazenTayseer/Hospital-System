@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.hospital.common.ReusableData;
 import com.example.hospital.dal.AppointmentDAL;
 import com.example.hospital.dal.DoctorDAL;
 import com.example.hospital.dal.PatientDAL;
@@ -17,8 +18,6 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.models.enums.AppointmentStatus;
-import com.example.hospital.models.enums.Gender;
-import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
@@ -53,26 +52,12 @@ public class PatientControllerTests {
         private AppointmentDAL appointmentDAL;
 
 
-        private Doctor doctor = new Doctor(
-                        "Doctor",
-                        "Doctor",
-                        "Doctor@Doctor.com",
-                        "password",
-                        "+201000000000",
-                        21,
-                        Gender.MALE,
-                        Speciality.SURGEON);
-        private Patient patient = new Patient(
-                        "Patient",
-                        "Patient",
-                        "Patient@Patient.com",
-                        "password",
-                        "+201000000001",
-                        21,
-                        Gender.MALE);
+        private Doctor doctor = ReusableData.createDoctor();
+        private Patient patient = ReusableData.createPatient();
+        
         private Appointment appointment = new Appointment(
                         LocalDate.now().plusDays(1),
-                        LocalTime.now().plusHours(1).withMinute(0),
+                        LocalTime.of(10, 0),
                         doctor,
                         patient);
 

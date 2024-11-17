@@ -2,6 +2,7 @@ package com.example.hospital.services;
 
 import org.springframework.stereotype.Service;
 
+import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.User;
 import com.example.hospital.services.strategy.create_user.CreateUserContext;
 
@@ -13,7 +14,7 @@ public class ManagerService {
         this.createUserContext = createUserContext;
     }
 
-    public User createUser(User user) {
-        return createUserContext.createUser(user);
+    public User createUser(UserDto<? extends User> request) {
+        return createUserContext.createUser(request);
     }
 }

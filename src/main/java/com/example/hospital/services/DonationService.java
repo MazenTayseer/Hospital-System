@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.example.hospital.dal.DonationDAL;
 import com.example.hospital.dal.DonorDAL;
 import com.example.hospital.dto.DonationDto;
+import com.example.hospital.dto.UserDto;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.BaseDonation;
 import com.example.hospital.models.Donor;
@@ -26,8 +27,8 @@ public class DonationService {
         this.createUserContext = createUserContext;
     }
 
-    public User createUser(User user) {
-    return createUserContext.createUser(user);
+    public User createUser(UserDto<? extends User> request) {
+        return createUserContext.createUser(request);
     }
 
     public String processDonation(DonationDto request) {
@@ -52,4 +53,3 @@ public class DonationService {
         return receipt;
     }
 }
-
