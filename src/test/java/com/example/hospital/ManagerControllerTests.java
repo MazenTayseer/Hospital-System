@@ -1,10 +1,14 @@
 package com.example.hospital;
 
+import com.example.hospital.dal.UserDAL;
 import com.example.hospital.common.ReusableData;
 import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.Volunteer;
+import com.example.hospital.models.User;
+import com.example.hospital.models.enums.Gender;
 import com.example.hospital.models.enums.Speciality;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,6 +26,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,61 +37,125 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(username = "manager", roles = { "MANAGER" })
 class ManagerControllerTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @Test
-    void testCreateDoctor() throws Exception {
-        Doctor doctor = ReusableData.createDoctor();
+        @Autowired
+        private UserDAL userDAL;
 
-        UserDto<Doctor> request = new UserDto<>();
-        request.setUser(doctor);
-        request.setNotificationServiceIds(Collections.emptyList());
+        @Test
+        void testCreateDoctor() throws Exception {
+                Doctor doctor = ReusableData.createDoctor();
 
-        mockMvc.perform(post("/api/managers/create-doctor")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.roles[?(@.name == 'DOCTOR')]").exists())
-                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                .andExpect(jsonPath("$.speciality").value(Speciality.SURGEON.toString()));
-    }
+                UserDto<Doctor> request = new UserDto<>();
+                request.setUser(doctor);
+                request.setNotificationServiceIds(Collections.emptyList());
 
-    @Test
-    void testCreateNurse() throws Exception {
-        Nurse nurse = ReusableData.createNurse();
+                mockMvc.perform(post("/api/managers/create-doctor")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.roles[?(@.name == 'DOCTOR')]").exists())
+                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.speciality").value(Speciality.SURGEON.toString()));
+        }
 
-        UserDto<Nurse> request = new UserDto<>();
-        request.setUser(nurse);
-        request.setNotificationServiceIds(Collections.emptyList());
+        @Test
+        void testCreateNurse() throws Exception {
+                Nurse nurse = ReusableData.createNurse();
 
-        mockMvc.perform(post("/api/managers/create-nurse")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists());
-    }
+                UserDto<Nurse> request = new UserDto<>();
+                request.setUser(nurse);
+                request.setNotificationServiceIds(Collections.emptyList());
 
-    @Test
-    void testCreatePatient() throws Exception {
-        Patient patient = ReusableData.createPatient();
+                mockMvc.perform(post("/api/managers/create-nurse")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists());
+        }
 
-        UserDto<Patient> request = new UserDto<>();
-        request.setUser(patient);
-        request.setNotificationServiceIds(Collections.emptyList());
+        @Test
+        void testCreatePatient() throws Exception {
+                Patient patient = ReusableData.createPatient();
 
-        mockMvc.perform(post("/api/managers/create-patient")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists());
-    }
+                UserDto<Patient> request = new UserDto<>();
+                request.setUser(patient);
+                request.setNotificationServiceIds(Collections.emptyList());
+
+                mockMvc.perform(post("/api/managers/create-patient")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists());
+        }
+
+        void testCreateVolunteer() throws Exception {
+                Volunteer volunteer = new Volunteer(
+                                "VolunteerFirstName",
+                                "VolunteerLastName",
+                                "volunteer@example.com",
+                                "password123",
+                                "+201000000002",
+                                25,
+                                Gender.MALE,
+                                "First Aid, Communication",
+                                "Weekends");
+
+                UserDto<Volunteer> request = new UserDto<>();
+                request.setUser(volunteer);
+                request.setNotificationServiceIds(Collections.emptyList());
+
+                mockMvc.perform(post("/api/managers/create-volunteer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(volunteer)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.firstName").value("VolunteerFirstName"))
+                                .andExpect(jsonPath("$.skills").value("First Aid, Communication"))
+                                .andExpect(jsonPath("$.availability").value("Weekends"))
+                                .andExpect(jsonPath("$.roles[?(@.name == 'VOLUNTEER')]").exists());
+        }
+
+        @Test
+        public void testDeleteUser() throws Exception {
+                Doctor doctor = ReusableData.createDoctor();
+                User savedUser = userDAL.save(doctor);
+
+                mockMvc.perform(delete("/api/managers/delete/{userId}", savedUser.getId()))
+                                .andExpect(status().isNoContent());
+        }
+        
+        @Test
+        void testUpdateDoctor() throws Exception {
+            
+            Doctor doctor = ReusableData.createDoctor();
+            User savedUser = userDAL.save(doctor); 
+        
+            Doctor updatedDoctor = (Doctor) savedUser; 
+            updatedDoctor.setFirstName("UpdatedFirstName");
+            updatedDoctor.setLastName("UpdatedLastName");
+        
+            UserDto<Doctor> request = new UserDto<>();
+            request.setUser(updatedDoctor);
+            request.setNotificationServiceIds(Collections.emptyList()); // Use real service IDs if available
+        
+            mockMvc.perform(put("/api/managers/update/{userId}", savedUser.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.firstName").value("UpdatedFirstName"))
+                    .andExpect(jsonPath("$.lastName").value("UpdatedLastName"));
+        }
+        
+
 }

@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
                 .requestMatchers("/api/donations/create").hasRole("DONOR")
+                .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
                 .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());

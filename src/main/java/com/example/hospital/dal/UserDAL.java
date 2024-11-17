@@ -1,5 +1,7 @@
 package com.example.hospital.dal;
 
+import com.example.hospital.ResponseMessages;
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.User;
 
 import java.util.List;
@@ -28,5 +30,15 @@ public class UserDAL {
 
     public List<User> getUsersByNotificationService(String serviceName) {
         return userRepository.getUsersByNotificationService(serviceName);
+    }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+            () -> new BadRequestException(ResponseMessages.record_not_found("User"))
+        );
     }
 }

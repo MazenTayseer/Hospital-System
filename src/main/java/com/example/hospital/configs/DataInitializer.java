@@ -67,7 +67,7 @@ public class DataInitializer {
     }
 
     private void initializeRoles() {
-        String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR", "DONOR"};
+        String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR", "DONOR", "VOLUNTEER"};
         for (String roleName : roles) {
             roleRepository.findByName(roleName)
                 .orElseGet(() -> roleRepository.save(new Role(roleName)));

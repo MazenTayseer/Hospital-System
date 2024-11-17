@@ -4,6 +4,8 @@ import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.User;
+import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.ManagerService;
 
 import org.springframework.http.ResponseEntity;
@@ -35,5 +37,25 @@ public class ManagerController {
     public ResponseEntity<Patient> createPatient(@RequestBody UserDto<Patient> request) {
         Patient createdUser = (Patient) managerService.createUser(request);
         return ResponseEntity.ok(createdUser);
+    }
+
+    @PostMapping("/create-volunteer")
+    public ResponseEntity<Volunteer> createVolunteer(@RequestBody UserDto<Patient> request) {
+        Volunteer createdUser = (Volunteer) managerService.createUser(request);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        managerService.deleteUser(userId);
+        return ResponseEntity.noContent().build(); 
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long userId,
+            @RequestBody UserDto<User> userDto) {
+        User updatedUser = managerService.updateUser(userId, userDto.getUser());
+        return ResponseEntity.ok(updatedUser);
     }
 }
