@@ -40,9 +40,12 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // Enable CORS
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/managers/**").hasRole("MANAGER")
+                .requestMatchers("/api/notifications/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
-                .anyRequest().authenticated()
+                .requestMatchers("/api/donations/create").hasRole("DONOR")
+                .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());
 
@@ -50,3 +53,4 @@ public class SecurityConfig {
     }
 
 }
+

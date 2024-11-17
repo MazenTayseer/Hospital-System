@@ -11,11 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.dal.AppointmentDAL;
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.PatientDAL;
+import com.example.hospital.dal.ReviewDAL;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.services.PatientService;
+import com.example.hospital.services.singleton.PatientServiceSingleton;
 
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,8 +31,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PatientController {
     private final PatientService patientService;
 
+
     public PatientController(PatientService patientService) {
       this.patientService = patientService;
+    }
+
+    public PatientController(
+            DoctorDAL doctorDAL,
+            PatientDAL patientDAL,
+            AppointmentDAL appointmentDAL,
+            ReviewDAL reviewDAL
+    ) {
+        this.patientService = PatientServiceSingleton.getInstance(
+            doctorDAL, 
+            patientDAL, 
+            appointmentDAL, 
+            reviewDAL
+        );
+
     }
 
 
