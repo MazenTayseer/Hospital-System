@@ -42,11 +42,7 @@ public class PatientTreatmentService {
     // Apply Medication treatment
     public void assignMedicationTreatmentToPatient(TreatmentRequest request) {
         Patient patient = getPatientFromRequest(request);
-
-        // Set strategy in the context
         treatmentContext.setStrategy(strategyFactory.getMedicationStrategy());
-
-        // Apply the treatment with relevant details
         treatmentContext.applyTreatment(patient, request.getMedicationName(),
                 request.getDosage(), request.getDuration(), request.getFrequency());
     }
@@ -54,11 +50,7 @@ public class PatientTreatmentService {
     // Apply Surgery treatment
     public void assignSurgeryTreatmentToPatient(TreatmentRequest request) {
         Patient patient = getPatientFromRequest(request);
-
-        // Set strategy in the context
         treatmentContext.setStrategy(strategyFactory.getSurgeryStrategy());
-
-        // Apply the treatment with relevant details
         treatmentContext.applyTreatment(patient, request.getSurgeryType(),
                 request.getLocation(), request.getSurgeon(), request.getDate());
     }
@@ -66,11 +58,7 @@ public class PatientTreatmentService {
     // Apply Therapy treatment
     public void assignTherapyTreatmentToPatient(TreatmentRequest request) {
         Patient patient = getPatientFromRequest(request);
-
-        // Set strategy in the context
         treatmentContext.setStrategy(strategyFactory.getTherapyStrategy());
-
-        // Apply the treatment with relevant details
         treatmentContext.applyTreatment(patient, request.getTherapyType(),
                 request.getDuration(), request.getFrequency(), request.getTherapyNotes());
     }
