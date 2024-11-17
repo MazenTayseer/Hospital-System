@@ -7,6 +7,7 @@ import com.example.hospital.models.enums.Gender;
 import com.example.hospital.repositories.RoleRepository;
 import com.example.hospital.repositories.UserRepository;
 import com.example.hospital.services.decorator.roles.DoctorDecorator;
+import com.example.hospital.services.decorator.roles.DonorDecorator;
 import com.example.hospital.services.decorator.roles.IRole;
 import com.example.hospital.services.decorator.roles.ManagerDecorator;
 import com.example.hospital.services.decorator.roles.NurseDecorator;
@@ -30,7 +31,7 @@ public class DataInitializer {
         RoleDAL roleDAL
     ) {
         return args -> {
-            String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR"};
+            String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR","DONOR"};
             for (String roleName : roles) {
                 if (roleRepository.findByName(roleName).isEmpty()) {
                     roleRepository.save(new Role(roleName));
@@ -51,7 +52,9 @@ public class DataInitializer {
                     new NurseDecorator(
                         new PatientDecorator(
                             new DoctorDecorator(
-                                new UserRole(roleDAL), 
+                                new DonorDecorator(
+                                    new UserRole(roleDAL), 
+                                 roleDAL),
                             roleDAL), 
                         roleDAL),
                      roleDAL),

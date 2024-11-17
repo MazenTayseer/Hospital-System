@@ -41,10 +41,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/managers/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
-                .anyRequest().authenticated()
+                .requestMatchers("/api/donations/create").hasRole("DONOR")
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
 }
+
