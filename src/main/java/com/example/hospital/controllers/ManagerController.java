@@ -4,6 +4,7 @@ import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.User;
 import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.ManagerService;
 
@@ -48,5 +49,13 @@ public class ManagerController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         managerService.deleteUser(userId);
         return ResponseEntity.noContent().build(); 
+    }
+
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<User> updateUser(
+            @PathVariable Long userId,
+            @RequestBody UserDto<User> userDto) {
+        User updatedUser = managerService.updateUser(userId, userDto.getUser());
+        return ResponseEntity.ok(updatedUser);
     }
 }

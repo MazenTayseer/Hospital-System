@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -132,4 +133,29 @@ class ManagerControllerTests {
                 mockMvc.perform(delete("/api/managers/delete/{userId}", savedUser.getId()))
                                 .andExpect(status().isNoContent());
         }
+        
+        @Test
+        void testUpdateDoctor() throws Exception {
+            
+            Doctor doctor = ReusableData.createDoctor();
+            User savedUser = userDAL.save(doctor); 
+        
+            Doctor updatedDoctor = (Doctor) savedUser; 
+            updatedDoctor.setFirstName("UpdatedFirstName");
+            updatedDoctor.setLastName("UpdatedLastName");
+        
+            UserDto<Doctor> request = new UserDto<>();
+            request.setUser(updatedDoctor);
+            request.setNotificationServiceIds(Collections.emptyList()); // Use real service IDs if available
+        
+            mockMvc.perform(put("/api/managers/update/{userId}", savedUser.getId())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.firstName").value("UpdatedFirstName"))
+                    .andExpect(jsonPath("$.lastName").value("UpdatedLastName"));
+        }
+        
+
 }

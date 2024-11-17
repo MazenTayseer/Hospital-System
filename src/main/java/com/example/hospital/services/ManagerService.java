@@ -1,6 +1,8 @@
 package com.example.hospital.services;
 
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hospital.dto.UserDto;
 import com.example.hospital.ResponseMessages;
@@ -31,5 +33,23 @@ public class ManagerService {
         }
 
         userDAL.delete(user);
+    }
+
+    @Transactional
+    public User updateUser(Long userId, User updatedUser) {
+        User existingUser = userDAL.findById(userId);
+        
+
+            // Update user fields
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setPhone(updatedUser.getPhone());
+            existingUser.setAge(updatedUser.getAge());
+            existingUser.setGender(updatedUser.getGender());
+            existingUser.setPassword(updatedUser.getPassword());
+
+            return userDAL.save(existingUser);
+
     }
 }
