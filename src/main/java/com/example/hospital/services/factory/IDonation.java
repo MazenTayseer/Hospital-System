@@ -4,5 +4,4 @@ public interface IDonation {
     String getDonationDetails();
     String generateReceipt();
     boolean validateDonation();
-    String notifyDonor();
 }
