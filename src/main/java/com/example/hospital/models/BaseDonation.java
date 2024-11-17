@@ -5,10 +5,12 @@ import java.util.Date;
 import com.example.hospital.services.factory.IDonation;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class BaseDonation implements IDonation {
     @Id
