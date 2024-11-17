@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
+import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.services.PatientService;
 
@@ -64,8 +65,17 @@ public class PatientController {
 
     @GetMapping("/doctors")
     public ResponseEntity<List<Doctor>> viewDoctors(@RequestParam(required = false) String speciality) {
-        List<Doctor> doctors = patientService.viewDoctors(speciality);
-        return ResponseEntity.ok(doctors);
+      List<Doctor> doctors = patientService.viewDoctors(speciality);
+      return ResponseEntity.ok(doctors);
     }
 
+    @GetMapping("/{patientId}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long patientId) {
+        Patient patient = patientService.getPatientById(patientId);
+        if (patient != null) {
+            return ResponseEntity.ok(patient);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
