@@ -1,16 +1,12 @@
 package com.example.hospital.services;
 
 import com.example.hospital.models.Patient;
-import com.example.hospital.models.PatientTreatment;
-import com.example.hospital.models.SurgeryTreatment;
-import com.example.hospital.models.TherapyTreatment;
 import com.example.hospital.models.dto.MedicationTreatmentDTO;
 import com.example.hospital.models.dto.SurgeryTreatmentDTO;
 import com.example.hospital.models.dto.TherapyTreatmentDTO;
 import com.example.hospital.models.request.TreatmentRequest;
 import com.example.hospital.repositories.MedicationTreatmentRepository;
 import com.example.hospital.repositories.PatientRepository;
-import com.example.hospital.repositories.PatientTreatmentRepository;
 import com.example.hospital.repositories.SurgeryTreatmentRepository;
 import com.example.hospital.repositories.TherapyTreatmentRepository;
 import com.example.hospital.services.strategy.patient_treatment.TreatmentContext;
@@ -24,9 +20,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class PatientTreatmentService {
-
-    @Autowired
-    private PatientTreatmentRepository treatmentRepository;
 
      @Autowired
     private MedicationTreatmentRepository medicationRepository;
@@ -87,12 +80,6 @@ public class PatientTreatmentService {
             .orElseThrow(() -> new RuntimeException("Patient not found"));
     }
 
-    // Get treatments for a patient
-    public List<PatientTreatment> getTreatmentsForPatient(Long patientId) {
-      patientRepository.findById(patientId)
-          .orElseThrow(() -> new RuntimeException("Patient not found"));
-      return treatmentRepository.findByPatientId(patientId);
-    }
 
   public List<MedicationTreatmentDTO> getMedicationTreatmentsForPatient(Long patientId) {
     return medicationRepository.findByPatientId(patientId)
