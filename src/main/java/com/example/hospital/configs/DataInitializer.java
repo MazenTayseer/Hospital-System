@@ -97,11 +97,11 @@ public class DataInitializer {
     }
 
     private void createDefaultManager() {
-        userRepository.findByEmail("maziiin360@gmail.com").orElseGet(() -> {
+        userRepository.findByEmail("mazen@asu.com").orElseGet(() -> {
             Manager defaultManager = new Manager(
                 "Admin",
                 "Admin",
-                "maziiin360@gmail.com",
+                "mazen@asu.com",
                 passwordEncoder.encode("test1234"),
                 "1234567890",
                 40,
