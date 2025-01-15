@@ -53,7 +53,7 @@ public class PatientController {
     }
 
     @PostMapping("/cancel-appointment/{appointmentId}")
-    public ResponseEntity<String> bookAppointment(@PathVariable Long appointmentId) {
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) {
         patientService.cancelAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
     }

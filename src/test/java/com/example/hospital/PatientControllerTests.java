@@ -18,6 +18,7 @@ import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.Review;
 import com.example.hospital.models.enums.AppointmentStatus;
+import com.example.hospital.services.state.CompletedState;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.transaction.Transactional;
@@ -72,7 +73,8 @@ public class PatientControllerTests {
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.id").exists())
                                 .andExpect(jsonPath("$.doctor.id").value(doctor.getId()))
-                                .andExpect(jsonPath("$.patient.id").value(patient.getId()));
+                                .andExpect(jsonPath("$.patient.id").value(patient.getId()))
+                                .andExpect(jsonPath("$.status").value(AppointmentStatus.REQUESTED.toString()));
         }
 
         @Test
@@ -89,17 +91,16 @@ public class PatientControllerTests {
         }
 
         @Test
-        public void testCancelCompletedAppointment() throws Exception {
+        public void testCancelwithStatusOtherThanRequested() throws Exception {
                 doctorDAL.save(doctor);
                 patientDAL.save(patient);
 
                 appointment.setStatus(AppointmentStatus.COMPLETED);
+                appointment.setState(new CompletedState());
                 appointmentDAL.save(appointment);
 
                 mockMvc.perform(post("/api/patients/cancel-appointment/{appointmentId}", appointment.getId()))
-                                .andExpect(status().isBadRequest())
-                                .andExpect(MockMvcResultMatchers.content()
-                                                .string(ResponseMessages.CANNOT_CANCEL_COMPLETED_APPOINTMENT));
+                                .andExpect(status().isBadRequest());
         }
 
         @Test

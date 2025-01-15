@@ -13,6 +13,7 @@ import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.enums.AppointmentStatus;
+import com.example.hospital.services.state.CompletedState;
 
 import jakarta.transaction.Transactional;
 
@@ -62,10 +63,41 @@ public class DoctorControllerTests {
                 patient = patientDAL.save(patient);
                 appointment = appointmentDAL.save(appointment);
 
+                mockMvc.perform(post("/api/doctors/appointments/{appointmentId}/confirm", appointment.getId()))
+                                .andExpect(status().isOk())
+                                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(jsonPath("$.status").value(AppointmentStatus.CONFIRMED.toString()));
+
                 mockMvc.perform(post("/api/doctors/appointments/{appointmentId}/complete", appointment.getId()))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(jsonPath("$.status").value(AppointmentStatus.COMPLETED.toString()));
+        }
+
+        @Test
+        public void testDeclineAppointment() throws Exception {
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
+
+                appointmentDAL.save(appointment);
+
+                mockMvc.perform(post("/api/doctors/decline-appointment/{appointmentId}", appointment.getId()))
+                                .andExpect(status().isOk())
+                                .andExpect(MockMvcResultMatchers.content()
+                                                .string(ResponseMessages.APPOINTMENT_DECLINED));
+        }
+
+        @Test
+        public void testDeclinewithStatusOtherThanRequested() throws Exception {
+                doctorDAL.save(doctor);
+                patientDAL.save(patient);
+
+                appointment.setStatus(AppointmentStatus.COMPLETED);
+                appointment.setState(new CompletedState());
+                appointmentDAL.save(appointment);
+
+                mockMvc.perform(post("/api/doctors/decline-appointment/{appointmentId}", appointment.getId()))
+                                .andExpect(status().isBadRequest());
         }
 
         @Test

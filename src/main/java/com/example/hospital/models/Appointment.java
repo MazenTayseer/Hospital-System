@@ -10,14 +10,16 @@ import java.time.temporal.ChronoUnit;
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.enums.AppointmentStatus;
+import com.example.hospital.services.state.CancelledState;
+import com.example.hospital.services.state.CompletedState;
+import com.example.hospital.services.state.ConfirmedState;
+import com.example.hospital.services.state.IAppointmentState;
+import com.example.hospital.services.state.RequestedState;
 
 @Entity
-@Table(
-    name = "appointments", 
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"doctor_id", "date", "timeFrom", "timeTo"})
-    }
-)
+@Table(name = "appointments", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "doctor_id", "date", "timeFrom", "timeTo" })
+})
 public class Appointment {
 
     @Id
@@ -52,33 +54,62 @@ public class Appointment {
     @NotNull(message = "The patient for the appointment is required")
     private Patient patient;
 
+    @Transient
+    private IAppointmentState state;
+
     public Appointment() {
-        this.status = AppointmentStatus.SCHEDULED;
+        this.status = AppointmentStatus.REQUESTED;
+        initializeState();
     }
 
     public Appointment(
-        LocalDate date,
-        LocalTime timeFrom,
-        Doctor doctor,
-        Patient patient
-    ) {
+            LocalDate date,
+            LocalTime timeFrom,
+            Doctor doctor,
+            Patient patient) {
         this.date = date;
         setTimeFrom(timeFrom);
         this.doctor = doctor;
         this.patient = patient;
-        this.status = AppointmentStatus.SCHEDULED;
+        this.status = AppointmentStatus.REQUESTED;
+        initializeState();
     }
 
-    public Long getId() { return this.id; }
-    public LocalDate getDate() { return this.date; }
-    public LocalTime getTimeFrom() { return this.timeFrom; }
-    public LocalTime getTimeTo() { return this.timeTo; }
-    public AppointmentStatus getStatus() { return this.status; }
-    public Doctor getDoctor() { return this.doctor; }
-    public Patient getPatient() { return this.patient; }
+    public Long getId() {
+        return this.id;
+    }
 
-    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
-    public void setPatient(Patient patient) { this.patient = patient; }
+    public LocalDate getDate() {
+        return this.date;
+    }
+
+    public LocalTime getTimeFrom() {
+        return this.timeFrom;
+    }
+
+    public LocalTime getTimeTo() {
+        return this.timeTo;
+    }
+
+    public AppointmentStatus getStatus() {
+        return this.status;
+    }
+
+    public Doctor getDoctor() {
+        return this.doctor;
+    }
+
+    public Patient getPatient() {
+        return this.patient;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 
     public void setTimeFrom(LocalTime timeFrom) {
         this.timeFrom = timeFrom;
@@ -90,12 +121,48 @@ public class Appointment {
         this.status = status;
     }
 
+    public void setState(IAppointmentState state) {
+        this.state = state;
+    }
+
+    public void nextState() {
+        this.state.nextState(this);
+    }
+
+    public void cancel() {
+        this.state.cancel(this);
+    }
+
+    public void decline() {
+        this.state.decline(this);
+    }
+    
     private void validateTime() {
         if (this.timeFrom != null && this.timeTo != null) {
             long hoursBetween = ChronoUnit.HOURS.between(this.timeFrom, this.timeTo);
             if (hoursBetween != 1 || this.timeFrom.getMinute() != 0 || this.timeTo.getMinute() != 0) {
                 throw new BadRequestException(ResponseMessages.INVALID_APPOINTMENT_TIME_ERR);
             }
+        }
+    }
+
+    @PostLoad
+    private void initializeState() {
+        switch (this.status) {
+            case REQUESTED:
+                this.state = new RequestedState();
+                break;
+            case CONFIRMED:
+                this.state = new ConfirmedState();
+                break;
+            case COMPLETED:
+                this.state = new CompletedState();
+                break;
+            case CANCELLED:
+                this.state = new CancelledState();
+                break;
+            default:
+                throw new IllegalStateException("Unknown appointment status");
         }
     }
 }

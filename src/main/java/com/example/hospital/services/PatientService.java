@@ -7,7 +7,6 @@ import com.example.hospital.dal.PatientDAL;
 import com.example.hospital.dal.ReviewDAL;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.*;
-import com.example.hospital.models.enums.AppointmentStatus;
 import com.example.hospital.models.enums.Speciality;
 import com.example.hospital.repositories.PatientRepository;
 
@@ -58,12 +57,8 @@ public class PatientService {
 
     public void cancelAppointment(Long appointmentId) {
         Appointment appointment = appointmentDAL.findById(appointmentId);
-
-        if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
-            throw new BadRequestException(ResponseMessages.CANNOT_CANCEL_COMPLETED_APPOINTMENT);
-        }
-
-        appointmentDAL.delete(appointment);
+        appointment.cancel();
+        appointmentDAL.save(appointment);
     }
 
     public Appointment getAppointments(Long appointmentId) {

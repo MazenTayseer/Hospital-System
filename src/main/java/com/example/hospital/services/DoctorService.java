@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.hospital.dal.AppointmentDAL;
 import com.example.hospital.models.Appointment;
-import com.example.hospital.models.enums.AppointmentStatus;
 @Service
 public class DoctorService {
     private AppointmentDAL appointmentDAL;
@@ -15,10 +14,16 @@ public class DoctorService {
         this.appointmentDAL = appointmentDAL;
     }
 
-    public Appointment completeAppointment(Long appointmentId) {
+    public Appointment changeAppointmentStatus(Long appointmentId) {
         Appointment appointment = appointmentDAL.findById(appointmentId);
-        appointment.setStatus(AppointmentStatus.COMPLETED);
+        appointment.nextState();
         return appointmentDAL.save(appointment);
+    }
+
+    public void declineAppointment(Long appointmentId) {
+        Appointment appointment = appointmentDAL.findById(appointmentId);
+        appointment.decline();
+        appointmentDAL.save(appointment);
     }
 
     public Appointment getAppointments(Long appointmentId) {

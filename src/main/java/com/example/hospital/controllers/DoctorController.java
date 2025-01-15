@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.hospital.ResponseMessages;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.services.DoctorService;
 
@@ -24,10 +25,22 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+    @PostMapping("/appointments/{appointmentId}/confirm")
+    public ResponseEntity<Appointment> confirmAppointment(@PathVariable Long appointmentId) {
+        Appointment updatedAppointment = doctorService.changeAppointmentStatus(appointmentId);
+        return ResponseEntity.ok(updatedAppointment);
+    }
+
     @PostMapping("/appointments/{appointmentId}/complete")
     public ResponseEntity<Appointment> completeAppointment(@PathVariable Long appointmentId) {
-        Appointment updatedAppointment = doctorService.completeAppointment(appointmentId);
+        Appointment updatedAppointment = doctorService.changeAppointmentStatus(appointmentId);
         return ResponseEntity.ok(updatedAppointment);
+    }
+
+    @PostMapping("/decline-appointment/{appointmentId}")
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) {
+        doctorService.declineAppointment(appointmentId);
+        return ResponseEntity.ok(ResponseMessages.APPOINTMENT_DECLINED);
     }
     
     @GetMapping("/appointments")

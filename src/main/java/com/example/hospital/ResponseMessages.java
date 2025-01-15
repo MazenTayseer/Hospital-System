@@ -5,6 +5,7 @@ public class ResponseMessages {
     public static String APPOINTMENT_CANCELLED = "Appointment cancelled successfully";
     public static String CANNOT_REVIEW_DOCTOR = "You can only review a doctor with whom you've had at least one appointment.";
     public static String CANNOT_CANCEL_COMPLETED_APPOINTMENT = "Cannot cancel a completed appointment";
+    public static String APPOINTMENT_DECLINED = "Appointment declined successfully";
     
     public static String record_not_found(String record) {
         return record + " not found";
