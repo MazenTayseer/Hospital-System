@@ -1,9 +1,13 @@
 package com.example.hospital.models;
 
+import com.example.hospital.template_method.ReportTemplate;
+
 import jakarta.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
-public class SurgeryTreatment {
+public class SurgeryTreatment implements ReportTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +22,15 @@ public class SurgeryTreatment {
     private String surgeon;
     private String date;
 
-    // Getters and setters
+    @Override
+    public String printTreatmentDetails() {
+        return "Patient: " + patient.getId() + "\n" +
+               "Surgery Type: " + surgeryType + "\n" +
+               "Location: " + location + "\n" +
+               "Surgeon: " + surgeon + "\n" +
+               "Date: " + date + "\n";
+    }
+   
 
     public Long getId() {
         return id;

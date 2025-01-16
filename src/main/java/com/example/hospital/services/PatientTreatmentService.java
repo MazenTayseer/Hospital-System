@@ -1,6 +1,9 @@
 package com.example.hospital.services;
 
+import com.example.hospital.models.MedicationTreatment;
 import com.example.hospital.models.Patient;
+import com.example.hospital.models.SurgeryTreatment;
+import com.example.hospital.models.TherapyTreatment;
 import com.example.hospital.models.dto.MedicationTreatmentDTO;
 import com.example.hospital.models.dto.SurgeryTreatmentDTO;
 import com.example.hospital.models.dto.TherapyTreatmentDTO;
@@ -21,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class PatientTreatmentService {
 
-     @Autowired
+    @Autowired
     private MedicationTreatmentRepository medicationRepository;
 
     @Autowired
@@ -68,42 +71,60 @@ public class PatientTreatmentService {
             .orElseThrow(() -> new RuntimeException("Patient not found"));
     }
 
+    // Get all medication treatments for a patient
+    public List<MedicationTreatmentDTO> getMedicationTreatmentsForPatient(Long patientId) {
+        return medicationRepository.findByPatientId(patientId)
+                .stream()
+                .map(treatment -> new MedicationTreatmentDTO(
+                        treatment.getId(),
+                        treatment.getMedicationName(),
+                        treatment.getDosage(),
+                        treatment.getDuration(),
+                        treatment.getFrequency()))
+                .collect(Collectors.toList());
+    }
 
-  public List<MedicationTreatmentDTO> getMedicationTreatmentsForPatient(Long patientId) {
-    return medicationRepository.findByPatientId(patientId)
-            .stream()
-            .map(treatment -> new MedicationTreatmentDTO(
-                treatment.getId(),
-                treatment.getMedicationName(),
-                treatment.getDosage(),
-                treatment.getDuration(),
-                treatment.getFrequency()))
-            .collect(Collectors.toList());
-}
+    // Get all surgery treatments for a patient
+    public List<SurgeryTreatmentDTO> getSurgeryTreatmentsForPatient(Long patientId) {
+        return surgeryRepository.findByPatientId(patientId)
+                .stream()
+                .map(treatment -> new SurgeryTreatmentDTO(
+                        treatment.getId(),
+                        treatment.getSurgeryType(),
+                        treatment.getLocation(),
+                        treatment.getSurgeon(),
+                        treatment.getDate()))
+                .collect(Collectors.toList());
+    }
 
- public List<SurgeryTreatmentDTO> getSurgeryTreatmentsForPatient(Long patientId) {
-    return surgeryRepository.findByPatientId(patientId)
-            .stream()
-            .map(treatment -> new SurgeryTreatmentDTO(
-                treatment.getId(),
-                treatment.getSurgeryType(),
-                treatment.getLocation(),
-                treatment.getSurgeon(),
-                treatment.getDate()))
-            .collect(Collectors.toList());
-}
+    // Get all therapy treatments for a patient
+    public List<TherapyTreatmentDTO> getTherapyTreatmentsForPatient(Long patientId) {
+        return therapyRepository.findByPatientId(patientId)
+                .stream()
+                .map(treatment -> new TherapyTreatmentDTO(
+                        treatment.getId(),
+                        treatment.getTherapyType(),
+                        treatment.getDuration(),
+                        treatment.getFrequency(),
+                        treatment.getNotes()))
+                .collect(Collectors.toList());
+    }
+
+    // Generate report for MedicationTreatment
+    public MedicationTreatment getMedicationTreatmentById(Long treatmentId) {
+        return medicationRepository.findById(treatmentId)
+                .orElseThrow(() -> new RuntimeException("MedicationTreatment not found"));
+    }
 
 
-public List<TherapyTreatmentDTO> getTherapyTreatmentsForPatient(Long patientId) {
-    return therapyRepository.findByPatientId(patientId)
-            .stream()
-            .map(treatment -> new TherapyTreatmentDTO(
-                treatment.getId(),
-                treatment.getTherapyType(),
-                treatment.getDuration(),
-                treatment.getFrequency(),
-                treatment.getNotes()))
-            .collect(Collectors.toList());
-}
+    // Generate report for TherapyTreatment
+    public TherapyTreatment getTherapyTreatmentById(Long treatmentId) {
+        return therapyRepository.findById(treatmentId)
+                .orElseThrow(() -> new RuntimeException("TherapyTreatment not found"));
+    }
 
+    public SurgeryTreatment getSurgeryTreatmentById(Long treatmentId) {
+        return surgeryRepository.findById(treatmentId)
+                .orElseThrow(() -> new RuntimeException("SurgeryTreatment not found"));
+    }
 }
