@@ -1,5 +1,7 @@
 package com.example.hospital.models;
 
+import com.example.hospital.template_method.ReportTemplate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class MedicationTreatment {
+public class MedicationTreatment implements ReportTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +25,15 @@ public class MedicationTreatment {
     private int duration;
     private String frequency;
 
-    // Getters and setters
+    @Override
+    public String printTreatmentDetails() {
+        return "Patient: " + this.getPatient().getId() + "\n" +
+                "Medication Name: " + this.getMedicationName() + "\n" +
+                "Dosage: " + this.getDosage() + "\n" +
+                "Duration: " + this.getDuration() + " days\n" +
+                "Frequency: " + this.getFrequency() + "\n";
+    }
 
-    // Getter and Setter for id
     public Long getId() {
         return id;
     }
