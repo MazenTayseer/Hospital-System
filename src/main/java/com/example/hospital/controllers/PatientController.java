@@ -48,13 +48,13 @@ public class PatientController {
 
     @PostMapping("/book-appointment")
     public ResponseEntity<Appointment> bookAppointment(@RequestBody Appointment appointment) {
-        Appointment bookedAppointment = patientService.bookAppointment(appointment);
+        Appointment bookedAppointment = patientService.registerAppointment(appointment);
         return ResponseEntity.ok(bookedAppointment);
     }
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) {
-        patientService.cancelAppointment(appointmentId);
+        patientService.removeAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
     }
 

@@ -9,6 +9,9 @@ import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.*;
 import com.example.hospital.models.enums.Speciality;
 import com.example.hospital.repositories.PatientRepository;
+import com.example.hospital.services.command.BookAppointmentCommand;
+import com.example.hospital.services.command.CancelAppointmentCommand;
+import com.example.hospital.services.command.CommandInvoker;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import java.util.Optional;
 
 @Service
 public class PatientService {
+    private final CommandInvoker commandInvoker = new CommandInvoker();
     private DoctorDAL doctorDAL;
     private PatientDAL patientDAL;
     private AppointmentDAL appointmentDAL;
@@ -39,6 +43,11 @@ public class PatientService {
     }
 
     @Transactional
+    public Appointment registerAppointment(Appointment appointment) {
+        BookAppointmentCommand command = new BookAppointmentCommand(this, appointment);
+        commandInvoker.executeCommand(command);
+        return appointment;
+    }
     public Appointment bookAppointment(Appointment appointment) {
       Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
       Patient patient = patientDAL.findById(appointment.getPatient().getId());
@@ -54,6 +63,10 @@ public class PatientService {
     return patient.orElse(null); // Return null if patient not found
 }
 
+    public void removeAppointment(Long appointmentId) {
+        CancelAppointmentCommand command = new CancelAppointmentCommand(this, appointmentId);
+        commandInvoker.executeCommand(command);
+    }
 
     public void cancelAppointment(Long appointmentId) {
         Appointment appointment = appointmentDAL.findById(appointmentId);
