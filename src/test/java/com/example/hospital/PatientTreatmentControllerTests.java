@@ -77,7 +77,7 @@ public class PatientTreatmentControllerTests {
                 .andExpect(jsonPath("$.patientId").value(savedPatient.getId()))
                 .andExpect(jsonPath("$.medicationName").value("Ibuprofen"))
                 .andExpect(jsonPath("$.dosage").value("200mg"))
-                .andExpect(jsonPath("$.duration").value("7 days"))
+                .andExpect(jsonPath("$.duration").value("7"))
                 .andExpect(jsonPath("$.frequency").value("Twice a day"))
                 .andExpect(jsonPath("$.footer").value("Report Generated Successfully!"));
     }
