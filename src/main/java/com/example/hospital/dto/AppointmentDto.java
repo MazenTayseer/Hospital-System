@@ -10,6 +10,13 @@ public class AppointmentDto {
 
     private String timeFrom;
 
+    public AppointmentDto(Long doctorId, Long patientId, String date, String timeFrom) {
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+        this.date = date;
+        this.timeFrom = timeFrom;
+    }
+
     public Long getDoctorId() {
         return doctorId;
     }
