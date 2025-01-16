@@ -8,6 +8,7 @@ import com.example.hospital.dal.AppointmentDAL;
 import com.example.hospital.dal.DoctorDAL;
 import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
+
 import com.example.hospital.services.command.CommandInvoker;
 import com.example.hospital.services.command.ConfirmAppointmentCommand;
 import com.example.hospital.services.command.RejectAppointmentCommand;
@@ -15,6 +16,7 @@ import com.example.hospital.services.command.RejectAppointmentCommand;
 public class DoctorService {
     private AppointmentDAL appointmentDAL;
     private DoctorDAL doctorDAL;
+
      private final CommandInvoker commandInvoker = new CommandInvoker();
 
     public DoctorService(AppointmentDAL appointmentDAL, DoctorDAL doctorDAL) {
@@ -51,10 +53,12 @@ public class DoctorService {
     }
 
     public List<Appointment> getAllAppointments() {
-        return appointmentDAL.findAll();
+      return appointmentDAL.findAll();
     }
+
 
     public Doctor getDoctorById(Long doctorId) {
         return doctorDAL.findById(doctorId);
     }
+
 }
