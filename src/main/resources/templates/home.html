@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ASU Hospital</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body data-theme="dark" class="min-h-screen">
+
+  <div th:replace="fragments/navbar"></div>
+
+    <div class="hero">
+        <div class="hero-content py-56">
+          <div class="max-w-2xl space-y-6">
+            <h1 class="text-5xl font-bold">Hello, <span th:text="${fullName}"></span></h1>
+            <div class="flex gap-2 flex-col flex-start bg-base-300 p-4 rounded-lg">
+              <p class="text-2xl font-semibold">Your Roles: </p>
+              <ul class="text-xl list-disc pl-4">
+                <li th:each="role : ${roles}" th:text="${role}"></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+
+</body>
+</html>

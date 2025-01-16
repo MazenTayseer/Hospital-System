@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,8 +38,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults()) // Enable CORS
+            .cors(Customizer.withDefaults()) 
             .authorizeHttpRequests(authorize -> authorize
+                // .requestMatchers("/home").permitAll()
+
                 .requestMatchers("/api/managers/**").hasRole("MANAGER")
                 .requestMatchers("/api/notifications/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
@@ -46,6 +49,24 @@ public class SecurityConfig {
                 .requestMatchers("/api/donations/create").hasRole("DONOR")
                 .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
                 .anyRequest().authenticated()
+            )
+            .formLogin(formLogin -> formLogin
+                .loginPage("/login").permitAll()
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/home", true) 
+                .failureUrl("/login?error")
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .permitAll() 
+            )
+            // .csrf(csrf -> csrf
+            //     .ignoringRequestMatchers("/logout")
+            // )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                // Optional: configure session timeout
+                .maximumSessions(1) // Optional: prevent multiple logins with the same account
             )
             .httpBasic(Customizer.withDefaults());
 

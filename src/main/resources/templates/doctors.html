@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ASU Hospital</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body data-theme="dark" class="min-h-screen">
+
+    <div th:replace="fragments/navbar"></div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+        <h2 class="text-4xl font-bold">Doctors</h2>
+        <ul id="doctors-list" class="list bg-base-300 rounded-box">
+        </ul>
+    </div>
+
+    <script>
+        fetch('/api/patients/doctors')
+            .then(response => response.json())
+            .then(doctors => {
+                const doctorsList = document.getElementById('doctors-list');
+                doctors.forEach(doctor => {
+                    // Create list item for each doctor
+                    const doctorItem = document.createElement('li');
+                    doctorItem.classList.add('list-row', 'flex', 'justify-between', 'items-center', 'w-full');
+                    
+                    // Doctor's name and speciality
+                    const doctorInfo = document.createElement('div');
+                    doctorInfo.innerHTML = `
+                        <div class="text-lg font-semibold">${doctor.fullName}</div>
+                        <div class="text-xs uppercase font-semibold opacity-60">${doctor.speciality}</div>
+                    `;
+                    
+                    // Book button
+                    const bookButton = document.createElement('button');
+                    bookButton.classList.add('btn', 'btn-primary', 'ml-auto');
+                    bookButton.textContent = 'Book';
+
+                    // Append doctor info and button to the list item
+                    doctorItem.appendChild(doctorInfo);
+                    doctorItem.appendChild(bookButton);
+
+                    // Append the list item to the doctors list
+                    doctorsList.appendChild(doctorItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching doctors:', error);
+            });
+    </script>
+
+</body>
+</html>

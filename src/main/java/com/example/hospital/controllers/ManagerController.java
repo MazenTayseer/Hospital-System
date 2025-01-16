@@ -8,6 +8,8 @@ import com.example.hospital.models.User;
 import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.ManagerService;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,12 @@ public class ManagerController {
 
     public ManagerController(ManagerService managerService) {
         this.managerService = managerService;
+    }
+
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = managerService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/create-doctor")

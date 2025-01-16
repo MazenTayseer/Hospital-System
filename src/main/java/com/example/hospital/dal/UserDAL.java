@@ -19,6 +19,10 @@ public class UserDAL {
         this.userRepository = userRepository;
     }
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
     public User save(User User) {
         return userRepository.save(User);
     }
