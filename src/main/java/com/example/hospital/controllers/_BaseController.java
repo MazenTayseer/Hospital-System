@@ -63,4 +63,10 @@ public class _BaseController {
         mav.addObject("loggedUserId", user.getId());
         return mav;
     }
+
+    @GetMapping("/send-email")
+    public ModelAndView sendEmailPage() {
+        ModelAndView mav = new ModelAndView("send-email");
+        return mav;
+    }
 }

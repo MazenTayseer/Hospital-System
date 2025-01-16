@@ -26,12 +26,12 @@ public class NotificationServiceManager implements INotificationSubject {
     }
 
     @Override
-    public void notifyObservers(String message) {
+    public void notifyObservers(String message, String subject) {
         Iterator<INotificationObserver> iterator = notificationCollection.createIterator();
 
         while (iterator.hasNext()) {
             INotificationObserver observer = iterator.next();
-            observer.send(message);
+            observer.send(message, subject);
         }
     }
 }
