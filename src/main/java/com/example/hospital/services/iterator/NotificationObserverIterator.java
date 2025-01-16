@@ -1,15 +1,14 @@
 package com.example.hospital.services.iterator;
 
-import java.util.List;
 import com.example.hospital.services.observer.notifications.INotificationObserver;
+import java.util.List;
 
 public class NotificationObserverIterator implements Iterator<INotificationObserver> {
     private final List<INotificationObserver> observers;
-    private int position;
+    private int position = 0;
 
     public NotificationObserverIterator(List<INotificationObserver> observers) {
         this.observers = observers;
-        this.position = 0;
     }
 
     @Override
@@ -19,9 +18,6 @@ public class NotificationObserverIterator implements Iterator<INotificationObser
 
     @Override
     public INotificationObserver next() {
-        if (!hasNext()) {
-            throw new IllegalStateException("No more elements");
-        }
         return observers.get(position++);
     }
 }
