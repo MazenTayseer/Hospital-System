@@ -22,9 +22,7 @@
     <div class="max-w-5xl mx-auto py-12 space-y-4">
       <h2 class="text-4xl font-bold">Dashboard</h2>
       <div class="grid grid-cols-2 gap-6">
-        <button class="btn btn-primary w-full">Create Manager</button>
-        <button class="btn btn-info w-full">Create Patient</button>
-        <button class="btn btn-success w-full">Create Donor</button>
+        <a class="btn btn-info w-full" th:href="@{/create-user}">Create User</a>
       </div>
     </div>
 
@@ -87,8 +85,6 @@
     
                     // Add event listener to the update button (you can customize the URL or behavior for updating)
                     updateBtn.addEventListener('click', () => {
-                        // Redirect to the update page (replace with your own URL or functionality)
-                        window.location.href = `/api/managers/update/${user.id}`;
                     });
     
                     // Append user info, update button, and delete button to the list item

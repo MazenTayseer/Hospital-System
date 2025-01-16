@@ -1,6 +1,8 @@
 package com.example.hospital.dal;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.example.hospital.ResponseMessages;
@@ -21,5 +23,9 @@ public class RoleDAL {
         return roleRepository.findByName(name).orElseThrow(
             () -> new BadRequestException(ResponseMessages.record_not_found("Role"))
         );
+    }
+
+    public List<Role> getRoles() {
+        return roleRepository.findAll();
     }
 }
