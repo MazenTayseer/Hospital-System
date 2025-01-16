@@ -52,7 +52,7 @@ public class PharmacyFacade {
     System.out.println("Processing request for patient: " + patient.getFirstName());
 
     // Retrieve doctor details
-    Doctor doctor = doctorService.getById(doctorId);
+    Doctor doctor = doctorService.getDoctorById(doctorId);
     if (doctor == null) {
       throw new IllegalArgumentException("Doctor not found for ID: " + doctorId);
     }
