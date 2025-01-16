@@ -36,4 +36,10 @@ public class _BaseController {
         mav.addObject("loggedUserId", user.getId());
         return mav;
     }
+
+    @GetMapping("/create-user")
+    public ModelAndView createUserPage() {
+        ModelAndView mav = new ModelAndView("create-user");
+        return mav;
+    }
 }

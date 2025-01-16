@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
                 .requestMatchers("/api/donations/create").hasRole("DONOR")
                 .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
+                .requestMatchers("/api/statics/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(formLogin -> formLogin
