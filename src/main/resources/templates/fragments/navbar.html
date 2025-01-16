@@ -1,0 +1,14 @@
+<!-- src/main/resources/templates/fragments/navbar.html -->
+<div class="navbar max-w-6xl mx-auto py-6">
+    <div class="flex-1">
+        <a class="btn btn-ghost text-3xl" th:href="@{/home}">ASU Hospital</a>
+    </div>
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1 text-lg">
+            <li><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/doctors}">Doctors</a></li>
+            <li><a th:href="@{/admin}">Admin</a></li>
+            <li><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+</div>

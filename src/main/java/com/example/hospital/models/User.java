@@ -1,7 +1,9 @@
 package com.example.hospital.models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.example.hospital.models.enums.*;
 
@@ -125,5 +127,17 @@ public class User {
 
     public void addRole(Role role) {
         this.roles.add(role);
+    }
+
+    public List<String> getRolesName() {
+        return this.roles.stream()
+                         .map(Role::getName)
+                         .filter(role -> !role.equalsIgnoreCase("USER"))
+                         .sorted()
+                         .collect(Collectors.toList());
+    }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
     }
 }

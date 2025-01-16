@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Details - ASU Hospital</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script> 
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body data-theme="dark" class="min-h-screen">
+
+  <div th:replace="fragments/navbar"></div>
+
+  <div id="toast-container" class="toast toast-bottom toast-end"></div>
+
+  <div class="max-w-5xl mx-auto py-12 space-y-6">
+    <div class="card w-full bg-base-300 flex items-start">
+      <div class="card-body">
+        <h2 class="text-3xl font-semibold text-white mb-4" th:text="${doctor.fullName}"></h2>
+        
+        <div class="text-white">
+          <p class="text-xl font-semibold">Speciality: <span class="text-primary" th:text="${doctor.speciality}"></span></p>
+          <p class="text-xl font-semibold">Gender: <span class="text-primary" th:text="${doctor.gender}"></span></p>
+          <p class="text-xl font-semibold">Email: <span class="text-primary" th:text="${doctor.email}"></span></p>
+          <p class="text-xl font-semibold">Age: <span class="text-primary" th:text="${doctor.age}"></span></p>
+          <p class="text-xl font-semibold">Phone: <span class="text-primary" th:text="${doctor.phone}"></span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col flex-start w-full gap-4 bg-base-300 p-4 rounded-lg">
+      <p class="text-2xl font-bold">Book Appointment</p>
+      <form class="form-control space-y-4" id="appointmentForm">
+        <input type="hidden" id="doctorId" th:value="${doctor.id}">
+        <input type="hidden" id="patientId" th:value="${loggedUserId}">
+
+        <input type="date" placeholder="Pick a date" class="input input-bordered w-full" id="date" required>
+
+
+        <select class="select select-bordered w-full" id="timeFrom" required>
+          <option value="">Select Time</option>
+          <script>
+            for (let i = 0; i < 24; i++) {
+              let hour = i.toString().padStart(2, '0') + ":00";
+              document.write(`<option value="${hour}">${hour}</option>`);
+            }
+          </script>
+        </select>
+
+        <button type="submit" class="btn btn-primary w-full">Book Appointment</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayFormatted = `${year}-${month}-${day}`;
+    document.getElementById("date").min = todayFormatted;
+
+    document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const doctorId = document.getElementById("doctorId").value;
+      const patientId = document.getElementById("patientId").value;
+      const date = document.getElementById("date").value;
+      const timeFrom = document.getElementById("timeFrom").value;
+
+      if (!date || !timeFrom) {
+        alert("Please select a valid date and time.");
+        return;
+      }
+
+      const appointmentData = {
+        date: date,
+        timeFrom: timeFrom,
+        doctorId: Number(doctorId),
+        patientId: Number(patientId)
+      };
+
+      console.log(appointmentData);
+
+      fetch("/api/patients/book-appointment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(appointmentData)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(data.success) {
+          showToast("Appointment booked successfully!", "success");
+          document.getElementById("appointmentForm").reset();
+        }
+        else {
+          showToast(data.message, "error");
+        }
+      })
+      .catch(error => {
+        showToast("Failed to book appointment. Try again.", "error");
+        console.error("Error:", error);
+      });
+    });
+
+    function showToast(message, type) {
+      const toastContainer = document.getElementById("toast-container");
+
+      const toast = document.createElement("div");
+      toast.className = `alert ${type === "success" ? "alert-success" : "alert-error"} shadow-lg`;
+      toast.innerHTML = `<span>${message}</span>`;
+
+      toastContainer.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 5000);
+    }
+
+  </script>
+</body>
+</html>

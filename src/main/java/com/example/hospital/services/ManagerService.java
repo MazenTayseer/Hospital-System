@@ -1,6 +1,8 @@
 package com.example.hospital.services;
 
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,10 @@ public class ManagerService {
     public ManagerService(CreateUserContext createUserContext, UserDAL userDAL) {
         this.createUserContext = createUserContext;
         this.userDAL = userDAL;
+    }
+
+    public List<User> getAllUsers() {
+        return userDAL.findAll();
     }
 
     public User createUser(UserDto<? extends User> request) {

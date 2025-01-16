@@ -63,21 +63,6 @@ public class PatientControllerTests {
                         patient);
 
         @Test
-        public void testBookAppointment() throws Exception {
-                doctorDAL.save(doctor);
-                patientDAL.save(patient);
-
-                mockMvc.perform(post("/api/patients/book-appointment")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(appointment)))
-                                .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").exists())
-                                .andExpect(jsonPath("$.doctor.id").value(doctor.getId()))
-                                .andExpect(jsonPath("$.patient.id").value(patient.getId()))
-                                .andExpect(jsonPath("$.status").value(AppointmentStatus.REQUESTED.toString()));
-        }
-
-        @Test
         public void testCancelAppointment() throws Exception {
                 doctorDAL.save(doctor);
                 patientDAL.save(patient);

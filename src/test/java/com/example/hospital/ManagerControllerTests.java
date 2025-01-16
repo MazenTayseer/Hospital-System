@@ -59,9 +59,10 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.roles[?(@.name == 'DOCTOR')]").exists())
-                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                                .andExpect(jsonPath("$.speciality").value(Speciality.SURGEON.toString()));
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.roles[?(@.name == 'DOCTOR')]").exists())
+                                .andExpect(jsonPath("$.data.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.data.speciality").value(Speciality.SURGEON.toString()));
         }
 
         @Test
@@ -77,8 +78,9 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                                .andExpect(jsonPath("$.roles[?(@.name == 'NURSE')]").exists());
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.data.roles[?(@.name == 'NURSE')]").exists());
         }
 
         @Test
@@ -94,8 +96,9 @@ class ManagerControllerTests {
                                 .content(objectMapper.writeValueAsString(request)))
                                 .andExpect(status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                                .andExpect(jsonPath("$.notificationServices[?(@.name == 'EMAIL')]").exists())
-                                .andExpect(jsonPath("$.roles[?(@.name == 'PATIENT')]").exists());
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data.notificationServices[?(@.name == 'EMAIL')]").exists())
+                                .andExpect(jsonPath("$.data.roles[?(@.name == 'PATIENT')]").exists());
         }
 
         void testCreateVolunteer() throws Exception {

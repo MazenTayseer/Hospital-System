@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASU Hospital</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark" class="min-h-screen">
+    <div th:replace="fragments/navbar"></div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+      <h2 class="text-4xl font-bold">Dashboard</h2>
+      <div class="grid grid-cols-2 gap-6">
+        <a class="btn btn-info w-full" th:href="@{/create-user}">Create User</a>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+        <h2 class="text-4xl font-bold">Users</h2>
+        <ul id="users-list" class="list bg-base-300 rounded-box">
+        </ul>
+    </div>
+
+    <script th:inline="javascript">
+        const loggedUserId = parseInt('[[${loggedUserId}]]');
+    
+        fetch('/api/managers/all-users')
+            .then(response => response.json())
+            .then(users => {
+                const usersList = document.getElementById('users-list');
+                users.forEach(user => {
+                    // Skip rendering the logged-in user
+                    if (user.id === loggedUserId) return;
+    
+                    // Create list item for each user
+                    const userItem = document.createElement('li');
+                    userItem.classList.add('list-row', 'flex', 'justify-between', 'items-center', 'w-full');
+                    
+                    // user's name and speciality
+                    const userInfo = document.createElement('div');
+                    userInfo.innerHTML = `
+                        <div class="text-lg font-semibold">${user.fullName}</div>
+                        <div class="text-xs uppercase font-semibold opacity-60">${user.rolesName}</div>
+                    `;
+                    
+                    // Delete button
+                    const deleteBtn = document.createElement('a');
+                    deleteBtn.classList.add('btn', 'btn-error', 'ml-auto');
+                    deleteBtn.textContent = 'delete';
+                    
+                    // Add event listener to the delete button
+                    deleteBtn.addEventListener('click', () => {
+                        // Send DELETE request
+                        fetch(`/api/managers/delete/${user.id}`, {
+                            method: 'DELETE',
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Remove user item from the list
+                                userItem.remove();
+                            } else {
+                                console.error('Failed to delete user:', response);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting user:', error);
+                        });
+                    });
+    
+                    // Update button
+                    const updateBtn = document.createElement('a');
+                    updateBtn.classList.add('btn', 'btn-primary', 'ml-auto');
+                    updateBtn.textContent = 'update';
+    
+                    // Add event listener to the update button (you can customize the URL or behavior for updating)
+                    updateBtn.addEventListener('click', () => {
+                    });
+    
+                    // Append user info, update button, and delete button to the list item
+                    userItem.appendChild(userInfo);
+                    userItem.appendChild(updateBtn); // Add update button
+                    userItem.appendChild(deleteBtn); // Add delete button
+    
+                    // Append the list item to the users list
+                    usersList.appendChild(userItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching users:', error);
+            });
+    </script>
+    
+    
+  </body>
+</html>
