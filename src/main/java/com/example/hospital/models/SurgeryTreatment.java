@@ -4,7 +4,6 @@ import com.example.hospital.template_method.ReportTemplate;
 
 import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class SurgeryTreatment implements ReportTemplate {
