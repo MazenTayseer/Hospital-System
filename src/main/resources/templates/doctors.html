@@ -36,13 +36,14 @@
                     `;
                     
                     // Book button
-                    const bookButton = document.createElement('button');
-                    bookButton.classList.add('btn', 'btn-primary', 'ml-auto');
-                    bookButton.textContent = 'Book';
+                    const viewButton = document.createElement('a');
+                    viewButton.classList.add('btn', 'btn-primary', 'ml-auto');
+                    viewButton.textContent = 'View';
+                    viewButton.href = `/doctors/${doctor.id}`;
 
                     // Append doctor info and button to the list item
                     doctorItem.appendChild(doctorInfo);
-                    doctorItem.appendChild(bookButton);
+                    doctorItem.appendChild(viewButton);
 
                     // Append the list item to the doctors list
                     doctorsList.appendChild(doctorItem);

@@ -1,18 +1,26 @@
 package com.example.hospital.controllers;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.hospital.controllers.helpers.AuthUser;
+import com.example.hospital.models.Doctor;
 import com.example.hospital.models.User;
+import com.example.hospital.services.DoctorService;
 
 @Controller
 public class _BaseController {
-    @Autowired
-    private AuthUser authUser;
+    private final AuthUser authUser;
+    private final DoctorService doctorService;
+
+    public _BaseController(AuthUser authUser, DoctorService doctorService) {
+        this.authUser = authUser;
+        this.doctorService = doctorService;
+    }
+
 
     @GetMapping("/home")
     public ModelAndView homePage() {
@@ -40,6 +48,19 @@ public class _BaseController {
     @GetMapping("/create-user")
     public ModelAndView createUserPage() {
         ModelAndView mav = new ModelAndView("create-user");
+        return mav;
+    }
+
+    @GetMapping("doctors/{id}")
+    public ModelAndView getDoctorDetails(@PathVariable("id") Long id) {
+        User user = authUser.getLoggedUser();
+        Doctor doctor = doctorService.getDoctorById(id);
+        if (doctor == null) {
+            return new ModelAndView("redirect:/error");
+        }
+        ModelAndView mav = new ModelAndView("doctor-details");
+        mav.addObject("doctor", doctor);
+        mav.addObject("loggedUserId", user.getId());
         return mav;
     }
 }
