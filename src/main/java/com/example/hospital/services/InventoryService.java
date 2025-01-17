@@ -68,10 +68,6 @@ public class InventoryService {
     return inventoryRepository.findAll();
   }
 
-  public Inventory findByMedicationName(String medicationName) {
-    return inventoryRepository.findByMedicationName(medicationName);
-  }
-
   public void addOrUpdateInventory(String medicationName, int quantity) {
     Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
     if (inventory == null) {
@@ -79,5 +75,9 @@ public class InventoryService {
     }
     inventory.setQuantity(inventory.getQuantity() + quantity);
     inventoryRepository.save(inventory);
+  }
+
+  public Inventory findByMedicationName(String medicationName) {
+    return inventoryRepository.findByMedicationName(medicationName);
   }
 }
