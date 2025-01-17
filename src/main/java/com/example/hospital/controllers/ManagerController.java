@@ -3,6 +3,7 @@ package com.example.hospital.controllers;
 import com.example.hospital.ResponseWrapper;
 import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
+import com.example.hospital.models.Donor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.User;
@@ -72,6 +73,17 @@ public class ManagerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(new ResponseWrapper<>("Error creating volunteer: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/create-donor")
+    public ResponseEntity<ResponseWrapper<Donor>> createDonor(@RequestBody UserDto<Donor> request) {
+        try {
+            Donor createdUser = (Donor) managerService.createUser(request);
+            return ResponseEntity.ok(new ResponseWrapper<>(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseWrapper<>("Error creating Donor: " + e.getMessage()));
         }
     }
 
