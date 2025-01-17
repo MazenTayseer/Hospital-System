@@ -3,6 +3,7 @@ package com.example.hospital;
 import com.example.hospital.dal.PatientDAL;
 import com.example.hospital.models.Patient;
 import com.example.hospital.models.MedicationTreatment;
+import com.example.hospital.models.Nurse;
 import com.example.hospital.models.SurgeryTreatment;
 import com.example.hospital.models.TherapyTreatment;
 import com.example.hospital.models.enums.Gender;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@WithMockUser(username = "admin", roles = {"ADMIN"})
+@WithMockUser(username = "admin", roles = { "ADMIN" })
 public class PatientTreatmentControllerTests {
 
     @Autowired
@@ -46,16 +47,26 @@ public class PatientTreatmentControllerTests {
 
     @Test
     public void testMedicationTreatmentReport() throws Exception {
+
+        Nurse nurse = new Nurse("nurse",
+                "nurse",
+                "nurse@eng.asu.edu.eg",
+                "password",
+                "+201279936002",
+                21,
+                Gender.MALE);
+
         // Create and save a patient
         Patient patient = new Patient(
-            "John",
-            "Doe",
-            "john.doe@example.com",
-            "password123",
-            "+201000000003",
-            30,
-            Gender.MALE
-        );
+                "John",
+                "Doe",
+                "john.doe@example.com",
+                "password123",
+                "+201000000003",
+                30,
+                Gender.MALE,
+                nurse,
+                "Allergic to penicillin.");
         Patient savedPatient = patientDAL.save(patient);
 
         // Create and save a medication treatment
@@ -85,15 +96,25 @@ public class PatientTreatmentControllerTests {
     @Test
     public void testSurgeryTreatmentReport() throws Exception {
         // Create and save a patient
+
+        Nurse nurse = new Nurse("nurse",
+                "nurse",
+                "nurse@eng.asu.edu.eg",
+                "password",
+                "+201279936002",
+                21,
+                Gender.MALE);
+
         Patient patient = new Patient(
-            "Jane",
-            "Smith",
-            "jane.smith@example.com",
-            "password456",
-            "+201000000004",
-            40,
-            Gender.FEMALE
-        );
+                "Jane",
+                "Smith",
+                "jane.smith@example.com",
+                "password456",
+                "+201000000004",
+                40,
+                Gender.FEMALE,
+                nurse,
+                "Allergic to penicillin.");
         Patient savedPatient = patientDAL.save(patient);
 
         // Create and save a surgery treatment
@@ -122,16 +143,26 @@ public class PatientTreatmentControllerTests {
 
     @Test
     public void testTherapyTreatmentReport() throws Exception {
+
+        Nurse nurse = new Nurse("nurse",
+                "nurse",
+                "nurse@eng.asu.edu.eg",
+                "password",
+                "+201279936002",
+                21,
+                Gender.MALE);
+
         // Create and save a patient
         Patient patient = new Patient(
-            "Emily",
-            "Davis",
-            "emily.davis@example.com",
-            "password789",
-            "+201000000005",
-            25,
-            Gender.FEMALE
-        );
+                "Emily",
+                "Davis",
+                "emily.davis@example.com",
+                "password789",
+                "+201000000005",
+                25,
+                Gender.FEMALE,
+                nurse,
+                "Allergic to penicillin.");
         Patient savedPatient = patientDAL.save(patient);
 
         // Create and save a therapy treatment

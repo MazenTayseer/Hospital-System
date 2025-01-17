@@ -3,9 +3,11 @@ package com.example.hospital.dal;
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Patient;
+
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.PatientRepository;
-
 
 @Component
 public class PatientDAL {
@@ -18,8 +20,11 @@ public class PatientDAL {
 
     public Patient findById(Long id) {
         return patientRepository.findById(id).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Patient"))
-        );
+                () -> new BadRequestException(ResponseMessages.record_not_found("Patient")));
+    }
+
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
     }
 
     public Patient save(Patient patient) {

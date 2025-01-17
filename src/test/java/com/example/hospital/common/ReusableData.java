@@ -17,8 +17,7 @@ public class ReusableData {
                 "+201279936001",
                 21,
                 Gender.MALE,
-                Speciality.SURGEON
-        );
+                Speciality.SURGEON);
     }
 
     public static Patient createPatient() {
@@ -29,19 +28,19 @@ public class ReusableData {
                 "password",
                 "+201279936003",
                 21,
-                Gender.MALE
-        );
+                Gender.MALE,
+                createNurse(),
+                "Allergic to penicillin.");
     }
 
     public static Nurse createNurse() {
         return new Nurse(
-            "nurse",
-            "nurse",
-            "nurse@eng.asu.edu.eg",
-            "password",
-            "+201279936002",
-            21,
-            Gender.MALE
-    );
+                "nurse",
+                "nurse",
+                "nurse@eng.asu.edu.eg",
+                "password",
+                "+201279936002",
+                21,
+                Gender.MALE);
     }
 }

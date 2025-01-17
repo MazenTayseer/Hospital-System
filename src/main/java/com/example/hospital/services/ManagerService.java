@@ -8,8 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.hospital.dto.UserDto;
 import com.example.hospital.ResponseMessages;
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.NurseDAL;
+import com.example.hospital.dal.PatientDAL;
 import com.example.hospital.dal.UserDAL;
 import com.example.hospital.exceptions.BadRequestException;
+import com.example.hospital.models.Doctor;
+import com.example.hospital.models.Nurse;
+import com.example.hospital.models.Patient;
 import com.example.hospital.models.User;
 import com.example.hospital.services.strategy.create_user.CreateUserContext;
 
@@ -17,10 +23,16 @@ import com.example.hospital.services.strategy.create_user.CreateUserContext;
 public class ManagerService {
     private final CreateUserContext createUserContext;
     private final UserDAL userDAL;
+    private final DoctorDAL doctorDAL;
+    private final NurseDAL nurseDAL;
+    private final PatientDAL patientDAL;
 
-    public ManagerService(CreateUserContext createUserContext, UserDAL userDAL) {
+    public ManagerService(CreateUserContext createUserContext, UserDAL userDAL, DoctorDAL doctorDAL, NurseDAL nurseDAL, PatientDAL patientDAL) {
         this.createUserContext = createUserContext;
         this.userDAL = userDAL;
+        this.doctorDAL = doctorDAL;
+        this.nurseDAL = nurseDAL;
+        this.patientDAL = patientDAL;
     }
 
     public List<User> getAllUsers() {
@@ -57,5 +69,17 @@ public class ManagerService {
 
             return userDAL.save(existingUser);
 
+    }
+
+    public List<Doctor> getDoctors() {
+        return doctorDAL.findAllDoctors();
+    }
+
+    public List<Nurse> getNurses() {
+        return nurseDAL.findAll();
+    }
+
+    public List<Patient> getPatients() {
+        return patientDAL.findAll();
     }
 }

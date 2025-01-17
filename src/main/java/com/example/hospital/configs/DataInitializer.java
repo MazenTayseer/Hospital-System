@@ -8,12 +8,8 @@ import com.example.hospital.models.enums.Gender;
 import com.example.hospital.repositories.NotificationServiceRepository;
 import com.example.hospital.repositories.RoleRepository;
 import com.example.hospital.repositories.UserRepository;
-import com.example.hospital.services.decorator.roles.DoctorDecorator;
-import com.example.hospital.services.decorator.roles.DonorDecorator;
 import com.example.hospital.services.decorator.roles.IRole;
 import com.example.hospital.services.decorator.roles.ManagerDecorator;
-import com.example.hospital.services.decorator.roles.NurseDecorator;
-import com.example.hospital.services.decorator.roles.PatientDecorator;
 import com.example.hospital.services.decorator.roles.UserRole;
 import com.example.hospital.services.decorator.roles.VolunteerDecorator;
 import com.example.hospital.services.observer.notifications.EmailNotificationService;
@@ -40,13 +36,13 @@ public class DataInitializer {
     private final NotificationServiceManager notificationManager;
 
     public DataInitializer(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
-                           RoleRepository roleRepository,
-                           RoleDAL roleDAL,
-                           NotificationServiceRepository notificationServiceRepository,
-                           EmailNotificationService emailService,
-                           SmsNotificationService smsService,
-                           NotificationServiceManager notificationManager) {
+            PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository,
+            RoleDAL roleDAL,
+            NotificationServiceRepository notificationServiceRepository,
+            EmailNotificationService emailService,
+            SmsNotificationService smsService,
+            NotificationServiceManager notificationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
@@ -68,19 +64,19 @@ public class DataInitializer {
     }
 
     private void initializeRoles() {
-        String[] roles = {"USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR", "DONOR", "VOLUNTEER"};
+        String[] roles = { "USER", "NURSE", "PATIENT", "MANAGER", "DOCTOR", "DONOR", "VOLUNTEER" };
         for (String roleName : roles) {
             roleRepository.findByName(roleName)
-                .orElseGet(() -> roleRepository.save(new Role(roleName)));
+                    .orElseGet(() -> roleRepository.save(new Role(roleName)));
         }
     }
 
     @SuppressWarnings("unused")
     private void initializeNotificationServices() {
-        String[] notificationServices = {"SMS", "EMAIL"};
+        String[] notificationServices = { "SMS", "EMAIL" };
         for (String serviceName : notificationServices) {
             notificationServiceRepository.findByName(serviceName)
-                .orElseGet(() -> notificationServiceRepository.save(new NotificationService(serviceName)));
+                    .orElseGet(() -> notificationServiceRepository.save(new NotificationService(serviceName)));
         }
 
         Optional<NotificationService> emailServiceEntity = notificationServiceRepository.findByName("EMAIL");
@@ -100,27 +96,17 @@ public class DataInitializer {
     private void createDefaultManager() {
         userRepository.findByEmail("mazen@asu.com").orElseGet(() -> {
             Manager defaultManager = new Manager(
-                "Admin",
-                "Admin",
-                "mazen@asu.com",
-                passwordEncoder.encode("test1234"),
-                "1234567890",
-                40,
-                Gender.MALE
-            );
+                    "Admin",
+                    "Admin",
+                    "mazen@asu.com",
+                    passwordEncoder.encode("test1234"),
+                    "1234567890",
+                    40,
+                    Gender.MALE);
 
             IRole roleDecorator = new ManagerDecorator(
-                new NurseDecorator(
-                    new PatientDecorator(
-                        new VolunteerDecorator(
-                            new DoctorDecorator(
-                                new DonorDecorator(new UserRole(roleDAL), roleDAL),
-                            roleDAL),
-                        roleDAL),
-                    roleDAL),
-                 roleDAL),
-            roleDAL
-            );
+                    new UserRole(roleDAL),
+                    roleDAL);
 
             roleDecorator.addRole(defaultManager);
             return userRepository.save(defaultManager);
