@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Room Management</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark" class="min-h-screen">
+    <div th:replace="fragments/navbar"></div>
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+      <h2 class="text-4xl font-bold">Room Management</h2>
+      
+      <!-- Add Room Form -->
+      <div class="grid grid-cols-2 gap-6">
+        <button class="btn btn-success" id="add-room" data-modal-target="add-room-modal">Add Room</button>
+      </div>
+
+      <!-- Room List Section -->
+      <div class="mt-6">
+        <h3 class="text-2xl font-bold">Rooms</h3>
+        <ul id="room-list" class="list bg-base-300 rounded-box"></ul>
+      </div>
+      
+      <!-- Add Room Modal -->
+      <div id="add-room-modal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-semibold">Create New Room</h2>
+          <input type="text" id="room-number" placeholder="Room Number" class="input input-bordered w-full mb-4">
+          <input type="text" id="room-type" placeholder="Room Type" class="input input-bordered w-full mb-4">
+          <select id="room-status" class="select select-bordered w-full mb-4">
+            <option value="AVAILABLE">Available</option>
+            <option value="OCCUPIED">Occupied</option>
+          </select>
+          <div class="modal-action">
+            <button class="btn" id="create-room">Create Room</button>
+            <button class="btn">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      // Fetch rooms and display
+      fetch('/api/rooms')
+        .then((response) => response.json())
+        .then((rooms) => {
+          const roomList = document.getElementById('room-list');
+          rooms.forEach((room) => {
+            const roomItem = document.createElement('li');
+            roomItem.classList.add(
+              'list-row',
+              'flex',
+              'justify-between',
+              'items-center',
+              'w-full'
+            );
+
+            const roomInfo = document.createElement('div');
+            roomInfo.innerHTML = `
+              <div class="text-lg font-semibold">Room ${room.number}</div>
+              <div class="text-xs uppercase font-semibold opacity-60">
+                ${room.type} - ${room.status}
+              </div>
+            `;
+
+            const deleteBtn = document.createElement('a');
+            deleteBtn.classList.add('btn', 'btn-error', 'ml-auto');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => {
+              fetch(`/api/rooms/${room.id}`, {
+                method: 'DELETE',
+              }).then(() => {
+                roomItem.remove();
+              });
+            });
+
+            roomItem.appendChild(roomInfo);
+            roomItem.appendChild(deleteBtn);
+
+            roomList.appendChild(roomItem);
+          });
+        });
+    </script>
+  </body>
+</html>

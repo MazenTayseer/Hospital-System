@@ -88,4 +88,16 @@ public class _BaseController {
         ModelAndView mav = new ModelAndView("send-email");
         return mav;
     }
+
+    @GetMapping("/rooms")
+    public ModelAndView roomPage() {
+    User user = authUser.getLoggedUser();
+    if (!user.getRolesName().contains("ADMIN")) {
+        return new ModelAndView("redirect:/error");
+    }
+
+    ModelAndView mav = new ModelAndView("room");
+    return mav;
+    }
+
 }
