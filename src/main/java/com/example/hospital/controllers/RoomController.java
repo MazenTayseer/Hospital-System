@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.hospital.models.Doctor;
-import com.example.hospital.models.Nurse;
-import com.example.hospital.models.Patient;
+import com.example.hospital.dto.UserIdDto;
 import com.example.hospital.models.Room;
 import com.example.hospital.services.RoomService;
 
@@ -45,26 +43,26 @@ public class RoomController {
     }
 
     @PostMapping("/{roomId}/assign-doctor")
-    public ResponseEntity<Room> assignDoctor(@PathVariable Long roomId, @RequestBody Doctor doctor) {
-        Room updatedRoom = roomService.assignDoctor(roomId, doctor);
+    public ResponseEntity<Room> assignDoctor(@PathVariable Long roomId, @RequestBody UserIdDto userId) {
+        Room updatedRoom = roomService.assignDoctor(roomId, userId.getUserId());
         return ResponseEntity.ok(updatedRoom);
     }
 
     @PostMapping("/{roomId}/assign-nurse")
-    public ResponseEntity<Room> assignNurse(@PathVariable Long roomId, @RequestBody Nurse nurse) {
-        Room updatedRoom = roomService.assignNurse(roomId, nurse);
+    public ResponseEntity<Room> assignNurse(@PathVariable Long roomId, @RequestBody UserIdDto userId) {
+        Room updatedRoom = roomService.assignNurse(roomId, userId.getUserId());
         return ResponseEntity.ok(updatedRoom);
     }
 
     @PostMapping("/{roomId}/assign-patient")
-    public ResponseEntity<Room> assignPatient(@PathVariable Long roomId, @RequestBody Patient patient) {
-        Room updatedRoom = roomService.assignPatient(roomId, patient);
+    public ResponseEntity<Room> assignPatient(@PathVariable Long roomId, @RequestBody UserIdDto userId) {
+        Room updatedRoom = roomService.assignPatient(roomId, userId.getUserId());
         return ResponseEntity.ok(updatedRoom);
     }
 
     @PostMapping("/{roomId}/unassign-patient")
-    public ResponseEntity<Room> unassignPatient(@PathVariable Long roomId, @RequestBody Patient patient) {
-        Room updatedRoom = roomService.assignPatient(roomId, patient);
+    public ResponseEntity<Room> unassignPatient(@PathVariable Long roomId, @RequestBody UserIdDto userId) {
+        Room updatedRoom = roomService.assignPatient(roomId, userId.getUserId());
         return ResponseEntity.ok(updatedRoom);
     }
 }

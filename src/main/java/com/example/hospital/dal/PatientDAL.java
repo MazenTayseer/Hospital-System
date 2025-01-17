@@ -3,6 +3,9 @@ package com.example.hospital.dal;
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Patient;
+
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.PatientRepository;
 
@@ -32,5 +35,9 @@ public class PatientDAL {
 
     public void delete(Patient patient) {
         patientRepository.delete(patient);
+    }
+
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
     }
 }

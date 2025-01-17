@@ -99,5 +99,23 @@ public class ManagerController {
             @RequestBody UserDto<User> userDto) {
         User updatedUser = managerService.updateUser(userId, userDto.getUser());
         return ResponseEntity.ok(updatedUser);
-    }  
+    }
+
+    @GetMapping("/doctors")
+    public ResponseEntity<List<Doctor>> getDoctors() {
+        List<Doctor> doctors = managerService.getDoctors();
+        return ResponseEntity.ok(doctors);
+    }
+
+    @GetMapping("/nurses")
+    public ResponseEntity<List<Nurse>> getNurses() {
+        List<Nurse> nurses = managerService.getNurses();
+        return ResponseEntity.ok(nurses);
+    }
+
+    @GetMapping("/patients")
+    public ResponseEntity<List<Patient>> getPatients() {
+        List<Patient> patients = managerService.getPatients();
+        return ResponseEntity.ok(patients);
+    }
 }

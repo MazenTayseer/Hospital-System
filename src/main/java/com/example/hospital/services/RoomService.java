@@ -1,8 +1,11 @@
 package com.example.hospital.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.hospital.dal.DoctorDAL;
+import com.example.hospital.dal.NurseDAL;
+import com.example.hospital.dal.PatientDAL;
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
 import com.example.hospital.models.Patient;
@@ -14,8 +17,17 @@ import java.util.List;
 @Service
 public class RoomService {
 
-    @Autowired
     private RoomRepository roomRepository;
+    private NurseDAL nurseDAL;
+    private DoctorDAL doctorDAL;
+    private PatientDAL patientDAL;
+
+    public RoomService(RoomRepository roomRepository, NurseDAL nurseDAL, DoctorDAL doctorDAL, PatientDAL patientDAL) {
+        this.roomRepository = roomRepository;
+        this.nurseDAL = nurseDAL;
+        this.doctorDAL = doctorDAL;
+        this.patientDAL = patientDAL;
+    }
 
     public Room createRoom(Room room) {
         return roomRepository.save(room);
@@ -34,41 +46,48 @@ public class RoomService {
         roomRepository.deleteById(roomId);
     }
 
-    public Room assignDoctor(Long roomId, Doctor doctor) {
+    public Room assignDoctor(Long roomId, Long doctorId) {
+        Doctor doctor = doctorDAL.findById(doctorId);
         Room room = roomRepository.findById(roomId)
                                   .orElseThrow(() -> new RuntimeException("Room not found"));
 
         if (!room.canAssignDoctor()) {
-            throw new IllegalStateException("Room already has a doctor assigned");
+            throw new BadRequestException("Room already has a doctor assigned");
         }
 
         room.setDoctor(doctor);
         return roomRepository.save(room);
     }
 
-    public Room assignNurse(Long roomId, Nurse nurse) {
+    public Room assignNurse(Long roomId, Long nurseId) {
+        Nurse nurse = nurseDAL.findById(nurseId);
         Room room = roomRepository.findById(roomId)
                                   .orElseThrow(() -> new RuntimeException("Room not found"));
-
-        if (!room.canAssignNurse()) {
-            throw new IllegalStateException("Room already has 4 nurses assigned");
+    
+        if (room.getNurses().contains(nurse)) {
+            throw new BadRequestException("Nurse is already assigned to this room");
         }
-
+    
+        if (!room.canAssignNurse()) {
+            throw new BadRequestException("Room already has 4 nurses assigned");
+        }
+    
         room.getNurses().add(nurse);
         return roomRepository.save(room);
     }
+    
 
-    public Room assignPatient(Long roomId, Patient patient) {
+    public Room assignPatient(Long roomId, Long patientId) {
+        Patient patient = patientDAL.findById(patientId);
         Room room = roomRepository.findById(roomId)
                                   .orElseThrow(() -> new RuntimeException("Room not found"));
 
         if (!room.canAssignPatient()) {
-            throw new IllegalStateException("Room already has 2 patients assigned");
+            throw new BadRequestException("Room already has 2 patients assigned");
         }
 
-        // Ensure patient has a surgery
         if (patient.getSurgeryTreatments() == null || patient.getSurgeryTreatments().isEmpty()) {
-            throw new IllegalStateException("Only patients with surgeries can be assigned to a room");
+            throw new BadRequestException("Only patients with surgeries can be assigned to a room");
         }
 
         room.getPatients().add(patient);
