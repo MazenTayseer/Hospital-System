@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treatment Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+        <h1 class="text-2xl font-bold mb-6 text-center">Generate Treatment Report</h1>
+        
+        <form action="#" id="reportForm" class="space-y-4">
+            <div>
+                <label for="treatmentType" class="block text-sm font-medium text-gray-700">Select Treatment Type</label>
+                <select id="treatmentType" name="treatmentType" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="medication">Medication</option>
+                    <option value="surgery">Surgery</option>
+                    <option value="therapy">Therapy</option>
+                </select>
+            </div>
+            <div>
+                <label for="treatmentId" class="block text-sm font-medium text-gray-700">Enter Treatment ID</label>
+                <input type="number" id="treatmentId" name="treatmentId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500" required>
+            </div>
+            <div class="text-center">
+                <button type="button" onclick="generateReport()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Generate Report
+                </button>
+            </div>
+        </form>
+
+        <div id="reportContainer" class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded hidden">
+            <h2 class="text-xl font-bold mb-4">Report Details</h2>
+            <dl id="reportDetails" class="space-y-2"></dl>
+        </div>
+    </div>
+
+    <script>
+        async function generateReport() {
+            const treatmentType = document.getElementById("treatmentType").value;
+            const treatmentId = document.getElementById("treatmentId").value;
+
+            if (!treatmentId) {
+                alert("Please enter a treatment ID");
+                return;
+            }
+
+            const endpoint = `/api/treatment/report/${treatmentType}/${treatmentId}`;
+            try {
+                const response = await fetch(endpoint);
+                if (!response.ok) {
+                    throw new Error("No report for this treatment");
+                }
+                const report = await response.json();
+                displayReport(report);
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        function displayReport(report) {
+            const reportContainer = document.getElementById("reportContainer");
+            const reportDetails = document.getElementById("reportDetails");
+            reportDetails.innerHTML = "";
+
+            for (const [key, value] of Object.entries(report)) {
+                const dt = document.createElement("dt");
+                dt.className = "font-medium text-gray-700";
+                dt.textContent = key;
+
+                const dd = document.createElement("dd");
+                dd.className = "text-gray-900";
+                dd.textContent = value;
+
+                reportDetails.appendChild(dt);
+                reportDetails.appendChild(dd);
+            }
+
+            reportContainer.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
