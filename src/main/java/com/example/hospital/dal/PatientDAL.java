@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.PatientRepository;
 
-
 @Component
 public class PatientDAL {
 
@@ -21,8 +20,11 @@ public class PatientDAL {
 
     public Patient findById(Long id) {
         return patientRepository.findById(id).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Patient"))
-        );
+                () -> new BadRequestException(ResponseMessages.record_not_found("Patient")));
+    }
+
+    public List<Patient> findAll() {
+        return patientRepository.findAll();
     }
 
     public Patient save(Patient patient) {
@@ -35,9 +37,5 @@ public class PatientDAL {
 
     public void delete(Patient patient) {
         patientRepository.delete(patient);
-    }
-
-    public List<Patient> findAll() {
-        return patientRepository.findAll();
     }
 }

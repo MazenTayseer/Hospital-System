@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 import com.example.hospital.repositories.NurseRepository;
-
+import com.example.hospital.exceptions.BadRequestException;
+import com.example.hospital.ResponseMessages;
+import java.util.List;
 
 @Component
 public class NurseDAL {
@@ -19,8 +21,8 @@ public class NurseDAL {
         this.nurseRepository = nurseRepository;
     }
 
-    public Nurse save(Nurse patient) {
-        return nurseRepository.save(patient);
+    public Nurse save(Nurse nurse) {
+        return nurseRepository.save(nurse);
     }
 
     public void deleteAll() {
@@ -37,4 +39,7 @@ public class NurseDAL {
         );
     }
 
+    public void delete(Nurse nurse) {
+        nurseRepository.delete(nurse);
+    }
 }
