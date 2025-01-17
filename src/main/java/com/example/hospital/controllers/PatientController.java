@@ -67,7 +67,7 @@ public class PatientController {
                 patient
             );
     
-            Appointment bookedAppointment = patientService.bookAppointment(appointment);
+            Appointment bookedAppointment = patientService.registerAppointment(appointment);
             return ResponseEntity.ok(new ResponseWrapper<>(bookedAppointment));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -77,7 +77,7 @@ public class PatientController {
 
     @PostMapping("/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) {
-        patientService.cancelAppointment(appointmentId);
+        patientService.removeAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_CANCELLED);
     }
 
@@ -114,4 +114,11 @@ public class PatientController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{patientId}/appointments")
+public ResponseEntity<List<Appointment>> getAppointmentsForPatient(@PathVariable Long patientId) {
+    List<Appointment> appointments = patientService.getAppointmentsForPatient(patientId);
+    return ResponseEntity.ok(appointments);
+}
+
 }

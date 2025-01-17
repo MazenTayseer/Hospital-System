@@ -25,24 +25,25 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+
     @PostMapping("/appointments/{appointmentId}/confirm")
     public ResponseEntity<Appointment> confirmAppointment(@PathVariable Long appointmentId) {
-        Appointment updatedAppointment = doctorService.changeAppointmentStatus(appointmentId);
+        Appointment updatedAppointment = doctorService.changeAppointmentState(appointmentId);
         return ResponseEntity.ok(updatedAppointment);
     }
 
     @PostMapping("/appointments/{appointmentId}/complete")
     public ResponseEntity<Appointment> completeAppointment(@PathVariable Long appointmentId) {
-        Appointment updatedAppointment = doctorService.changeAppointmentStatus(appointmentId);
+        Appointment updatedAppointment = doctorService.changeAppointmentState(appointmentId);
         return ResponseEntity.ok(updatedAppointment);
-    }
+    }    
 
     @PostMapping("/decline-appointment/{appointmentId}")
     public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId) {
-        doctorService.declineAppointment(appointmentId);
+        doctorService.rejectAppointment(appointmentId);
         return ResponseEntity.ok(ResponseMessages.APPOINTMENT_DECLINED);
     }
-    
+
     @GetMapping("/appointments")
     public ResponseEntity<?> getAppointments(@RequestParam(required = false) Long appointmentId) {
         if (appointmentId != null) {
@@ -53,4 +54,13 @@ public class DoctorController {
             return ResponseEntity.ok(appointments);
         }
     }
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<List<Appointment>> getDoctorAppointments(@PathVariable("id") Long doctorId) {
+        List<Appointment> appointments = doctorService.getAppointmentsByDoctorId(doctorId);
+        return ResponseEntity.ok(appointments);
+    }
+    
+
+
+
 }

@@ -48,11 +48,16 @@ public class PharmacyFacade {
           throw new IllegalArgumentException("Invalid patient ID: " + patientId);
         }
 
+
         // Retrieve doctor details
-        Doctor doctor = doctorService.getById(doctorId);
+        Doctor doctor = doctorService.getDoctorById(doctorId);
         if (doctor == null) {
           throw new IllegalArgumentException("Doctor not found for ID: " + doctorId);
         }
+
+
+
+
 
         if (!prescriptionService.validatePrescription(patientId, doctorId, medicationName)) {
             throw new IllegalArgumentException("Invalid prescription");

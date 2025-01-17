@@ -18,11 +18,13 @@
   </head>
   <body data-theme="dark" class="min-h-screen">
     <div th:replace="fragments/navbar"></div>
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
 
     <div class="max-w-5xl mx-auto py-12 space-y-4">
       <h2 class="text-4xl font-bold">Dashboard</h2>
       <div class="grid grid-cols-2 gap-6">
         <a class="btn btn-info w-full" th:href="@{/create-user}">Create User</a>
+        <a class="btn btn-success w-full" th:href="@{/send-email}">Send Email</a>
       </div>
     </div>
 
@@ -67,10 +69,9 @@
                         })
                         .then(response => {
                             if (response.ok) {
-                                // Remove user item from the list
                                 userItem.remove();
                             } else {
-                                console.error('Failed to delete user:', response);
+                                showToast('Cannot delete user with appointments', 'error');
                             }
                         })
                         .catch(error => {
@@ -99,6 +100,20 @@
             .catch(error => {
                 console.error('Error fetching users:', error);
             });
+
+            function showToast(message, type) {
+              const toastContainer = document.getElementById("toast-container");
+        
+              const toast = document.createElement("div");
+              toast.className = `alert ${type === "success" ? "alert-success" : "alert-error"} shadow-lg`;
+              toast.innerHTML = `<span>${message}</span>`;
+        
+              toastContainer.appendChild(toast);
+        
+              setTimeout(() => {
+                toast.remove();
+              }, 5000);
+            }
     </script>
     
     

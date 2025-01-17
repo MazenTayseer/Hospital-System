@@ -8,6 +8,9 @@ import com.example.hospital.dal.ReviewDAL;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.*;
 import com.example.hospital.models.enums.Speciality;
+import com.example.hospital.services.command.BookAppointmentCommand;
+import com.example.hospital.services.command.CancelAppointmentCommand;
+import com.example.hospital.services.command.CommandInvoker;
 
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
@@ -16,6 +19,7 @@ import java.util.List;
 
 @Service
 public class PatientService {
+    private final CommandInvoker commandInvoker = new CommandInvoker();
     private DoctorDAL doctorDAL;
     private PatientDAL patientDAL;
     private AppointmentDAL appointmentDAL;
@@ -33,6 +37,12 @@ public class PatientService {
     }
 
     @Transactional
+    public Appointment registerAppointment(Appointment appointment) {
+        BookAppointmentCommand command = new BookAppointmentCommand(this, appointment);
+        commandInvoker.executeCommand(command);
+        return appointment;
+    }
+    
     public Appointment bookAppointment(Appointment appointment) {
       Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
       Patient patient = patientDAL.findById(appointment.getPatient().getId());
@@ -46,6 +56,11 @@ public class PatientService {
     public Patient getPatientById(Long patientId) {
         Patient patient = patientDAL.findById(patientId);
         return patient;
+    }
+
+    public void removeAppointment(Long appointmentId) {
+        CancelAppointmentCommand command = new CancelAppointmentCommand(this, appointmentId);
+        commandInvoker.executeCommand(command);
     }
 
     public void cancelAppointment(Long appointmentId) {
@@ -80,5 +95,10 @@ public class PatientService {
             return doctorDAL.findAllDoctors();
         }
     }
+
+    public List<Appointment> getAppointmentsForPatient(Long patientId) {
+        return appointmentDAL.findAppointmentsByPatientId(patientId);
+    }
+    
 
 }

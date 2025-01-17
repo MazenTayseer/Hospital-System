@@ -1,45 +1,38 @@
 package com.example.hospital.models;
 
-import com.example.hospital.models.enums.Gender;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import com.example.hospital.models.enums.Gender;
 
 @Entity
 @Table(name = "volunteers")
 public class Volunteer extends User {
-    
-    @NotNull(message = "Skills are required")
-    @Column(nullable = false)
-    private String skills;
 
-    @NotNull(message = "Availability is required")
-    @Column(nullable = false)
-    private String availability;
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = true) // Nullable for volunteers who aren't yet assigned to an event
+    private Event event;
 
     public Volunteer() {}
 
     public Volunteer(
-        String firstName,
-        String lastName,
-        String email,
-        String password,
-        String phone,
-        int age,
-        Gender gender,
-        String skills,
-        String availability
+            String firstName,
+            String lastName,
+            String email,
+            String password,
+            String phone,
+            int age,
+            Gender gender
     ) {
         super(firstName, lastName, email, password, phone, age, gender);
-        this.skills = skills;
-        this.availability = availability;
     }
 
-    // Getters and Setters
-    public String getSkills() { return skills; }
-    public void setSkills(String skills) { this.skills = skills; }
+    public Event getEvent() {
+        return event;
+    }
 
-    public String getAvailability() { return availability; }
-    public void setAvailability(String availability) { this.availability = availability; }
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 }

@@ -9,8 +9,22 @@
   <div class="hidden md:flex flex-none">
     <ul class="menu menu-horizontal px-1 text-lg">
       <li><a th:href="@{/home}">Home</a></li>
-      <li><a th:href="@{/doctors}">Doctors</a></li>
-      <li><a th:href="@{/admin}">Admin</a></li>
+
+      <li th:if="${#authorization.expression('hasRole(''PATIENT'')')}">
+        <a th:href="@{/doctors}">Doctors</a>
+      </li>
+
+      <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
+        <a th:href="@{/profileDoctor}">My Appointments</a>
+      </li>
+
+      <li th:if="${#authorization.expression('hasRole(''PATIENT'')')}">
+        <a th:href="@{/profilePatient}">Requested Appointments</a>
+      </li>
+
+      <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
+        <a th:href="@{/admin}">Admin</a>
+      </li>
 
       <!-- Pharmacy Dropdown -->
       <li class="dropdown dropdown-hover">
