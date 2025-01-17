@@ -13,7 +13,7 @@ import com.example.hospital.services.RoomService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rooms")
+@RequestMapping("/api/rooms")
 public class RoomController {
 
     @Autowired

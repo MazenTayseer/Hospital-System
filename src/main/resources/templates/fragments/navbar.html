@@ -22,6 +22,10 @@
       <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
         <a th:href="@{/admin}">Admin</a>
       </li>
+
+      <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
+        <a th:href="@{/roomsPage}">Rooms</a>
+      </li>
       <li><a th:href="@{/logout}">Logout</a></li>
     </ul>
   </div>

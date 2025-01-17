@@ -89,14 +89,14 @@ public class _BaseController {
         return mav;
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/roomsPage")
     public ModelAndView roomPage() {
     User user = authUser.getLoggedUser();
-    if (!user.getRolesName().contains("ADMIN")) {
+    if (!user.getRolesName().contains("MANAGER")) {
         return new ModelAndView("redirect:/error");
     }
 
-    ModelAndView mav = new ModelAndView("room");
+    ModelAndView mav = new ModelAndView("roomsPage");
     return mav;
     }
 
