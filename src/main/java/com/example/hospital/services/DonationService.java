@@ -70,10 +70,10 @@ public class DonationService {
             }
         }
 
-        // donation.setAmount(request.getAmount());
-        // donation.setDate(request.getDate());
-        // donation.setType(request.getType());
-        // donation.setDonor(donor);
+        donation.setAmount(request.getAmount());
+        donation.setDate(request.getDate());
+        donation.setType(request.getType());
+        donation.setDonor(donor);
 
         if (!donation.validateDonation()) {
             throw new BadRequestException("Donation validation failed.");

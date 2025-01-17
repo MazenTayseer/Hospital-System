@@ -109,9 +109,7 @@ class ManagerControllerTests {
                                 "password123",
                                 "+201000000002",
                                 25,
-                                Gender.MALE,
-                                "First Aid, Communication",
-                                "Weekends");
+                                Gender.MALE);
 
                 UserDto<Volunteer> request = new UserDto<>();
                 request.setUser(volunteer);

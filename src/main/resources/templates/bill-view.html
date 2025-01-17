@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>All Bills</title>
+    <!-- Link Tailwind CSS (CDN or local) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold text-center mb-8">List of Bills</h1>
+
+    <table
+      class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg overflow-hidden"
+    >
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+            Bill ID
+          </th>
+          <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+            Patient Name
+          </th>
+          <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+            Amount
+          </th>
+          <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+            Bill Date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          th:each="bill : ${bills}"
+          class="hover:bg-gray-50 transition-colors"
+        >
+          <td
+            class="py-4 px-6 border-b border-gray-200"
+            th:text="${bill.id}"
+          ></td>
+          <td
+            class="py-4 px-6 border-b border-gray-200"
+            th:text="${bill.patient.firstName}"
+          ></td>
+          <td
+            class="py-4 px-6 border-b border-gray-200"
+            th:text="${bill.amount}"
+          ></td>
+          <td
+            class="py-4 px-6 border-b border-gray-200"
+            th:text="${bill.billDate}"
+          ></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

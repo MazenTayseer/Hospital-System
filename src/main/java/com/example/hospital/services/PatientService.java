@@ -42,6 +42,7 @@ public class PatientService {
         commandInvoker.executeCommand(command);
         return appointment;
     }
+    
     public Appointment bookAppointment(Appointment appointment) {
       Doctor doctor = doctorDAL.findById(appointment.getDoctor().getId());
       Patient patient = patientDAL.findById(appointment.getPatient().getId());
@@ -94,5 +95,10 @@ public class PatientService {
             return doctorDAL.findAllDoctors();
         }
     }
+
+    public List<Appointment> getAppointmentsForPatient(Long patientId) {
+        return appointmentDAL.findAppointmentsByPatientId(patientId);
+    }
+    
 
 }

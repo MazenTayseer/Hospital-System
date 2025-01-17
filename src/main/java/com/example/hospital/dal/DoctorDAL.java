@@ -42,4 +42,6 @@ public class DoctorDAL {
     public long count() {
         return doctorRepository.count();
     }
+
+  
 }

@@ -114,4 +114,11 @@ public class PatientController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{patientId}/appointments")
+public ResponseEntity<List<Appointment>> getAppointmentsForPatient(@PathVariable Long patientId) {
+    List<Appointment> appointments = patientService.getAppointmentsForPatient(patientId);
+    return ResponseEntity.ok(appointments);
+}
+
 }

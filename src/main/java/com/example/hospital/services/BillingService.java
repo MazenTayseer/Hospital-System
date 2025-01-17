@@ -1,6 +1,7 @@
 package com.example.hospital.services;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -33,14 +34,18 @@ public class BillingService {
       return inventory.getUnitPrice() * quantity;
     }
 
-     public void generateBill(Long patientId, double amount) {
-        Patient patient = patientService.getPatientById(patientId);
+    public void generateBill(Long patientId, double amount) {
+      Patient patient = patientService.getPatientById(patientId);
 
-        if (patient == null) {
-            throw new IllegalArgumentException("Patient not found with ID: " + patientId);
-        }
+      if (patient == null) {
+        throw new IllegalArgumentException("Patient not found with ID: " + patientId);
+      }
 
-        Bill bill = new Bill(patient, amount, LocalDate.now());
-        billRepository.save(bill);
+      Bill bill = new Bill(patient, amount, LocalDate.now());
+      billRepository.save(bill);
     }
+
+    public List<Bill> getAllBills() {
+      return billRepository.findAll(); // Fetch all the bills from the database
+  }
 }

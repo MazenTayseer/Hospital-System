@@ -8,12 +8,8 @@ import com.example.hospital.models.enums.Gender;
 import com.example.hospital.repositories.NotificationServiceRepository;
 import com.example.hospital.repositories.RoleRepository;
 import com.example.hospital.repositories.UserRepository;
-import com.example.hospital.services.decorator.roles.DoctorDecorator;
-import com.example.hospital.services.decorator.roles.DonorDecorator;
 import com.example.hospital.services.decorator.roles.IRole;
 import com.example.hospital.services.decorator.roles.ManagerDecorator;
-import com.example.hospital.services.decorator.roles.NurseDecorator;
-import com.example.hospital.services.decorator.roles.PatientDecorator;
 import com.example.hospital.services.decorator.roles.UserRole;
 import com.example.hospital.services.observer.notifications.EmailNotificationService;
 import com.example.hospital.services.observer.notifications.NotificationServiceManager;
@@ -108,13 +104,7 @@ public class DataInitializer {
                     Gender.MALE);
 
             IRole roleDecorator = new ManagerDecorator(
-                    new NurseDecorator(
-                            new PatientDecorator(
-                                    new DoctorDecorator(
-                                            new DonorDecorator(new UserRole(roleDAL), roleDAL),
-                                            roleDAL),
-                                    roleDAL),
-                            roleDAL),
+                    new UserRole(roleDAL),
                     roleDAL);
 
             roleDecorator.addRole(defaultManager);

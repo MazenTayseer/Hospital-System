@@ -1,6 +1,5 @@
 package com.example.hospital.controllers;
 
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,6 @@ public class _BaseController {
         this.doctorService = doctorService;
     }
 
-
     @GetMapping("/home")
     public ModelAndView homePage() {
         User user = authUser.getLoggedUser();
@@ -34,6 +32,25 @@ public class _BaseController {
     @GetMapping("/doctors")
     public ModelAndView doctorsPage() {
         ModelAndView mav = new ModelAndView("doctors");
+        return mav;
+    }
+
+    @GetMapping("/profileDoctor")
+    public ModelAndView profilePage() {
+        User user = authUser.getLoggedUser();
+        ModelAndView mav = new ModelAndView("profileDoctor");
+        mav.addObject("user", user); // Add user object to display profile details
+        mav.addObject("roles", user.getRolesName());
+        return mav;
+    }
+
+
+    @GetMapping("/profilePatient")
+    public ModelAndView profilePagePatient() {
+        User user = authUser.getLoggedUser();
+        ModelAndView mav = new ModelAndView("profilePatient");
+        mav.addObject("user", user); // Add user object to display profile details
+        mav.addObject("roles", user.getRolesName());
         return mav;
     }
 

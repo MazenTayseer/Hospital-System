@@ -31,13 +31,41 @@ public class InventoryService {
     if (inventory == null) {
       throw new IllegalArgumentException("Medication not found: " + medicationName);
     }
+    if (inventory == null) {
+      throw new IllegalArgumentException("Medication not found: " + medicationName);
+    }
 
+    if (inventory.getQuantity() < quantity) {
+      throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
+    }
     if (inventory.getQuantity() < quantity) {
       throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
     }
 
     inventory.setQuantity(inventory.getQuantity() - quantity);
     inventoryRepository.save(inventory);
+  }
+
+  public Inventory addMedication(String medicationName, double unitPrice, int quantity) {
+    Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+
+    if (inventory == null) {
+      // Create a new inventory entry if it doesn't exist
+      inventory = new Inventory();
+      inventory.setMedicationName(medicationName);
+      inventory.setUnitPrice(unitPrice);
+      inventory.setQuantity(quantity);
+    } else {
+      // Update the existing inventory
+      inventory.setQuantity(inventory.getQuantity() + quantity);
+      inventory.setUnitPrice(unitPrice); // Update unit price if needed
+    }
+
+    return inventoryRepository.save(inventory);
+  }
+
+  public Iterable<Inventory> getAllInventory() {
+    return inventoryRepository.findAll();
   }
 
   public Inventory findByMedicationName(String medicationName) {

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Inventory</title>
+    <!-- Add Tailwind CSS CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">
+        Inventory Stock
+      </h1>
+
+      <!-- Inventory Table -->
+      <div class="overflow-x-auto">
+        <table
+          class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden"
+        >
+          <thead class="bg-gray-200">
+            <tr>
+              <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+                ID
+              </th>
+              <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+                Medication Name
+              </th>
+              <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+                Unit Price
+              </th>
+              <th class="py-3 px-6 text-left text-gray-700 font-semibold">
+                Quantity
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              th:each="item : ${inventoryList}"
+              class="hover:bg-gray-50 transition-colors"
+            >
+              <td
+                class="py-4 px-6 border-b border-gray-200"
+                th:text="${item.id}"
+              ></td>
+              <td
+                class="py-4 px-6 border-b border-gray-200"
+                th:text="${item.medicationName}"
+              ></td>
+              <td
+                class="py-4 px-6 border-b border-gray-200"
+                th:text="${item.unitPrice}"
+              ></td>
+              <td
+                class="py-4 px-6 border-b border-gray-200"
+                th:text="${item.quantity}"
+              ></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add More Medication Link -->
+      <div class="mt-6 text-center">
+        <a
+          th:href="@{/inventory/add}"
+          class="inline-block px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Add More Medication
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
