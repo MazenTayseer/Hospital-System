@@ -4,7 +4,8 @@ import com.example.hospital.models.BaseDonation;
 import com.example.hospital.models.Donor;
 
 import jakarta.persistence.Entity;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Entity
 public class CashDonation extends BaseDonation {
@@ -13,7 +14,7 @@ public class CashDonation extends BaseDonation {
         super();
     }
 
-    public CashDonation(Donor donor, float amount, Date date) {
+    public CashDonation(Donor donor, float amount, LocalDate date) {
         super(donor, amount, date, "cash");
     }
 

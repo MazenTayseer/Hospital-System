@@ -1,7 +1,8 @@
 package com.example.hospital.models;
 
 import jakarta.persistence.*;
-import java.util.Date;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -18,12 +19,12 @@ public class MedicineDonation {
     private Long donorId;
 
     @Column(nullable = false)
-    private Date donationDate;
+    private LocalDate donationDate;
 
     public MedicineDonation() {
     }
 
-    public MedicineDonation(List<MedicineItem> medicineItems, Long donorId, Date donationDate) {
+    public MedicineDonation(List<MedicineItem> medicineItems, Long donorId, LocalDate donationDate) {
         this.medicineItems = medicineItems;
         this.donorId = donorId;
         this.donationDate = donationDate;
@@ -50,11 +51,11 @@ public class MedicineDonation {
         this.donorId = donorId;
     }
 
-    public Date getDonationDate() {
+    public LocalDate getDonationDate() {
         return donationDate;
     }
 
-    public void setDonationDate(Date donationDate) {
+    public void setDonationDate(LocalDate donationDate) {
         this.donationDate = donationDate;
     }
 }
