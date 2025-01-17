@@ -101,32 +101,30 @@ class ManagerControllerTests {
                                 .andExpect(jsonPath("$.data.roles[?(@.name == 'PATIENT')]").exists());
         }
 
-        // void testCreateVolunteer() throws Exception {
-        //         Volunteer volunteer = new Volunteer(
-        //                         "VolunteerFirstName",
-        //                         "VolunteerLastName",
-        //                         "volunteer@example.com",
-        //                         "password123",
-        //                         "+201000000002",
-        //                         25,
-        //                         Gender.MALE,
-        //                         "First Aid, Communication",
-        //                         "Weekends");
+        void testCreateVolunteer() throws Exception {
+                Volunteer volunteer = new Volunteer(
+                                "VolunteerFirstName",
+                                "VolunteerLastName",
+                                "volunteer@example.com",
+                                "password123",
+                                "+201000000002",
+                                25,
+                                Gender.MALE);
 
-        //         UserDto<Volunteer> request = new UserDto<>();
-        //         request.setUser(volunteer);
-        //         request.setNotificationServiceIds(Collections.emptyList());
+                UserDto<Volunteer> request = new UserDto<>();
+                request.setUser(volunteer);
+                request.setNotificationServiceIds(Collections.emptyList());
 
-        //         mockMvc.perform(post("/api/managers/create-volunteer")
-        //                         .contentType(MediaType.APPLICATION_JSON)
-        //                         .content(objectMapper.writeValueAsString(volunteer)))
-        //                         .andExpect(status().isOk())
-        //                         .andExpect(jsonPath("$.id").exists())
-        //                         .andExpect(jsonPath("$.firstName").value("VolunteerFirstName"))
-        //                         .andExpect(jsonPath("$.skills").value("First Aid, Communication"))
-        //                         .andExpect(jsonPath("$.availability").value("Weekends"))
-        //                         .andExpect(jsonPath("$.roles[?(@.name == 'VOLUNTEER')]").exists());
-        // }
+                mockMvc.perform(post("/api/managers/create-volunteer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(volunteer)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.firstName").value("VolunteerFirstName"))
+                                .andExpect(jsonPath("$.skills").value("First Aid, Communication"))
+                                .andExpect(jsonPath("$.availability").value("Weekends"))
+                                .andExpect(jsonPath("$.roles[?(@.name == 'VOLUNTEER')]").exists());
+        }
 
         @Test
         public void testDeleteUser() throws Exception {
