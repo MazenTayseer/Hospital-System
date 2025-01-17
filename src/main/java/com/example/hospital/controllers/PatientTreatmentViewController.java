@@ -1,5 +1,8 @@
 package com.example.hospital.controllers;
 
+import com.example.hospital.models.MedicationTreatment;
+import com.example.hospital.models.SurgeryTreatment;
+import com.example.hospital.models.TherapyTreatment;
 import com.example.hospital.models.dto.MedicationTreatmentDTO;
 import com.example.hospital.models.dto.SurgeryTreatmentDTO;
 import com.example.hospital.models.dto.TherapyTreatmentDTO;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/treatments")
@@ -102,4 +106,54 @@ public String viewTherapyTreatments(@PathVariable Long patientId, Model model) {
     model.addAttribute("patientId", patientId); // Pass patientId to the template
     return "view-therapy-treatments";
 }
+
+@GetMapping("/add/reports")
+public String showReportPage() {
+    return "reports";
+}
+
+@GetMapping("/report")
+public String getTreatmentReport(
+        @RequestParam String treatmentType,
+        @RequestParam Long treatmentId,
+        Model model) {
+    Map<String, Object> report;
+    switch (treatmentType.toLowerCase()) {
+        case "medication":
+            MedicationTreatment medication = treatmentService.getMedicationTreatmentById(treatmentId);
+            report = Map.of(
+                "Treatment Type", "Medication",
+                "Medication Name", medication.getMedicationName(),
+                "Dosage", medication.getDosage(),
+                "Duration", medication.getDuration() + " days",
+                "Frequency", medication.getFrequency()
+            );
+            break;
+        case "surgery":
+            SurgeryTreatment surgery = treatmentService.getSurgeryTreatmentById(treatmentId);
+            report = Map.of(
+                "Treatment Type", "Surgery",
+                "Surgery Type", surgery.getSurgeryType(),
+                "Location", surgery.getLocation(),
+                "Surgeon", surgery.getSurgeon(),
+                "Date", surgery.getDate()
+            );
+            break;
+        case "therapy":
+            TherapyTreatment therapy = treatmentService.getTherapyTreatmentById(treatmentId);
+            report = Map.of(
+                "Treatment Type", "Therapy",
+                "Therapy Type", therapy.getTherapyType(),
+                "Duration", therapy.getDuration() + " days",
+                "Frequency", therapy.getFrequency(),
+                "Notes", therapy.getNotes()
+            );
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid treatment type");
+    }
+    model.addAttribute("report", report);
+    return "reports";
+}
+
 }
