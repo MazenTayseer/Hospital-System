@@ -1,11 +1,12 @@
 package com.example.hospital.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class DonationDto {
     private String type;
     private float amount;
-    private Date date;
+    private LocalDate date; // Use LocalDate instead of Date
     private Long donorId;
 
     public String getType() {
@@ -24,11 +25,11 @@ public class DonationDto {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

@@ -1,13 +1,30 @@
 package com.example.hospital.models;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import com.example.hospital.services.factory.CashDonation;
+import com.example.hospital.services.factory.ChequeDonation;
 import com.example.hospital.services.factory.IDonation;
+import com.example.hospital.services.factory.OnlineDonation;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+
 
 import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@JsonTypeInfo(
+    use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY,
+    property = "type"
+)
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = CashDonation.class, name = "cash"),
+    @JsonSubTypes.Type(value = OnlineDonation.class, name = "online"),
+    @JsonSubTypes.Type(value = ChequeDonation.class, name = "cheque")
+})
 public abstract class BaseDonation implements IDonation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +38,14 @@ public abstract class BaseDonation implements IDonation {
     private float amount;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @Column(nullable = false)
     private String type;
 
     public BaseDonation() {}
 
-    public BaseDonation(Donor donor, float amount, Date date, String type) {
+    public BaseDonation(Donor donor, float amount, LocalDate date, String type) {
         this.donor = donor;
         this.amount = amount;
         this.date = date;
@@ -55,11 +72,11 @@ public abstract class BaseDonation implements IDonation {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

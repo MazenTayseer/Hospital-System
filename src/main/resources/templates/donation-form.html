@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Donation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6 text-center">Add Donation</h1>
+      <form
+        th:action="@{/donations/submit}"
+        th:object="${donation}"
+        method="post"
+        class="space-y-4"
+      >
+        <!-- Donation Type Dropdown -->
+        <div>
+          <label for="type" class="block text-sm font-medium text-gray-700"
+            >Donation Type</label
+          >
+          <select
+            id="type"
+            th:field="*{type}"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+          >
+            <option value="cash">Cash</option>
+            <option value="online">Online</option>
+            <option value="cheque">Cheque</option>
+          </select>
+        </div>
+
+        <!-- Amount Input -->
+        <div>
+          <label for="amount" class="block text-sm font-medium text-gray-700"
+            >Amount</label
+          >
+          <input
+            type="number"
+            id="amount"
+            th:field="*{amount}"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
+          />
+        </div>
+
+        <!-- Date Input -->
+        <div>
+          <label for="date" class="block text-sm font-medium text-gray-700"
+            >Date</label
+          >
+          <input
+            type="date"
+            id="date"
+            th:field="*{date}"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
+          />
+        </div>
+
+        <!-- Donor ID Input -->
+        <div>
+          <label for="donorId" class="block text-sm font-medium text-gray-700"
+            >Donor ID</label
+          >
+          <input
+            type="number"
+            id="donorId"
+            th:field="*{donorId}"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

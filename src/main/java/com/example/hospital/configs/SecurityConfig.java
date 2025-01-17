@@ -38,7 +38,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults()) 
+            .cors(Customizer.withDefaults())
             .authorizeHttpRequests(authorize -> authorize
                 // .requestMatchers("/home").permitAll()
 
@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/notifications/**").hasRole("MANAGER")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
-                .requestMatchers("/api/donations/create").hasRole("DONOR")
+                .requestMatchers("/api/donations/create").hasRole("MANAGER")
                 .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
                 .requestMatchers("/api/statics/**").permitAll()
                 .anyRequest().authenticated()
@@ -54,12 +54,12 @@ public class SecurityConfig {
             .formLogin(formLogin -> formLogin
                 .loginPage("/login").permitAll()
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/home", true) 
+                .defaultSuccessUrl("/home", true)
                 .failureUrl("/login?error")
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .permitAll() 
+                .permitAll()
             )
             // .csrf(csrf -> csrf
             //     .ignoringRequestMatchers("/logout")
@@ -75,4 +75,3 @@ public class SecurityConfig {
     }
 
 }
-

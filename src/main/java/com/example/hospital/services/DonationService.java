@@ -1,5 +1,8 @@
 package com.example.hospital.services;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.hospital.dal.DonationDAL;
@@ -10,6 +13,7 @@ import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.BaseDonation;
 import com.example.hospital.models.Donor;
 import com.example.hospital.models.User;
+import com.example.hospital.repositories.DonationRepository;
 import com.example.hospital.services.strategy.create_user.CreateUserContext;
 import com.example.hospital.services.factory.DonationFactory;
 
@@ -20,11 +24,15 @@ public class DonationService {
     private final DonationDAL donationDAL;
     private final CreateUserContext createUserContext;
 
-    public DonationService(DonationFactory donationFactory, DonorDAL donorDAL, DonationDAL donationDAL , CreateUserContext createUserContext/*, NotificationService notificationService */) {
+    @Autowired
+    private final DonationRepository donationRepository;
+
+    public DonationService(DonationFactory donationFactory, DonorDAL donorDAL, DonationDAL donationDAL , CreateUserContext createUserContext,DonationRepository donationRepository/*, NotificationService notificationService */) {
         this.donationFactory = donationFactory;
         this.donorDAL = donorDAL;
         this.donationDAL = donationDAL;
         this.createUserContext = createUserContext;
+        this.donationRepository = donationRepository;
     }
 
     public User createUser(UserDto<? extends User> request) {
@@ -33,23 +41,27 @@ public class DonationService {
 
     public String processDonation(DonationDto request) {
 
-        Donor donor = donorDAL.findById(request.getDonorId());
-        if (donor == null) {
-            throw new BadRequestException("Invalid donor ID: " + request.getDonorId());
-        }
+      Donor donor = donorDAL.findById(request.getDonorId());
+      if (donor == null) {
+        throw new BadRequestException("Invalid donor ID: " + request.getDonorId());
+      }
 
-        BaseDonation donation = donationFactory.createDonation(request.getType());
-        donation.setAmount(request.getAmount());
-        donation.setDate(request.getDate());
-        donation.setType(request.getType());
-        donation.setDonor(donor);
-        
-        if (!donation.validateDonation()) {
-            throw new BadRequestException("Donation validation failed.");
-        }
-        
-        String receipt = donation.generateReceipt(); 
-        donationDAL.save(donation);
-        return receipt;
+      BaseDonation donation = donationFactory.createDonation(request.getType());
+      donation.setAmount(request.getAmount());
+      donation.setDate(request.getDate());
+      donation.setType(request.getType());
+      donation.setDonor(donor);
+
+      if (!donation.validateDonation()) {
+        throw new BadRequestException("Donation validation failed.");
+      }
+
+      String receipt = donation.generateReceipt();
+      donationDAL.save(donation);
+      return receipt;
     }
+
+    public List<BaseDonation> getAllDonations() {
+      return donationRepository.findAllDonations();
+  }
 }
