@@ -26,6 +26,9 @@
         <a th:href="@{/admin}">Admin</a>
       </li>
 
+      <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
+        <a th:href="@{/roomsPage}">Rooms</a>
+      </li>
       <!-- Pharmacy Dropdown -->
       <li class="dropdown dropdown-hover">
         <a class="flex items-center">

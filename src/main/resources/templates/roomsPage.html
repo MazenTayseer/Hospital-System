@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Room Management</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark" class="min-h-screen">
+    <div th:replace="fragments/navbar"></div>
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+      <h2 class="text-4xl font-bold">Room Management</h2>
+
+      <div class="grid grid-cols-2 gap-6">
+        <button class="btn btn-success" id="create-room-btn">Create Room</button>
+      </div>
+
+      <div class="mt-6">
+        <h3 class="text-2xl font-bold">Rooms</h3>
+        <ul id="room-list" class="list bg-base-300 rounded-box"></ul>
+      </div>
+
+      <div id="create-room-modal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-semibold">Create New Room</h2>
+          <div class="modal-action">
+            <button class="btn" id="create-room">Create Room</button>
+            <button class="btn" id="close-create-room-modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="assign-doctor-modal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-semibold">Assign Doctor</h2>
+          <select id="doctor-select" class="select select-bordered"></select>
+          <div class="modal-action">
+            <button class="btn" id="assign-doctor-btn">Assign Doctor</button>
+            <button class="btn" id="close-assign-doctor-modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="add-nurse-modal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-semibold">Add Nurse</h2>
+          <select id="nurse-select" class="select select-bordered"></select>
+          <div class="modal-action">
+            <button class="btn" id="add-nurse-btn">Add Nurse</button>
+            <button class="btn" id="close-add-nurse-modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="add-patient-modal" class="modal">
+        <div class="modal-box">
+          <h2 class="text-xl font-semibold">Add Patient</h2>
+          <select id="patient-select" class="select select-bordered"></select>
+          <div class="modal-action">
+            <button class="btn" id="add-patient-btn">Add Patient</button>
+            <button class="btn" id="close-add-patient-modal">Close</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script th:inline="javascript">
+      fetch('/api/rooms')
+        .then((response) => response.json())
+        .then((rooms) => {
+          const roomList = document.getElementById('room-list');
+          rooms.forEach((room) => {
+            const roomItem = document.createElement('li');
+            roomItem.classList.add(
+              'list-row',
+              'flex',
+              'justify-between',
+              'items-center',
+              'w-full'
+            );
+
+            const roomInfo = document.createElement('div');
+            roomInfo.innerHTML = ` 
+              <div class="text-lg font-semibold">Room ${room.roomId}</div>
+              <div class="text-xs uppercase font-semibold opacity-60">
+                ${room.status}
+              </div>
+            `;
+
+            const assignDoctorBtn = document.createElement('a');
+            assignDoctorBtn.classList.add('btn', 'btn-success', 'ml-2');
+            assignDoctorBtn.textContent = 'Assign Doctor';
+            assignDoctorBtn.addEventListener('click', () => showAssignDoctorModal(room.roomId));
+
+            const addNurseBtn = document.createElement('a');
+            addNurseBtn.classList.add('btn', 'btn-info', 'ml-2');
+            addNurseBtn.textContent = 'Add Nurse';
+            addNurseBtn.addEventListener('click', () => showAddNurseModal(room.roomId));
+
+            const addPatientBtn = document.createElement('a');
+            addPatientBtn.classList.add('btn', 'btn-warning', 'ml-2');
+            addPatientBtn.textContent = 'Add Patient';
+            addPatientBtn.addEventListener('click', () => showAddPatientModal(room.roomId));
+
+            roomItem.appendChild(roomInfo);
+            roomItem.appendChild(assignDoctorBtn);
+            roomItem.appendChild(addNurseBtn);
+            roomItem.appendChild(addPatientBtn);
+
+            const deleteBtn = document.createElement('a');
+            deleteBtn.classList.add('btn', 'btn-error', 'ml-auto');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.addEventListener('click', () => {
+              fetch(`/api/rooms/${room.roomId}`, {
+                method: 'DELETE',
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    showToast(`Room ${room.roomId} deleted successfully!`, "success");
+                    roomItem.remove();
+                  } else {
+                    const errorMessage = await response.text();
+                    showToast(errorMessage || "Failed to delete room", "error");
+                  }
+                })
+                .catch(() => showToast("Failed to communicate with the server", "error"));
+            });
+
+            roomItem.appendChild(deleteBtn);
+            roomList.appendChild(roomItem);
+          });
+        });
+
+      document.getElementById('create-room-btn').addEventListener('click', () => {
+        document.getElementById('create-room-modal').classList.add('modal-open');
+      });
+
+      document.getElementById('close-create-room-modal').addEventListener('click', () => {
+        document.getElementById('create-room-modal').classList.remove('modal-open');
+      });
+
+      document.getElementById('create-room').addEventListener('click', () => {
+        fetch('/api/rooms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: 'available' }),
+        })
+          .then(async (response) => {
+            if (response.ok) {
+              const newRoom = await response.json();
+              showToast(`Room ${newRoom.roomId} created successfully!`, "success");
+            } else {
+              const errorMessage = await response.text();
+              showToast(errorMessage || "Failed to create room", "error");
+            }
+          })
+          .catch(() => showToast("Failed to communicate with the server", "error"))
+          .finally(() => {
+            document.getElementById('create-room-modal').classList.remove('modal-open');
+          });
+      });
+
+      function showAssignDoctorModal(roomId) {
+        document.getElementById('assign-doctor-modal').classList.add('modal-open');
+        fetch('/api/managers/doctors')
+          .then((response) => response.json())
+          .then((doctors) => {
+            const doctorSelect = document.getElementById('doctor-select');
+            doctorSelect.innerHTML = '';
+            doctors.forEach((doctor) => {
+              const option = document.createElement('option');
+              option.value = doctor.id;
+              option.textContent = `${doctor.firstName} ${doctor.lastName}`;
+              doctorSelect.appendChild(option);
+            });
+          });
+
+        document.getElementById('assign-doctor-btn').onclick = () => {
+          const selectedDoctorId = document.getElementById('doctor-select').value;
+          fetch(`/api/rooms/${roomId}/assign-doctor`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: selectedDoctorId }),
+          })
+            .then(async (response) => {
+              if (response.ok) {
+                showToast(`Doctor assigned successfully to Room ${roomId}!`, "success");
+              } else {
+                const errorMessage = await response.text();
+                showToast(errorMessage || "Failed to assign doctor", "error");
+              }
+            })
+            .catch(() => showToast("Failed to communicate with the server", "error"))
+            .finally(() => {
+              document.getElementById('assign-doctor-modal').classList.remove('modal-open');
+            });
+        };
+      }
+
+      document.getElementById('close-assign-doctor-modal').addEventListener('click', () => {
+        document.getElementById('assign-doctor-modal').classList.remove('modal-open');
+      });
+
+      function showAddNurseModal(roomId) {
+        document.getElementById('add-nurse-modal').classList.add('modal-open');
+        fetch('/api/managers/nurses')
+          .then((response) => response.json())
+          .then((nurses) => {
+            const nurseSelect = document.getElementById('nurse-select');
+            nurseSelect.innerHTML = '';
+            nurses.forEach((nurse) => {
+              const option = document.createElement('option');
+              option.value = nurse.id;
+              option.textContent = `${nurse.firstName} ${nurse.lastName}`;
+              nurseSelect.appendChild(option);
+            });
+          });
+
+        document.getElementById('add-nurse-btn').onclick = () => {
+          const selectedNurseId = document.getElementById('nurse-select').value;
+          fetch(`/api/rooms/${roomId}/assign-nurse`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: selectedNurseId }),
+          })
+            .then(async (response) => {
+              if (response.ok) {
+                showToast(`Nurse added successfully to Room ${roomId}!`, "success");
+              } else {
+                const errorMessage = await response.text();
+                showToast(errorMessage || "Failed to add nurse", "error");
+              }
+            })
+            .catch(() => showToast("Failed to communicate with the server", "error"))
+            .finally(() => {
+              document.getElementById('add-nurse-modal').classList.remove('modal-open');
+            });
+        };
+      }
+
+      document.getElementById('close-add-nurse-modal').addEventListener('click', () => {
+        document.getElementById('add-nurse-modal').classList.remove('modal-open');
+      });
+
+      function showAddPatientModal(roomId) {
+        document.getElementById('add-patient-modal').classList.add('modal-open');
+        fetch('/api/managers/patients')
+          .then((response) => response.json())
+          .then((patients) => {
+            const patientSelect = document.getElementById('patient-select');
+            patientSelect.innerHTML = '';
+            patients.forEach((patient) => {
+              const option = document.createElement('option');
+              option.value = patient.id;
+              option.textContent = `${patient.firstName} ${patient.lastName}`;
+              patientSelect.appendChild(option);
+            });
+          });
+
+        document.getElementById('add-patient-btn').onclick = () => {
+          const selectedPatientId = document.getElementById('patient-select').value;
+          fetch(`/api/rooms/${roomId}/assign-patient`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: selectedPatientId }),
+          })
+            .then(async (response) => {
+              if (response.ok) {
+                showToast(`Patient added successfully to Room ${roomId}!`, "success");
+              } else {
+                const errorMessage = await response.text();
+                showToast(errorMessage || "Failed to add patient", "error");
+              }
+            })
+            .catch(() => showToast("Failed to communicate with the server", "error"))
+            .finally(() => {
+              document.getElementById('add-patient-modal').classList.remove('modal-open');
+            });
+        };
+      }
+
+      document.getElementById('close-add-patient-modal').addEventListener('click', () => {
+        document.getElementById('add-patient-modal').classList.remove('modal-open');
+      });
+
+      function showToast(message, type) {
+        const toastContainer = document.getElementById("toast-container");
+
+        const toast = document.createElement("div");
+        toast.className = `alert ${
+          type === "success" ? "alert-success" : "alert-error"
+        } shadow-lg`;
+        toast.innerHTML = `<span>${message}</span>`;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
