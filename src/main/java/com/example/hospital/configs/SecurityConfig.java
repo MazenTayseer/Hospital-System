@@ -47,8 +47,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 .requestMatchers("/api/patient/**").hasRole("PATIENT")
                 .requestMatchers("/api/donations/create").hasRole("DONOR")
-                .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
+                .requestMatchers("/api/volunteer/**").hasAnyRole("VOLUNTEER", "MANAGER")
                 .requestMatchers("/api/statics/**").permitAll()
+                .requestMatchers("/api/events/**").hasRole("MANAGER")
                 .anyRequest().authenticated()
             )
             .formLogin(formLogin -> formLogin

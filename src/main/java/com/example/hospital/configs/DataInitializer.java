@@ -15,6 +15,7 @@ import com.example.hospital.services.decorator.roles.ManagerDecorator;
 import com.example.hospital.services.decorator.roles.NurseDecorator;
 import com.example.hospital.services.decorator.roles.PatientDecorator;
 import com.example.hospital.services.decorator.roles.UserRole;
+import com.example.hospital.services.decorator.roles.VolunteerDecorator;
 import com.example.hospital.services.observer.notifications.EmailNotificationService;
 import com.example.hospital.services.observer.notifications.NotificationServiceManager;
 import com.example.hospital.services.observer.notifications.SmsNotificationService;
@@ -111,8 +112,10 @@ public class DataInitializer {
             IRole roleDecorator = new ManagerDecorator(
                 new NurseDecorator(
                     new PatientDecorator(
-                        new DoctorDecorator(
-                            new DonorDecorator(new UserRole(roleDAL), roleDAL),
+                        new VolunteerDecorator(
+                            new DoctorDecorator(
+                                new DonorDecorator(new UserRole(roleDAL), roleDAL),
+                            roleDAL),
                         roleDAL),
                     roleDAL),
                  roleDAL),

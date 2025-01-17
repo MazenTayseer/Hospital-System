@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import com.example.hospital.models.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "volunteers")
@@ -12,6 +13,7 @@ public class Volunteer extends User {
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = true) // Nullable for volunteers who aren't yet assigned to an event
+    @JsonIgnore
     private Event event;
 
     public Volunteer() {}
