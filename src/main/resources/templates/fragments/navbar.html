@@ -34,7 +34,7 @@
         <a th:href="@{/roomsPage}">Rooms</a>
       </li>
 
-      <li><a th:href="@{/donations/list}">Donations</a></li>
+      <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}"><a th:href="@{/donations/list}">Donations</a></li>
       <!-- Pharmacy Dropdown -->
       <li class="dropdown dropdown-hover">
         <a class="flex items-center">
@@ -55,14 +55,14 @@
         <ul
           class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
         >
-          <li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
             <a th:href="@{/pharmacy/dispense-form}">Dispense Medication</a>
           </li>
-          <li><a th:href="@{/inventory/view}">View Inventory</a></li>
-          <li><a th:href="@{/inventory/add}">Add Inventory</a></li>
-          <li><a th:href="@{/prescriptions}">View Prescriptions</a></li>
-          <li><a th:href="@{/prescriptions/new}">Add Prescription</a></li>
-          <li><a th:href="@{/bills}">View Bills</a></li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'') or hasRole(''MANAGER'')')}"><a th:href="@{/inventory/view}">View Inventory</a></li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'') or hasRole(''MANAGER'')')}"><a th:href="@{/inventory/add}">Add Inventory</a></li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'') or hasRole(''MANAGER'') or hasRole(''PATIENT'')')}"><a th:href="@{/prescriptions}">View Prescriptions</a></li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'') or hasRole(''MANAGER'')')}"><a th:href="@{/prescriptions/new}">Add Prescription</a></li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'') or hasRole(''MANAGER'')')}"><a th:href="@{/bills}">View Bills</a></li>
         </ul>
       </li>
 
@@ -86,20 +86,20 @@
           class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
         >
           <!-- Add Treatment Links -->
-          <li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
             <a th:href="@{/treatments/add/medication}"
               >Add Medication Treatment</a
             >
           </li>
-          <li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
             <a th:href="@{/treatments/add/surgery}">Add Surgery Treatment</a>
           </li>
-          <li>
+          <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
             <a th:href="@{/treatments/add/therapy}">Add Therapy Treatment</a>
           </li>
 
           <!-- View Treatment Links -->
-          <li>
+          <li >
             <a th:href="@{/treatments/select-patient}">View Treatments</a>
           </li>
         </ul>
