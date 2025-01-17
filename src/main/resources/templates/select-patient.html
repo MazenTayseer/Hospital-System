@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Select Patient</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6 text-center">Select Patient</h1>
+      <form
+        th:action="@{/treatments/select-patient}"
+        method="post"
+        class="space-y-4"
+      >
+        <!-- Patient ID Input -->
+        <div>
+          <label for="patientId" class="block text-sm font-medium text-gray-700"
+            >Patient ID</label
+          >
+          <input
+            type="number"
+            id="patientId"
+            name="patientId"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
+          />
+        </div>
+
+        <!-- Treatment Type Dropdown -->
+        <div>
+          <label
+            for="treatmentType"
+            class="block text-sm font-medium text-gray-700"
+            >Treatment Type</label
+          >
+          <select
+            id="treatmentType"
+            name="treatmentType"
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
+          >
+            <option value="medications">Medication Treatments</option>
+            <option value="surgeries">Surgery Treatments</option>
+            <option value="therapies">Therapy Treatments</option>
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+          >
+            View Treatments
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medication Treatments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
+      <h1 class="text-2xl font-bold mb-6 text-center">
+        Medication Treatments for Patient
+      </h1>
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="py-2 px-4 border-b">Medication Name</th>
+            <th class="py-2 px-4 border-b">Dosage</th>
+            <th class="py-2 px-4 border-b">Duration</th>
+            <th class="py-2 px-4 border-b">Frequency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="treatment : ${treatments}" class="hover:bg-gray-50">
+            <td
+              class="py-2 px-4 border-b text-center"
+              th:text="${treatment.medicationName}"
+            ></td>
+            <td
+              class="py-2 px-4 border-b text-center"
+              th:text="${treatment.dosage}"
+            ></td>
+            <td
+              class="py-2 px-4 border-b text-center"
+              th:text="${treatment.duration}"
+            ></td>
+            <td
+              class="py-2 px-4 border-b text-center"
+              th:text="${treatment.frequency}"
+            ></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mt-6 text-center">
+        <a
+          th:href="@{/treatments/select-patient}"
+          class="text-blue-500 hover:underline"
+          >Select Another Patient</a
+        >
+      </div>
+    </div>
+  </body>
+</html>
