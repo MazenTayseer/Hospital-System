@@ -1,9 +1,11 @@
 package com.example.hospital.models;
 
+import com.example.hospital.template_method.ReportTemplate;
+
 import jakarta.persistence.*;
 
 @Entity
-public class TherapyTreatment {
+public class TherapyTreatment implements ReportTemplate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +20,15 @@ public class TherapyTreatment {
     private String frequency;
     private String notes;
 
-    // Getters and setters
+    @Override
+    public String printTreatmentDetails() {
+        return "Patient: " + patient.getId() + "\n" +
+               "Therapy Type: " + therapyType + "\n" +
+               "Duration: " + duration + " days\n" +
+               "Frequency: " + frequency + "\n" +
+               "Notes: " + notes + "\n";
+    }
+
 
     public Long getId() {
         return id;

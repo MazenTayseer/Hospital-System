@@ -1,5 +1,6 @@
 package com.example.hospital.controllers;
 
+import com.example.hospital.ResponseWrapper;
 import com.example.hospital.dto.UserDto;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.Nurse;
@@ -8,6 +9,9 @@ import com.example.hospital.models.User;
 import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.ManagerService;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,28 +25,54 @@ public class ManagerController {
         this.managerService = managerService;
     }
 
+    @GetMapping("/all-users")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = managerService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
     @PostMapping("/create-doctor")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody UserDto<Doctor> request) {
-        Doctor createdUser = (Doctor) managerService.createUser(request);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<ResponseWrapper<Doctor>> createDoctor(@RequestBody UserDto<Doctor> request) {
+        try {
+            Doctor createdUser = (Doctor) managerService.createUser(request);
+            return ResponseEntity.ok(new ResponseWrapper<>(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ResponseWrapper<>("Error creating doctor: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/create-nurse")
-    public ResponseEntity<Nurse> createNurse(@RequestBody UserDto<Nurse> request) {
-        Nurse createdUser = (Nurse) managerService.createUser(request);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<ResponseWrapper<Nurse>> createNurse(@RequestBody UserDto<Nurse> request) {
+        try {
+            Nurse createdUser = (Nurse) managerService.createUser(request);
+            return ResponseEntity.ok(new ResponseWrapper<>(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ResponseWrapper<>("Error creating nurse: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/create-patient")
-    public ResponseEntity<Patient> createPatient(@RequestBody UserDto<Patient> request) {
-        Patient createdUser = (Patient) managerService.createUser(request);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<ResponseWrapper<Patient>> createPatient(@RequestBody UserDto<Patient> request) {
+        try {
+            Patient createdUser = (Patient) managerService.createUser(request);
+            return ResponseEntity.ok(new ResponseWrapper<>(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ResponseWrapper<>("Error creating patient: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/create-volunteer")
-    public ResponseEntity<Volunteer> createVolunteer(@RequestBody UserDto<Patient> request) {
-        Volunteer createdUser = (Volunteer) managerService.createUser(request);
-        return ResponseEntity.ok(createdUser);
+    public ResponseEntity<ResponseWrapper<Volunteer>> createVolunteer(@RequestBody UserDto<Volunteer> request) {
+        try {
+            Volunteer createdUser = (Volunteer) managerService.createUser(request);
+            return ResponseEntity.ok(new ResponseWrapper<>(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(new ResponseWrapper<>("Error creating volunteer: " + e.getMessage()));
+        }
     }
 
     @DeleteMapping("/delete/{userId}")
@@ -57,5 +87,5 @@ public class ManagerController {
             @RequestBody UserDto<User> userDto) {
         User updatedUser = managerService.updateUser(userId, userDto.getUser());
         return ResponseEntity.ok(updatedUser);
-    }
+    }  
 }

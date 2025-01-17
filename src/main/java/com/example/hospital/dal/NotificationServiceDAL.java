@@ -27,6 +27,10 @@ public class NotificationServiceDAL {
         return notificationServiceRepository.findAllById(ids);
     }
 
+    public List<NotificationService> findAll() {
+        return notificationServiceRepository.findAll();
+    }
+
     public NotificationService findByName(String name) {
         return notificationServiceRepository.findByName(name).orElseThrow(
             () -> new BadRequestException(ResponseMessages.record_not_found("Role"))

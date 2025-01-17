@@ -21,7 +21,7 @@ public class EmailNotificationService implements INotificationObserver {
     }
 
     @Override
-    public void send(String message) {
+    public void send(String message, String subject) {
         List<User> users = getSubscribedUsers();
         Iterator<User> userIterator = new UserIterator(users);
 

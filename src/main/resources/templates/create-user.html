@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ASU Hospital</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body data-theme="dark">
+
+<section class="flex flex-col justify-center items-center h-screen">
+    <div class="rounded-lg w-full max-w-lg space-y-6 p-4">
+        <p class="text-3xl font-bold text-center">Create User</p>
+    
+        <form id="userForm" method="post" class="space-y-4">
+            <input type="text" id="firstName" name="firstName" placeholder="First Name" class="input w-full" required />
+            <input type="text" id="lastName" name="lastName" placeholder="Last Name" class="input w-full" required />
+            <input type="text" id="email" name="email" placeholder="Email" class="input w-full" required />
+            <input type="number" id="age" name="age" placeholder="Age" class="input w-full" required />
+            <input type="text" id="phone" name="phone" placeholder="Phone" class="input w-full" required />
+            <input type="password" id="password" name="password" placeholder="Password" class="input w-full" required />
+            <select id="gender" name="gender" class="input w-full" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+            
+            <select id="role" name="role" class="input w-full" required>
+                <option value="" disabled selected>Select Role</option>
+            </select>
+
+            <div id="specialityContainer" class="hidden space-y-4">
+                <select id="speciality" name="speciality" class="input w-full">
+                    <option value="" disabled selected>Select Speciality</option>
+                </select>
+            </div>
+
+            <!-- Notification Services List -->
+            <div id="notificationServicesContainer" class="space-y-2">
+                <p class="text-lg">Select Notification Services</p>
+                <ul id="notificationServicesList"></ul>
+            </div>
+
+            <button type="submit" class="btn btn-sm md:btn-md btn-primary w-full">
+                Create User
+            </button>
+
+            <p id="errorMessage" class="text-error text-center" style="display:none;"></p>
+        </form>
+    
+        <p class="text-center">
+            <a class="px-1 link link-primary font-semibold" href="/admin">
+                Go Back
+            </a>
+        </p>
+    </div>
+</section>
+
+<script>
+    // Fetch roles
+    fetch('/api/statics/get-all-roles')
+        .then(response => response.json())
+        .then(roles => {
+            const roleSelect = document.getElementById('role');
+            roles.forEach(role => {
+                if(role.name === 'MANAGER' || role.name === 'USER') return; 
+                const option = document.createElement('option');
+                option.value = role.name;
+                option.textContent = role.name;
+                roleSelect.appendChild(option);
+
+                if (role.name === 'PATIENT') {
+                    option.selected = true;
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching roles:', error);
+    });
+
+    // Fetch specialities
+    fetch('/api/statics/get-all-specialities')
+        .then(response => response.json())
+        .then(specialities => {
+            const specialitySelect = document.getElementById('speciality');
+            specialitySelect.innerHTML = '<option value="" disabled selected>Select Speciality</option>';
+            specialities.forEach(speciality => {
+                const option = document.createElement('option');
+                option.value = speciality;
+                option.textContent = speciality;
+                specialitySelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching specialities:', error);
+    });
+
+    // Fetch notification services and display checkboxes inside a list
+    fetch('/api/statics/get-notification-services')
+        .then(response => response.json())
+        .then(notificationServices => {
+            const listContainer = document.getElementById('notificationServicesList');
+            notificationServices.forEach(service => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('pb-2');
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'notificationServiceIds';
+                checkbox.value = service.id;
+                checkbox.classList.add('checkbox', 'mr-2');
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(service.name));
+                listItem.appendChild(label);
+                listContainer.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching notification services:', error);
+    });
+
+    // Handle role change to show speciality field
+    document.getElementById('role').addEventListener('change', function () {
+        const specialityContainer = document.getElementById('specialityContainer');
+        if (this.value === 'DOCTOR') {
+            specialityContainer.classList.remove('hidden');
+        } else {
+            specialityContainer.classList.add('hidden');
+            document.getElementById('speciality').value = '';
+        }
+    });
+
+    // Handle form submission
+    document.getElementById('userForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const formData = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            age: document.getElementById('age').value,
+            phone: document.getElementById('phone').value,
+            role: document.getElementById('role').value,
+            speciality: document.getElementById('speciality').value,
+            gender: document.getElementById('gender').value,
+            notificationServiceIds: Array.from(document.querySelectorAll('input[name="notificationServiceIds"]:checked')).map(checkbox => checkbox.value)
+        };
+
+        let apiUrl = '/api/managers/create-patient';
+
+        if (formData.role === 'DOCTOR') {
+            apiUrl = '/api/managers/create-doctor';
+        } else if (formData.role === 'DONOR') {
+            apiUrl = '/api/managers/create-donor';
+        } else if (formData.role === 'NURSE') {
+            apiUrl = '/api/managers/create-nurse';
+        } else if (formData.role === 'VOLUNTEER') {
+            apiUrl = '/api/managers/create-volunteer';
+        } else if(formData.role === 'PATIENT') {
+            apiUrl = '/api/managers/create-patient';
+        }
+        
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user: {
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    password: formData.password,
+                    phone: formData.phone,
+                    age: formData.age,
+                    gender: formData.gender,
+                    speciality: formData.role === 'DOCTOR' ? formData.speciality : null
+                },
+                notificationServiceIds: formData.notificationServiceIds
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.success) {
+                window.location.href = '/admin';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('errorMessage').textContent = 'Failed to create user';
+        });
+    });
+</script>
+
+</body>
+</html>
