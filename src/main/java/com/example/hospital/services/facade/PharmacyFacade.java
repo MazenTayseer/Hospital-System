@@ -42,23 +42,17 @@ public class PharmacyFacade {
 
     public void dispenseMedication(Long patientId, Long doctorId, String medicationName, int quantity) {
 
-    // Retrieve patient details
-    Patient patient = patientService.getPatientById(patientId);
-    if (patient == null) {
-        throw new IllegalArgumentException("Invalid patient ID: " + patientId);
-    }
+        // Retrieve patient details
+        Patient patient = patientService.getPatientById(patientId);
+        if (patient == null) {
+          throw new IllegalArgumentException("Invalid patient ID: " + patientId);
+        }
 
-    // Log patient details
-    System.out.println("Processing request for patient: " + patient.getFirstName());
-
-    // Retrieve doctor details
-    Doctor doctor = doctorService.getById(doctorId);
-    if (doctor == null) {
-      throw new IllegalArgumentException("Doctor not found for ID: " + doctorId);
-    }
-
-    // Log prescribing doctor
-    System.out.println("Prescription issued by: " + doctor.getFirstName() + " (Specialty: " + doctor.getSpeciality() + ")");
+        // Retrieve doctor details
+        Doctor doctor = doctorService.getById(doctorId);
+        if (doctor == null) {
+          throw new IllegalArgumentException("Doctor not found for ID: " + doctorId);
+        }
 
         if (!prescriptionService.validatePrescription(patientId, doctorId, medicationName)) {
             throw new IllegalArgumentException("Invalid prescription");
@@ -70,9 +64,9 @@ public class PharmacyFacade {
 
         // Deduct stock and generate bill
         inventoryService.updateStock(medicationName, quantity);
+
         double billAmount = billingService.calculateBill(medicationName, quantity);
         billingService.generateBill(patientId, billAmount);
 
-        System.out.println("Medication dispensed successfully for patient ID: " + patientId);
     }
 }

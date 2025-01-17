@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Add Prescription</title>
+  </head>
+  <body>
+    <h1>Add a New Prescription</h1>
+
+    <form
+      action="#"
+      th:action="@{/prescriptions}"
+      th:object="${prescription}"
+      method="post"
+    >
+      <div>
+        <label for="patientId">Patient ID:</label>
+        <input type="text" id="patientId" name="patientId" required />
+      </div>
+
+      <div>
+        <label for="doctorId">Doctor ID:</label>
+        <input type="text" id="doctorId" name="doctorId" required />
+      </div>
+
+      <div>
+        <label for="medicationName">Medication Name:</label>
+        <input type="text" id="medicationName" name="medicationName" required />
+      </div>
+
+      <div>
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" required />
+      </div>
+
+      <div>
+        <label for="issueDate">Issue Date:</label>
+        <input type="date" id="issueDate" name="issueDate" required />
+      </div>
+
+      <div>
+        <label for="expiryDate">Expiry Date:</label>
+        <input type="date" id="expiryDate" name="expiryDate" required />
+      </div>
+
+      <button type="submit">Save Prescription</button>
+    </form>
+  </body>
+</html>
