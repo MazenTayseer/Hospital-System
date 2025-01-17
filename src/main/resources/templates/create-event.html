@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Event</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark">
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
+    <section class="flex flex-col justify-center items-center h-screen">
+      <div class="rounded-lg w-full max-w-lg space-y-6 p-4">
+        <p class="text-3xl font-bold text-center">Create Event</p>
+
+        <form id="eventForm" method="post" class="space-y-4">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Event Name"
+            class="input w-full"
+            required
+          />
+          <textarea
+            class="textarea w-full"
+            rows="4"
+            placeholder="Description"
+            id="description"
+            name="description"
+            required
+          ></textarea>
+          <input
+            type="datetime-local"
+            id="dateTime"
+            name="dateTime"
+            class="input w-full"
+            required
+          />
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="Location"
+            class="input w-full"
+            required
+          />
+
+          <button
+            type="submit"
+            id="submitBtn"
+            class="btn btn-sm md:btn-md btn-primary w-full"
+          >
+            <span id="btnText">Create Event</span>
+            <span
+              id="loadingSpinner"
+              class="loading loading-spinner loading-sm hidden"
+            ></span>
+          </button>
+
+          <p
+            id="errorMessage"
+            class="text-error text-center"
+            style="display: none"
+          ></p>
+        </form>
+
+        <p class="text-center">
+          <a class="px-1 link link-primary font-semibold" href="/admin">
+            Go Back
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <script>
+      document
+        .getElementById("eventForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const formData = {
+            name: document.getElementById("name").value,
+            description: document.getElementById("description").value,
+            dateTime: document.getElementById("dateTime").value,
+            location: document.getElementById("location").value,
+          };
+
+          const submitBtn = document.getElementById("submitBtn");
+          const btnText = document.getElementById("btnText");
+          const loadingSpinner = document.getElementById("loadingSpinner");
+
+          submitBtn.disabled = true;
+          btnText.classList.add("hidden");
+          loadingSpinner.classList.remove("hidden");
+
+          fetch("/api/events", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          })
+            .then(async (response) => {
+              if (response.ok) {
+                const data = await response.json();
+                showToast(`Event '${data.name}' created successfully!`, "success");
+                document.getElementById("eventForm").reset();
+              } else {
+                const errorMessage = await response.text();
+                showToast(errorMessage || "Failed to create event", "error");
+              }
+            })
+            .catch((error) => {
+              showToast(
+                "Error creating event: " + error.message,
+                "error"
+              );
+            })
+            .finally(() => {
+              submitBtn.disabled = false;
+              btnText.classList.remove("hidden");
+              loadingSpinner.classList.add("hidden");
+            });
+        });
+
+      function showToast(message, type) {
+        const toastContainer = document.getElementById("toast-container");
+
+        const toast = document.createElement("div");
+        toast.className = `alert ${
+          type === "success" ? "alert-success" : "alert-error"
+        } shadow-lg`;
+        toast.innerHTML = `<span>${message}</span>`;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

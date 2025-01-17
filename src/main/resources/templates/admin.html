@@ -22,100 +22,191 @@
 
     <div class="max-w-5xl mx-auto py-12 space-y-4">
       <h2 class="text-4xl font-bold">Dashboard</h2>
-      <div class="grid grid-cols-2 gap-6">
+      <div class="grid grid-cols-3 gap-6">
         <a class="btn btn-info w-full" th:href="@{/create-user}">Create User</a>
         <a class="btn btn-success w-full" th:href="@{/send-email}">Send Email</a>
+        <a class="btn btn-warning w-full" th:href="@{/create-event}">Create Event</a>
       </div>
     </div>
 
     <div class="max-w-5xl mx-auto py-12 space-y-4">
-        <h2 class="text-4xl font-bold">Users</h2>
-        <ul id="users-list" class="list bg-base-300 rounded-box">
-        </ul>
+      <h2 class="text-4xl font-bold">Users</h2>
+      <ul id="users-list" class="list bg-base-300 rounded-box">
+      </ul>
+    </div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+      <h2 class="text-4xl font-bold">Events</h2>
+      <ul id="events-list" class="list bg-base-300 rounded-box">
+      </ul>
+    </div>
+
+    <div id="update-event-modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Update Event</h3>
+        <form id="update-event-form" class="space-y-4">
+          <input
+            type="text"
+            id="update-event-name"
+            name="name"
+            placeholder="Event Name"
+            class="input input-bordered w-full"
+            required
+          />
+          <textarea
+            id="update-event-description"
+            name="description"
+            placeholder="Description"
+            class="textarea textarea-bordered w-full"
+            required
+          ></textarea>
+          <input
+            type="datetime-local"
+            id="update-event-datetime"
+            name="dateTime"
+            class="input input-bordered w-full"
+            required
+          />
+          <input
+            type="text"
+            id="update-event-location"
+            name="location"
+            placeholder="Location"
+            class="input input-bordered w-full"
+            required
+          />
+          <div class="modal-action">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <button type="button" id="close-update-event-modal" class="btn">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script th:inline="javascript">
         const loggedUserId = parseInt('[[${loggedUserId}]]');
-    
+        let currentEventId = null;
+
+        // Fetch users
         fetch('/api/managers/all-users')
             .then(response => response.json())
             .then(users => {
                 const usersList = document.getElementById('users-list');
                 users.forEach(user => {
-                    // Skip rendering the logged-in user
                     if (user.id === loggedUserId) return;
-    
-                    // Create list item for each user
                     const userItem = document.createElement('li');
                     userItem.classList.add('list-row', 'flex', 'justify-between', 'items-center', 'w-full');
-                    
-                    // user's name and speciality
                     const userInfo = document.createElement('div');
                     userInfo.innerHTML = `
                         <div class="text-lg font-semibold">${user.fullName}</div>
                         <div class="text-xs uppercase font-semibold opacity-60">${user.rolesName}</div>
                     `;
-                    
-                    // Delete button
                     const deleteBtn = document.createElement('a');
                     deleteBtn.classList.add('btn', 'btn-error', 'ml-auto');
                     deleteBtn.textContent = 'delete';
-                    
-                    // Add event listener to the delete button
                     deleteBtn.addEventListener('click', () => {
-                        // Send DELETE request
-                        fetch(`/api/managers/delete/${user.id}`, {
-                            method: 'DELETE',
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                userItem.remove();
-                            } else {
-                                showToast('Cannot delete user with appointments', 'error');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error deleting user:', error);
-                        });
+                        fetch(`/api/managers/delete/${user.id}`, { method: 'DELETE' })
+                            .then(response => {
+                                if (response.ok) {
+                                    userItem.remove();
+                                } else {
+                                    showToast('Cannot delete user with appointments', 'error');
+                                }
+                            })
+                            .catch(error => console.error('Error deleting user:', error));
                     });
-    
-                    // Update button
-                    const updateBtn = document.createElement('a');
-                    updateBtn.classList.add('btn', 'btn-primary', 'ml-auto');
-                    updateBtn.textContent = 'update';
-    
-                    // Add event listener to the update button (you can customize the URL or behavior for updating)
-                    updateBtn.addEventListener('click', () => {
-                    });
-    
-                    // Append user info, update button, and delete button to the list item
                     userItem.appendChild(userInfo);
-                    userItem.appendChild(updateBtn); // Add update button
-                    userItem.appendChild(deleteBtn); // Add delete button
-    
-                    // Append the list item to the users list
+                    userItem.appendChild(deleteBtn);
                     usersList.appendChild(userItem);
                 });
             })
-            .catch(error => {
-                console.error('Error fetching users:', error);
-            });
+            .catch(error => console.error('Error fetching users:', error));
 
-            function showToast(message, type) {
-              const toastContainer = document.getElementById("toast-container");
-        
-              const toast = document.createElement("div");
-              toast.className = `alert ${type === "success" ? "alert-success" : "alert-error"} shadow-lg`;
-              toast.innerHTML = `<span>${message}</span>`;
-        
-              toastContainer.appendChild(toast);
-        
-              setTimeout(() => {
-                toast.remove();
-              }, 5000);
-            }
+        // Fetch events
+        fetch('/api/events')
+            .then(response => response.json())
+            .then(events => {
+                const eventsList = document.getElementById('events-list');
+                events.forEach(event => {
+                    const eventItem = document.createElement('li');
+                    eventItem.classList.add('list-row', 'flex', 'justify-between', 'items-center', 'w-full');
+                    const eventInfo = document.createElement('div');
+                    eventInfo.innerHTML = `
+                        <div class="text-lg font-semibold">${event.name}</div>
+                        <div class="text-xs uppercase font-semibold opacity-60">${event.location}</div>
+                        <div class="text-xs opacity-60">${new Date(event.dateTime).toLocaleString()}</div>
+                    `;
+                    const deleteEventBtn = document.createElement('a');
+                    deleteEventBtn.classList.add('btn', 'btn-error', 'ml-auto');
+                    deleteEventBtn.textContent = 'delete';
+                    deleteEventBtn.addEventListener('click', () => {
+                        fetch(`/api/events/${event.id}`, { method: 'DELETE' })
+                            .then(response => {
+                                if (response.ok) {
+                                    eventItem.remove();
+                                } else {
+                                    showToast('Cannot delete events, users joined it', 'error');
+                                }
+                            })
+                            .catch(error => console.error('Error deleting event:', error));
+                    });
+                    const updateEventBtn = document.createElement('a');
+                    updateEventBtn.classList.add('btn', 'btn-primary', 'ml-auto');
+                    updateEventBtn.textContent = 'update';
+                    updateEventBtn.addEventListener('click', () => {
+                        currentEventId = event.id;
+                        document.getElementById('update-event-name').value = event.name;
+                        document.getElementById('update-event-description').value = event.description;
+                        document.getElementById('update-event-datetime').value = new Date(event.dateTime).toISOString().slice(0, 16);
+                        document.getElementById('update-event-location').value = event.location;
+                        document.getElementById('update-event-modal').classList.add('modal-open');
+                    });
+                    eventItem.appendChild(eventInfo);
+                    eventItem.appendChild(updateEventBtn);
+                    eventItem.appendChild(deleteEventBtn);
+                    eventsList.appendChild(eventItem);
+                });
+            })
+            .catch(error => console.error('Error fetching events:', error));
+
+        // Update event form submission
+        document.getElementById('update-event-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const updatedEvent = {
+                name: document.getElementById('update-event-name').value,
+                description: document.getElementById('update-event-description').value,
+                dateTime: document.getElementById('update-event-datetime').value,
+                location: document.getElementById('update-event-location').value,
+            };
+            fetch(`/api/events/${currentEventId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedEvent),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        showToast('Event updated successfully', 'success');
+                        document.getElementById('update-event-modal').classList.remove('modal-open');
+                    } else {
+                        showToast('Failed to update event', 'error');
+                    }
+                })
+                .catch(error => showToast('Error updating event', 'error'));
+        });
+
+        // Close update modal
+        document.getElementById('close-update-event-modal').addEventListener('click', () => {
+            document.getElementById('update-event-modal').classList.remove('modal-open');
+        });
+
+        function showToast(message, type) {
+          const toastContainer = document.getElementById("toast-container");
+          const toast = document.createElement("div");
+          toast.className = `alert ${type === "success" ? "alert-success" : "alert-error"} shadow-lg`;
+          toast.innerHTML = `<span>${message}</span>`;
+          toastContainer.appendChild(toast);
+          setTimeout(() => toast.remove(), 5000);
+        }
     </script>
-    
-    
   </body>
 </html>

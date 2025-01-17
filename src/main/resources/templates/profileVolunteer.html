@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Doctor Appointments</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark" class="min-h-screen">
+    <div th:replace="fragments/navbar"></div>
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
+
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+      <h2 class="text-4xl font-bold">All Events</h2>
+      <div id="events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Events will be dynamically populated here -->
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto py-6 space-y-4">
+      <h2 class="text-4xl font-bold">Joined Events</h2>
+      <div id="joined-events-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Joined Events will be dynamically populated here -->
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      // Fetch events from the API
+      const loggedUserId= parseInt('[[${user.id}]]');
+
+      fetch('/api/volunteer/events')
+        .then((response) => response.json())
+        .then((events) => {
+          const eventsContainer = document.getElementById('events-container');
+
+          events.forEach((event) => {
+            const eventCard = document.createElement('div');
+            eventCard.classList.add('card', 'bg-base-300', 'shadow-xl', 'p-4');
+
+            eventCard.innerHTML = `
+              <h3 class="text-xl font-bold">${event.name}</h3>
+              <p class="text-sm opacity-75 mb-2">${event.description}</p>
+              <p class="text-sm font-semibold">Location: ${event.location}</p>
+              <p class="text-sm font-semibold">Date: ${new Date(event.dateTime).toLocaleString()}</p>
+              <div class="mt-4">
+                <button class="btn btn-primary join-event-btn" data-event-id="${event.id}">Join Event</button>
+              </div>
+            `;
+
+            eventsContainer.appendChild(eventCard);
+          });
+
+          document.querySelectorAll('.join-event-btn').forEach((button) => {
+            button.addEventListener('click', () => {
+              const eventId = button.getAttribute('data-event-id');
+
+              fetch(`/api/volunteer/${loggedUserId}/join-event/${eventId}`, {
+                method: 'POST',
+              })
+                .then(async (response) => {
+                  if (response.ok) {
+                    showToast('Successfully joined the event.', 'success');
+                    window.location.reload();
+                  } else {
+                    const errorMessage = await response.text();
+                    showToast(errorMessage || "Failed to join event", "error");
+                  }
+                })
+                .catch(() => {
+                  showToast('An error occurred while joining the event.', 'error');
+                });
+            });
+          });
+        })
+        .catch(() => {
+          alert('Failed to load events.');
+        });
+
+        fetch(`/api/volunteer/${loggedUserId}/events`)
+        .then((response) => response.json())
+        .then((joinedEvents) => {
+          const joinedEventsContainer = document.getElementById('joined-events-container');
+
+          joinedEvents.forEach((event) => {
+            const joinedEventCard = document.createElement('div');
+            joinedEventCard.classList.add('card', 'bg-base-300', 'shadow-xl', 'p-4');
+
+            joinedEventCard.innerHTML = `
+              <h3 class="text-xl font-bold">${event.name}</h3>
+              <p class="text-sm opacity-75 mb-2">${event.description}</p>
+              <p class="text-sm font-semibold">Location: ${event.location}</p>
+              <p class="text-sm font-semibold">Date: ${new Date(event.dateTime).toLocaleString()}</p>
+            `;
+
+            joinedEventsContainer.appendChild(joinedEventCard);
+          });
+        })
+        .catch(() => {
+          showToast('Failed to load joined events.', 'error');
+        });
+
+        function showToast(message, type) {
+          const toastContainer = document.getElementById("toast-container");
+  
+          const toast = document.createElement("div");
+          toast.className = `alert ${
+            type === "success" ? "alert-success" : "alert-error"
+          } shadow-lg`;
+          toast.innerHTML = `<span>${message}</span>`;
+  
+          toastContainer.appendChild(toast);
+  
+          setTimeout(() => {
+            toast.remove();
+          }, 5000);
+        }
+    </script>
+  </body>
+</html>

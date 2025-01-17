@@ -54,6 +54,15 @@ public class _BaseController {
         return mav;
     }
 
+    @GetMapping("/profileVolunteer")
+    public ModelAndView profileVolunteer() {
+        User user = authUser.getLoggedUser();
+        ModelAndView mav = new ModelAndView("profileVolunteer");
+        mav.addObject("user", user); // Add user object to display profile details
+        mav.addObject("roles", user.getRolesName());
+        return mav;
+    }
+
     @GetMapping("/admin")
     public ModelAndView adminPage() {
         User user = authUser.getLoggedUser();
@@ -65,6 +74,12 @@ public class _BaseController {
     @GetMapping("/create-user")
     public ModelAndView createUserPage() {
         ModelAndView mav = new ModelAndView("create-user");
+        return mav;
+    }
+
+    @GetMapping("/create-event")
+    public ModelAndView createEventPage() {
+        ModelAndView mav = new ModelAndView("create-event");
         return mav;
     }
 
@@ -96,6 +111,13 @@ public class _BaseController {
 
     ModelAndView mav = new ModelAndView("roomsPage");
     return mav;
+    }
+
+
+    @GetMapping("/error")
+    public ModelAndView errorPage() {
+        ModelAndView mav = new ModelAndView("error");
+        return mav;
     }
 
 }

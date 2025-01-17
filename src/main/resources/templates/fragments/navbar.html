@@ -15,11 +15,15 @@
       </li>
 
       <li th:if="${#authorization.expression('hasRole(''DOCTOR'')')}">
-        <a th:href="@{/profileDoctor}">My Appointments</a>
+        <a th:href="@{/profileDoctor}">Profile</a>
       </li>
 
       <li th:if="${#authorization.expression('hasRole(''PATIENT'')')}">
-        <a th:href="@{/profilePatient}">Requested Appointments</a>
+        <a th:href="@{/profilePatient}">Profile</a>
+      </li>
+
+      <li th:if="${#authorization.expression('hasRole(''VOLUNTEER'')')}">
+        <a th:href="@{/profileVolunteer}">Profile</a>
       </li>
 
       <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">

@@ -1,6 +1,7 @@
 package com.example.hospital.controllers;
 
 import com.example.hospital.dto.VolunteerDto;
+import com.example.hospital.models.Event;
 import com.example.hospital.models.Volunteer;
 import com.example.hospital.services.VolunteerService;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +55,17 @@ public class VolunteerController {
     public ResponseEntity<String> deleteVolunteer(@PathVariable Long id) {
         volunteerService.deleteVolunteer(id);
         return ResponseEntity.ok("Volunteer deleted successfully.");
+    }
+
+    @GetMapping("/events")
+    public ResponseEntity<List<Event>> getAllEvents() {
+        List<Event> events = volunteerService.getAllEvents();
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/{volunteerId}/events")
+    public ResponseEntity<List<Event>> getEventsForVolunteer(@PathVariable Long volunteerId) {
+        List<Event> events = volunteerService.getEventsForVolunteer(volunteerId);
+        return ResponseEntity.ok(events);
     }
 }
