@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.example.hospital.dal.EventDAL;
 import com.example.hospital.dto.VolunteerDto;
+import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.Event;
 
 @Service
@@ -49,20 +50,18 @@ public Volunteer registerVolunteer(VolunteerDto volunteerDto) {
     public void assignVolunteerToEvent(Long volunteerId, Long eventId) {
         Volunteer volunteer = volunteerDAL.findById(volunteerId);
         Event event = eventDAL.findById(eventId);
-    
-        // Add event to volunteer's event list
-        if (!volunteer.getEvents().contains(event)) {
-            volunteer.getEvents().add(event);
+
+        if (volunteer.getEvents().contains(event)) {
+            throw new BadRequestException("Volunteer is already assigned to this event.");
         }
-    
-        // Add volunteer to event's volunteer list
-        if (!event.getVolunteers().contains(volunteer)) {
-            event.getVolunteers().add(volunteer);
-        }
-    
-        // Save the changes
+
+        volunteer.getEvents().add(event);
+
+        event.getVolunteers().add(volunteer);
+
         volunteerDAL.save(volunteer);
     }
+
     
     
     public List<Volunteer> getVolunteersForEvent(Long eventId) {
@@ -79,5 +78,14 @@ public Volunteer registerVolunteer(VolunteerDto volunteerDto) {
 
     public void deleteVolunteer(Long id) {
         volunteerDAL.deleteById(id);
+    }
+
+    public List<Event> getAllEvents() {
+        return eventDAL.findAll();
+    }
+
+    public List<Event> getEventsForVolunteer(Long volunteerId) {
+        Volunteer volunteer = volunteerDAL.findById(volunteerId);
+        return volunteer.getEvents();
     }
 }
