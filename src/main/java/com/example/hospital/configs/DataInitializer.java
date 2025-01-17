@@ -11,6 +11,7 @@ import com.example.hospital.repositories.UserRepository;
 import com.example.hospital.services.decorator.roles.IRole;
 import com.example.hospital.services.decorator.roles.ManagerDecorator;
 import com.example.hospital.services.decorator.roles.UserRole;
+import com.example.hospital.services.decorator.roles.VolunteerDecorator;
 import com.example.hospital.services.observer.notifications.EmailNotificationService;
 import com.example.hospital.services.observer.notifications.NotificationServiceManager;
 import com.example.hospital.services.observer.notifications.SmsNotificationService;
