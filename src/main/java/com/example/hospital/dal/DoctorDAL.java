@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.hospital.ResponseMessages;
 import com.example.hospital.exceptions.BadRequestException;
+import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.enums.Speciality;
 import com.example.hospital.repositories.DoctorRepository;
@@ -42,4 +43,6 @@ public class DoctorDAL {
     public long count() {
         return doctorRepository.count();
     }
+
+  
 }

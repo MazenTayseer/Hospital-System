@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Outgoing Appointment Requests</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css" rel="stylesheet" type="text/css" />
+    <style>
+      .status {
+        white-space: nowrap; /* Prevents the status text from breaking into multiple lines */
+        word-wrap: normal;
+        word-break: normal;
+        display: inline; /* Ensures inline display for status */
+      }
+    </style>
+</head>
+<body data-theme="dark" class="min-h-screen">
+
+    <div th:replace="fragments/navbar"></div>
+
+    <div class="max-w-5xl mx-auto py-12 space-y-4">
+        <h2 class="text-4xl font-bold">Outgoing Appointment Requests</h2>
+        <ul id="outgoing-requests-list" class="list bg-base-300 rounded-box">
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch logged-in patient's ID dynamically (via Thymeleaf)
+            const loggedPatientId = [[${user.id}]]; // Replace with Thymeleaf syntax to pass logged-in user's ID.
+
+            fetch(`/api/patients/${loggedPatientId}/appointments`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(appointments => {
+                    const requestsList = document.getElementById('outgoing-requests-list');
+
+                    appointments.forEach(appointment => {
+                        const requestItem = document.createElement('li');
+                        requestItem.classList.add('list-row', 'flex', 'justify-between', 'items-center', 'w-full', 'p-4', 'border-b', 'border-base-200');
+
+                        const appointmentInfo = document.createElement('div');
+                        appointmentInfo.innerHTML = `
+                            <div class="text-lg font-semibold">Appointment ID: ${appointment.id}</div>
+                            <div class="text-sm">Date: ${appointment.date}</div>
+                            <div class="text-sm">Time: ${appointment.timeFrom}</div>
+                            <div class="text-sm">Doctor: ${appointment.doctor.fullName}</div>
+                            <div class="text-sm">Status: <span class="status">${appointment.status}</span></div>
+                        `;
+
+                        // Cancel button (only if the status is REQUESTED)
+                        if (appointment.status === 'REQUESTED') {
+                            const cancelButton = document.createElement('button');
+                            cancelButton.classList.add('btn', 'btn-error', 'ml-4');
+                            cancelButton.textContent = 'Cancel';
+                            cancelButton.onclick = () => {
+                                fetch(`/api/patients/cancel-appointment/${appointment.id}`, {
+                                    method: 'POST'
+                                })
+                                .then(response => {
+                                    if (response.ok) {
+                                        alert('Appointment canceled successfully!');
+                                        requestItem.remove();
+                                    } else {
+                                        alert('Failed to cancel the appointment.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error canceling appointment:', error);
+                                });
+                            };
+                            requestItem.appendChild(cancelButton);
+                        }
+
+                        requestItem.appendChild(appointmentInfo);
+                        requestsList.appendChild(requestItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching outgoing requests:', error);
+                });
+        });
+    </script>
+
+</body>
+</html>

@@ -95,4 +95,9 @@ public class PatientService {
         }
     }
 
+    public List<Appointment> getAppointmentsForPatient(Long patientId) {
+        return appointmentDAL.findAppointmentsByPatientId(patientId);
+    }
+    
+
 }

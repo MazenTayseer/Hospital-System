@@ -47,4 +47,14 @@ public class AppointmentDAL {
     public boolean existsByPatientIdAndDoctorId(Long patientId, Long doctorId) {
         return appointmentRepository.existsByPatientIdAndDoctorId(patientId, doctorId);
     }
+
+    public List<Appointment> findByDoctorId(Long doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId);
+    }
+
+    public List<Appointment> findAppointmentsByPatientId(Long patientId) {
+        return appointmentRepository.findByPatientId(patientId);
+    }
+
 }
+    
