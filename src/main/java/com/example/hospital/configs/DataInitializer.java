@@ -109,14 +109,8 @@ public class DataInitializer {
             );
 
             IRole roleDecorator = new ManagerDecorator(
-                new NurseDecorator(
-                    new PatientDecorator(
-                        new DoctorDecorator(
-                            new DonorDecorator(new UserRole(roleDAL), roleDAL),
-                        roleDAL),
-                    roleDAL),
-                 roleDAL),
-            roleDAL
+                new UserRole(roleDAL),
+                roleDAL
             );
 
             roleDecorator.addRole(defaultManager);

@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HospitalApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("java.rmi.server.codebase", "file:../../../../../../../../proxy/src");
+
 		SpringApplication.run(HospitalApplication.class, args);
 	}
 
