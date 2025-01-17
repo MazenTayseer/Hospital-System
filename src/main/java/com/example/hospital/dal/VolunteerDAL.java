@@ -17,18 +17,26 @@ public class VolunteerDAL {
         this.volunteerRepository = volunteerRepository;
     }
 
-    public Volunteer findById(Long id) {
-        return volunteerRepository.findById(id).orElseThrow(
-            () -> new BadRequestException(ResponseMessages.record_not_found("Volunteer"))
-        );
-    }
-
     public Volunteer save(Volunteer volunteer) {
         return volunteerRepository.save(volunteer);
     }
 
-    // Add this method to enable findAll() functionality
+    public Volunteer findById(Long id) {
+        return volunteerRepository.findById(id)
+        .orElseThrow(
+            () -> new BadRequestException(ResponseMessages.record_not_found("Volunteer"))
+        );
+    }
+
+    public List<Volunteer> findByEventId(Long eventId) {
+        return volunteerRepository.findByEventId(eventId);
+    }
+
     public List<Volunteer> findAll() {
         return volunteerRepository.findAll();
+    }
+
+    public void deleteById(Long id) {
+        volunteerRepository.deleteById(id);
     }
 }
