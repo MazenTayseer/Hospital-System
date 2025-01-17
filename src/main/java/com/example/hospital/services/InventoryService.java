@@ -7,36 +7,49 @@ import org.springframework.stereotype.Service;
 @Service
 public class InventoryService {
 
-    private final InventoryRepository inventoryRepository;
+  private final InventoryRepository inventoryRepository;
 
-    public InventoryService(InventoryRepository inventoryRepository) {
-        this.inventoryRepository = inventoryRepository;
+  public InventoryService(InventoryRepository inventoryRepository) {
+    this.inventoryRepository = inventoryRepository;
+  }
+
+  public boolean isMedicationAvailable(String medicationName, int quantity) {
+    // Fetch the inventory record for the given medication
+    Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+
+    // Check if the medication is available in the required quantity
+    if (inventory != null && inventory.getQuantity() >= quantity) {
+      return true; // Medication is available
     }
 
-    public boolean isMedicationAvailable(String medicationName, int quantity) {
-      // Fetch the inventory record for the given medication
-      Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+    return false; // Medication is unavailable or insufficient stock
+  }
 
-      // Check if the medication is available in the required quantity
-      if (inventory != null && inventory.getQuantity() >= quantity) {
-        return true; // Medication is available
-      }
+  public void updateStock(String medicationName, int quantity) {
+    Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
 
-      return false; // Medication is unavailable or insufficient stock
+    if (inventory == null) {
+      throw new IllegalArgumentException("Medication not found: " + medicationName);
     }
 
-    public void updateStock(String medicationName, int quantity) {
-      Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+    if (inventory.getQuantity() < quantity) {
+      throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
+    }
 
-      if (inventory == null) {
-          throw new IllegalArgumentException("Medication not found: " + medicationName);
-      }
+    inventory.setQuantity(inventory.getQuantity() - quantity);
+    inventoryRepository.save(inventory);
+  }
 
-      if (inventory.getQuantity() < quantity) {
-          throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
-      }
+  public Inventory findByMedicationName(String medicationName) {
+    return inventoryRepository.findByMedicationName(medicationName);
+  }
 
-      inventory.setQuantity(inventory.getQuantity() - quantity);
-      inventoryRepository.save(inventory);
+  public void addOrUpdateInventory(String medicationName, int quantity) {
+    Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+    if (inventory == null) {
+      throw new IllegalArgumentException("Medication not recognized: " + medicationName);
+    }
+    inventory.setQuantity(inventory.getQuantity() + quantity);
+    inventoryRepository.save(inventory);
   }
 }
