@@ -31,13 +31,7 @@ public class InventoryService {
     if (inventory == null) {
       throw new IllegalArgumentException("Medication not found: " + medicationName);
     }
-    if (inventory == null) {
-      throw new IllegalArgumentException("Medication not found: " + medicationName);
-    }
 
-    if (inventory.getQuantity() < quantity) {
-      throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
-    }
     if (inventory.getQuantity() < quantity) {
       throw new IllegalArgumentException("Insufficient stock for medication: " + medicationName);
     }
