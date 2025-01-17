@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Dispense Result</title>
+  </head>
+  <body>
+    <h1>Dispense Result</h1>
+    <div th:if="${message}">
+      <p th:text="${message}" style="color: green"></p>
+    </div>
+    <div th:if="${error}">
+      <p th:text="${error}" style="color: red"></p>
+    </div>
+    <a href="/pharmacy/dispense-form">Go back</a>
+  </body>
+</html>

@@ -1,13 +1,11 @@
 package com.example.hospital.controllers;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.hospital.controllers.helpers.AuthUser;
-import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.User;
 import com.example.hospital.services.DoctorService;

@@ -5,12 +5,9 @@ import org.springframework.stereotype.Service;
 import com.example.hospital.dal.DonationDAL;
 import com.example.hospital.dal.DonorDAL;
 import com.example.hospital.dto.DonationDto;
-import com.example.hospital.dto.UserDto;
 import com.example.hospital.exceptions.BadRequestException;
 import com.example.hospital.models.BaseDonation;
 import com.example.hospital.models.Donor;
-import com.example.hospital.models.User;
-import com.example.hospital.services.strategy.create_user.CreateUserContext;
 import com.example.hospital.services.factory.DonationFactory;
 
 @Service
@@ -18,17 +15,11 @@ public class DonationService {
     private final DonationFactory donationFactory;
     private final DonorDAL donorDAL;
     private final DonationDAL donationDAL;
-    private final CreateUserContext createUserContext;
 
-    public DonationService(DonationFactory donationFactory, DonorDAL donorDAL, DonationDAL donationDAL , CreateUserContext createUserContext/*, NotificationService notificationService */) {
+    public DonationService(DonationFactory donationFactory, DonorDAL donorDAL, DonationDAL donationDAL) {
         this.donationFactory = donationFactory;
         this.donorDAL = donorDAL;
         this.donationDAL = donationDAL;
-        this.createUserContext = createUserContext;
-    }
-
-    public User createUser(UserDto<? extends User> request) {
-        return createUserContext.createUser(request);
     }
 
     public String processDonation(DonationDto request) {

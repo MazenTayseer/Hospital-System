@@ -1,9 +1,12 @@
 <!-- src/main/resources/templates/fragments/navbar.html -->
 <div class="navbar max-w-6xl mx-auto py-6">
+  <!-- Logo -->
   <div class="flex-1">
     <a class="btn btn-ghost text-3xl" th:href="@{/home}">ASU Hospital</a>
   </div>
-  <div class="flex-none">
+
+  <!-- Desktop Menu (Visible on larger screens) -->
+  <div class="hidden md:flex flex-none">
     <ul class="menu menu-horizontal px-1 text-lg">
       <li><a th:href="@{/home}">Home</a></li>
 
@@ -26,6 +29,37 @@
       <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
         <a th:href="@{/roomsPage}">Rooms</a>
       </li>
+      <!-- Pharmacy Dropdown -->
+      <li class="dropdown dropdown-hover">
+        <a class="flex items-center">
+          Pharmacy
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 ml-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+        <ul
+          class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li>
+            <a th:href="@{/pharmacy/dispense-form}">Dispense Medication</a>
+          </li>
+          <li><a th:href="@{/inventory/view}">View Inventory</a></li>
+          <li><a th:href="@{/inventory/add}">Add Inventory</a></li>
+          <li><a th:href="@{/prescriptions}">View Prescriptions</a></li>
+          <li><a th:href="@{/prescriptions/new}">Add Prescription</a></li>
+          <li><a th:href="@{/bills}">View Bills</a></li>
+        </ul>
+      </li>
+
       <li><a th:href="@{/logout}">Logout</a></li>
     </ul>
   </div>
