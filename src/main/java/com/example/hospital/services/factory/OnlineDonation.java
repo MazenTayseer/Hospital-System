@@ -14,7 +14,7 @@ public class OnlineDonation extends BaseDonation {
     }
 
     public OnlineDonation(Donor donor, float amount, LocalDate date) {
-        super(donor, amount, date, "cash");
+        super(donor, amount, date, "online");
     }
 
     @Override

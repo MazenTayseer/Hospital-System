@@ -5,10 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Donation</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const typeSelect = document.getElementById("type");
+        const medicineSection = document.getElementById("medicine-section");
+        const addMedicineBtn = document.getElementById("add-medicine");
+        const medicineList = document.getElementById("medicine-list");
+        const amountSection = document.getElementById("amount-section");
+        const amountInput = document.getElementById("amount");
+
+        function toggleMedicineSection() {
+          if (typeSelect.value === "medicine") {
+            medicineSection.classList.remove("hidden");
+            amountSection.classList.add("hidden");
+            calculateTotalAmount(); // Recalculate if needed
+          } else {
+            medicineSection.classList.add("hidden");
+            amountSection.classList.remove("hidden");
+            amountInput.value = ""; // Clear amount if switching back
+          }
+        }
+
+        typeSelect.addEventListener("change", toggleMedicineSection);
+        toggleMedicineSection(); // Initialize on page load
+
+        addMedicineBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          const index = medicineList.children.length;
+          const medicineItem = document.createElement('div');
+          medicineItem.classList.add('medicine-item', 'flex', 'space-x-2', 'mb-2');
+          medicineItem.innerHTML = `
+            <input type="text" name="medicineItems[${index}].medicationName" placeholder="Medication Name" class="flex-1 p-2 border border-gray-300 rounded-md medication-name" required />
+            <input type="number" name="medicineItems[${index}].quantity" placeholder="Quantity" class="w-24 p-2 border border-gray-300 rounded-md quantity" min="1" required />
+            <button type="button" class="remove-medicine text-red-500 hover:text-red-700">&times;</button>
+          `;
+          medicineList.appendChild(medicineItem);
+        });
+
+        medicineList.addEventListener("click", function (e) {
+          if (e.target.classList.contains("remove-medicine")) {
+            e.target.parentElement.remove();
+            calculateTotalAmount();
+          }
+        });
+
+        // Function to fetch unit price and calculate total amount
+        async function calculateTotalAmount() {
+          let total = 0;
+          const medicineItems = document.querySelectorAll('.medicine-item');
+          for (const item of medicineItems) {
+            const medicationNameInput = item.querySelector('.medication-name');
+            const quantityInput = item.querySelector('.quantity');
+            const medicationName = medicationNameInput.value.trim();
+            const quantity = parseInt(quantityInput.value, 10);
+
+            if (medicationName && quantity > 0) {
+              try {
+                const response = await fetch(`/api/pharmacy/inventory/unit-price?medicationName=${encodeURIComponent(medicationName)}`);
+                if (!response.ok) {
+                  const errorData = await response.json();
+                  throw new Error(errorData.message || `Medication not found: ${medicationName}`);
+                }
+                const unitPrice = parseFloat(await response.text());
+                total += unitPrice * quantity;
+              } catch (error) {
+                console.error(error);
+              }
+            }
+          }
+          amountInput.value = total.toFixed(2);
+        }
+
+        // Attach event listeners to recalculate total when inputs change
+        medicineList.addEventListener("input", function (e) {
+          if (e.target.classList.contains("medication-name") || e.target.classList.contains("quantity")) {
+            calculateTotalAmount();
+          }
+        });
+      });
+    </script>
   </head>
   <body class="bg-gray-100 flex items-center justify-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h1 class="text-2xl font-bold mb-6 text-center">Add Donation</h1>
+
+      <!-- Error Message Display -->
+      <div th:if="${errorMessage}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+        <span th:text="${errorMessage}"></span>
+      </div>
+
       <form
         th:action="@{/donations/submit}"
         th:object="${donation}"
@@ -17,39 +102,44 @@
       >
         <!-- Donation Type Dropdown -->
         <div>
-          <label for="type" class="block text-sm font-medium text-gray-700"
-            >Donation Type</label
-          >
+          <label for="type" class="block text-sm font-medium text-gray-700">
+            Donation Type
+          </label>
           <select
             id="type"
             th:field="*{type}"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            required
           >
-            <option value="cash">Cash</option>
-            <option value="online">Online</option>
-            <option value="cheque">Cheque</option>
+            <option value="" disabled th:selected="${donation.type == null}">Select type</option>
+            <option value="cash" th:selected="${donation.type == 'cash'}">Cash</option>
+            <option value="online" th:selected="${donation.type == 'online'}">Online</option>
+            <option value="cheque" th:selected="${donation.type == 'cheque'}">Cheque</option>
+            <option value="medicine" th:selected="${donation.type == 'medicine'}">Medicine</option>
           </select>
         </div>
 
-        <!-- Amount Input -->
-        <div>
-          <label for="amount" class="block text-sm font-medium text-gray-700"
-            >Amount</label
-          >
+        <!-- Amount Input (Hidden for Medicine Donations) -->
+        <div id="amount-section">
+          <label for="amount" class="block text-sm font-medium text-gray-700">
+            Amount
+          </label>
           <input
             type="number"
             id="amount"
             th:field="*{amount}"
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+            min="0.01"
+            step="0.01"
             required
           />
         </div>
 
         <!-- Date Input -->
         <div>
-          <label for="date" class="block text-sm font-medium text-gray-700"
-            >Date</label
-          >
+          <label for="date" class="block text-sm font-medium text-gray-700">
+            Date
+          </label>
           <input
             type="date"
             id="date"
@@ -61,9 +151,9 @@
 
         <!-- Donor ID Input -->
         <div>
-          <label for="donorId" class="block text-sm font-medium text-gray-700"
-            >Donor ID</label
-          >
+          <label for="donorId" class="block text-sm font-medium text-gray-700">
+            Donor ID
+          </label>
           <input
             type="number"
             id="donorId"
@@ -71,6 +161,29 @@
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
             required
           />
+        </div>
+
+        <!-- Medicine Donation Section -->
+        <div id="medicine-section" class="hidden">
+          <h2 class="text-lg font-semibold mb-2">Medicine Items</h2>
+          <div id="medicine-list" class="space-y-2">
+            <!-- Dynamic medicine items will be added here -->
+            <!-- If user has submitted with errors, pre-populate existing medicine items -->
+            <div th:each="item, iterStat : ${donation.medicineItems}" class="medicine-item flex space-x-2 mb-2">
+              <input type="text" name="medicineItems[__${iterStat.index}__].medicationName"
+                     th:value="${item.medicationName}"
+                     placeholder="Medication Name"
+                     class="flex-1 p-2 border border-gray-300 rounded-md medication-name" required />
+              <input type="number" name="medicineItems[__${iterStat.index}__].quantity"
+                     th:value="${item.quantity}"
+                     placeholder="Quantity"
+                     class="w-24 p-2 border border-gray-300 rounded-md quantity" min="1" required />
+              <button type="button" class="remove-medicine text-red-500 hover:text-red-700">&times;</button>
+            </div>
+          </div>
+          <button id="add-medicine" class="mt-2 bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600">
+            Add Medicine
+          </button>
         </div>
 
         <!-- Submit Button -->
