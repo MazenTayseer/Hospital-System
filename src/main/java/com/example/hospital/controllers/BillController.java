@@ -23,7 +23,6 @@ public class BillController {
     @GetMapping
     public ResponseEntity<List<Bill>> getAllBills() {
         List<Bill> bills = billService.getAllBills();
-        bills.forEach(bill -> System.out.println(bill));  // Or use a logger
         return ResponseEntity.ok(bills);
 
     }

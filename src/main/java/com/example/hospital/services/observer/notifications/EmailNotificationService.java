@@ -32,7 +32,6 @@ public class EmailNotificationService implements INotificationObserver {
                 subject,
                 message
             );
-            System.out.println("Email sent to: " + user.getEmail());
         }
     }
 

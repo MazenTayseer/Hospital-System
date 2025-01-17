@@ -83,20 +83,18 @@ public class DataInitializer {
 
         emailServiceEntity.ifPresent(service -> {
             notificationManager.registerObserver(emailService);
-            System.out.println("Email service registered");
         });
 
         smsServiceEntity.ifPresent(service -> {
             notificationManager.registerObserver(smsService);
-            System.out.println("SMS service registered");
         });
     }
 
     private void createDefaultManager() {
         userRepository.findByEmail("mazen@asu.com").orElseGet(() -> {
             Manager defaultManager = new Manager(
-                    "Admin",
-                    "Admin",
+                    "Mazen",
+                    "Tayseer",
                     "mazen@asu.com",
                     passwordEncoder.encode("test1234"),
                     "1234567890",
