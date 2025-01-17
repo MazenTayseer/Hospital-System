@@ -35,7 +35,7 @@ public class Event {
     @Column(nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "events", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JsonManagedReference
     @JsonIgnore
     private List<Volunteer> volunteers;
@@ -52,6 +52,10 @@ public class Event {
     // Getters and Setters
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

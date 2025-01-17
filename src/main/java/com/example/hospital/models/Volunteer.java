@@ -1,20 +1,25 @@
 package com.example.hospital.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import com.example.hospital.models.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*;
+import com.example.hospital.models.enums.Gender;
+
+import java.util.List;
 
 @Entity
 @Table(name = "volunteers")
 public class Volunteer extends User {
 
-    @ManyToOne
-    @JoinColumn(name = "event_id", nullable = true) // Nullable for volunteers who aren't yet assigned to an event
+    @ManyToMany
     @JsonIgnore
-    private Event event;
+    @JoinTable(
+        name = "volunteer_events",
+        joinColumns = @JoinColumn(name = "volunteer_id"),
+        inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private List<Event> events;
 
     public Volunteer() {}
 
@@ -30,11 +35,14 @@ public class Volunteer extends User {
         super(firstName, lastName, email, password, phone, age, gender);
     }
 
-    public Event getEvent() {
-        return event;
+    // Getters and Setters
+    public List<Event> getEvents() {
+        return events;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
+
+
 }

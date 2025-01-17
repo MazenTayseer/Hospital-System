@@ -1,5 +1,7 @@
 package com.example.hospital.dto;
 
+import java.util.List;
+
 import com.example.hospital.models.enums.Gender;
 
 public class VolunteerDto {
@@ -11,7 +13,7 @@ public class VolunteerDto {
     private String phone;
     private int age;
     private Gender gender;
-    private Long eventId; // Optional: The ID of the event the volunteer wants to join
+    private List<Long> eventIds;// Optional: The ID of the event the volunteer wants to join
 
     // Getters and Setters
     public String getFirstName() { return firstName; }
@@ -28,6 +30,6 @@ public class VolunteerDto {
     public void setAge(int age) { this.age = age; }
     public Gender getGender() { return gender; }
     public void setGender(Gender gender) { this.gender = gender; }
-    public Long getEventId() { return eventId; }
-    public void setEventId(Long eventId) { this.eventId = eventId; }
+    public List<Long> getEventIds() { return eventIds; }
+    public void setEventIds(List<Long> eventIds) { this.eventIds = eventIds; }
 }
