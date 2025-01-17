@@ -40,8 +40,26 @@ public class InventoryService {
     inventoryRepository.save(inventory);
   }
 
-  public Inventory findByMedicationName(String medicationName) {
-    return inventoryRepository.findByMedicationName(medicationName);
+  public Inventory addMedication(String medicationName, double unitPrice, int quantity) {
+    Inventory inventory = inventoryRepository.findByMedicationName(medicationName);
+
+    if (inventory == null) {
+      // Create a new inventory entry if it doesn't exist
+      inventory = new Inventory();
+      inventory.setMedicationName(medicationName);
+      inventory.setUnitPrice(unitPrice);
+      inventory.setQuantity(quantity);
+    } else {
+      // Update the existing inventory
+      inventory.setQuantity(inventory.getQuantity() + quantity);
+      inventory.setUnitPrice(unitPrice); // Update unit price if needed
+    }
+
+    return inventoryRepository.save(inventory);
+  }
+
+  public Iterable<Inventory> getAllInventory() {
+    return inventoryRepository.findAll();
   }
 
   public void addOrUpdateInventory(String medicationName, int quantity) {
@@ -51,5 +69,9 @@ public class InventoryService {
     }
     inventory.setQuantity(inventory.getQuantity() + quantity);
     inventoryRepository.save(inventory);
+  }
+
+  public Inventory findByMedicationName(String medicationName) {
+    return inventoryRepository.findByMedicationName(medicationName);
   }
 }
