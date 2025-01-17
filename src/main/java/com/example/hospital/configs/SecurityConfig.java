@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/donations/create").hasRole("MANAGER")
                 .requestMatchers("/api/volunteer/**").hasRole("VOLUNTEER")
                 .requestMatchers("/api/statics/**").permitAll()
+                .requestMatchers("/api/events/**").hasRole("MANAGER")
                 .anyRequest().authenticated()
             )
             .formLogin(formLogin -> formLogin
