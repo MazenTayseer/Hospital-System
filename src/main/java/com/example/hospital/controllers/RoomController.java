@@ -20,10 +20,11 @@ public class RoomController {
     private RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<Room> createRoom(@RequestBody Room room) {
+    public ResponseEntity<Room> createRoom(Room room) {
         Room createdRoom = roomService.createRoom(room);
         return ResponseEntity.ok(createdRoom);
     }
+    
 
     @GetMapping
     public ResponseEntity<List<Room>> getAllRooms() {
