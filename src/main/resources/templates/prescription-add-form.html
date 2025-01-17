@@ -2,47 +2,122 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Add Prescription</title>
+    <!-- Add Tailwind CSS CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <h1>Add a New Prescription</h1>
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">
+        Add a New Prescription
+      </h1>
 
-    <form
-      action="#"
-      th:action="@{/prescriptions}"
-      th:object="${prescription}"
-      method="post"
-    >
-      <div>
-        <label for="patientId">Patient ID:</label>
-        <input type="text" id="patientId" name="patientId" required />
-      </div>
+      <form
+        th:action="@{/prescriptions}"
+        th:object="${prescription}"
+        method="post"
+        class="space-y-6"
+      >
+        <!-- Patient ID Field -->
+        <div>
+          <label for="patientId" class="block text-sm font-medium text-gray-700"
+            >Patient ID:</label
+          >
+          <input
+            type="text"
+            id="patientId"
+            name="patientId"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <div>
-        <label for="doctorId">Doctor ID:</label>
-        <input type="text" id="doctorId" name="doctorId" required />
-      </div>
+        <!-- Doctor ID Field -->
+        <div>
+          <label for="doctorId" class="block text-sm font-medium text-gray-700"
+            >Doctor ID:</label
+          >
+          <input
+            type="text"
+            id="doctorId"
+            name="doctorId"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <div>
-        <label for="medicationName">Medication Name:</label>
-        <input type="text" id="medicationName" name="medicationName" required />
-      </div>
+        <!-- Medication Name Field -->
+        <div>
+          <label
+            for="medicationName"
+            class="block text-sm font-medium text-gray-700"
+            >Medication Name:</label
+          >
+          <input
+            type="text"
+            id="medicationName"
+            name="medicationName"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <div>
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required />
-      </div>
+        <!-- Quantity Field -->
+        <div>
+          <label for="quantity" class="block text-sm font-medium text-gray-700"
+            >Quantity:</label
+          >
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <div>
-        <label for="issueDate">Issue Date:</label>
-        <input type="date" id="issueDate" name="issueDate" required />
-      </div>
+        <!-- Issue Date Field -->
+        <div>
+          <label for="issueDate" class="block text-sm font-medium text-gray-700"
+            >Issue Date:</label
+          >
+          <input
+            type="date"
+            id="issueDate"
+            name="issueDate"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <div>
-        <label for="expiryDate">Expiry Date:</label>
-        <input type="date" id="expiryDate" name="expiryDate" required />
-      </div>
+        <!-- Expiry Date Field -->
+        <div>
+          <label
+            for="expiryDate"
+            class="block text-sm font-medium text-gray-700"
+            >Expiry Date:</label
+          >
+          <input
+            type="date"
+            id="expiryDate"
+            name="expiryDate"
+            required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
 
-      <button type="submit">Save Prescription</button>
-    </form>
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Save Prescription
+          </button>
+        </div>
+      </form>
+    </div>
   </body>
 </html>

@@ -2,28 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Add Inventory</title>
-    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- Add Tailwind CSS CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <div class="container">
-      <h1>Add Medication to Inventory</h1>
+  <body class="bg-gray-100 p-8">
+    <div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">
+        Add Medication to Inventory
+      </h1>
+
       <form
         th:action="@{/inventory/add}"
         th:object="${inventory}"
         method="post"
+        class="space-y-6"
       >
+        <!-- Medication Name Field -->
         <div>
-          <label for="medicationName">Medication Name:</label>
+          <label
+            for="medicationName"
+            class="block text-sm font-medium text-gray-700"
+            >Medication Name:</label
+          >
           <input
             type="text"
             id="medicationName"
             name="medicationName"
             th:field="*{medicationName}"
             required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
+
+        <!-- Unit Price Field -->
         <div>
-          <label for="unitPrice">Unit Price:</label>
+          <label for="unitPrice" class="block text-sm font-medium text-gray-700"
+            >Unit Price:</label
+          >
           <input
             type="number"
             step="0.01"
@@ -31,19 +49,34 @@
             name="unitPrice"
             th:field="*{unitPrice}"
             required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
+
+        <!-- Quantity Field -->
         <div>
-          <label for="quantity">Quantity:</label>
+          <label for="quantity" class="block text-sm font-medium text-gray-700"
+            >Quantity:</label
+          >
           <input
             type="number"
             id="quantity"
             name="quantity"
             th:field="*{quantity}"
             required
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
-        <button type="submit">Add to Inventory</button>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Add to Inventory
+          </button>
+        </div>
       </form>
     </div>
   </body>
