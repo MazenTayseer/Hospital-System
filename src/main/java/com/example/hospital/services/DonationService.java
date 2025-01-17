@@ -2,7 +2,9 @@ package com.example.hospital.services;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.hospital.dal.DonationDAL;
 import com.example.hospital.dal.DonorDAL;
@@ -15,6 +17,8 @@ import com.example.hospital.models.User;
 import com.example.hospital.repositories.DonationRepository;
 import com.example.hospital.services.strategy.create_user.CreateUserContext;
 import com.example.hospital.services.factory.DonationFactory;
+import com.example.hospital.services.payment.PaymentRequest;
+import com.example.hospital.services.payment.PaymentResponse;
 import com.example.hospital.models.Inventory;
 import com.example.hospital.services.adapter.MedicineDonationAdapter;
 import com.example.hospital.models.MedicineItem;
@@ -105,9 +109,23 @@ public class DonationService {
             throw new BadRequestException("Donation validation failed.");
         }
 
-        String receipt = donation.generateReceipt();
+        RestTemplate restTemplate = new RestTemplate();
+        String paymentUrl = "http://localhost:5000/process_payment";
+        PaymentRequest paymentRequest = new PaymentRequest(donation.getAmount());
+        
+        ResponseEntity<PaymentResponse> paymentResponse;
+        try {
+            paymentResponse = restTemplate.postForEntity(paymentUrl, paymentRequest, PaymentResponse.class);
+        } catch (Exception e) {
+            throw new BadRequestException("Payment processing failed: " + e.getMessage());
+        }
+
+        if (!"success".equalsIgnoreCase(paymentResponse.getBody().getStatus())) {
+            throw new BadRequestException("Payment processing failed: " + paymentResponse.getBody().getMessage());
+        }
+
         donationDAL.save(donation);
-        return receipt;
+        return donation.generateReceipt();
     }
 
     public List<BaseDonation> getAllDonations() {
