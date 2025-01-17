@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ASU Hospital</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/daisyui.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@5.0.0-beta.1/themes.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body data-theme="dark">
+    <div id="toast-container" class="toast toast-bottom toast-end"></div>
+    <section class="flex flex-col justify-center items-center h-screen">
+      <div class="rounded-lg w-full max-w-lg space-y-6 p-4">
+        <p class="text-3xl font-bold text-center">Send Email to All Users</p>
+
+        <form id="emailForm" method="post" class="space-y-4">
+          <input
+            type="text"
+            id="subject"
+            name="subject"
+            placeholder="Subject"
+            class="input w-full"
+            required
+          />
+          <textarea
+            class="textarea w-full"
+            rows="7"
+            placeholder="Message"
+            id="message"
+          ></textarea>
+
+          <button
+            type="submit"
+            id="submitBtn"
+            class="btn btn-sm md:btn-md btn-primary w-full"
+          >
+            <span id="btnText">Send</span>
+            <span
+              id="loadingSpinner"
+              class="loading loading-spinner loading-sm hidden"
+            ></span>
+          </button>
+
+          <p
+            id="errorMessage"
+            class="text-error text-center"
+            style="display: none"
+          ></p>
+        </form>
+
+        <p class="text-center">
+          <a class="px-1 link link-primary font-semibold" href="/admin">
+            Go Back
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <script>
+      document
+        .getElementById("emailForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          const formData = {
+            subject: document.getElementById("subject").value,
+            message: document.getElementById("message").value,
+          };
+
+          const submitBtn = document.getElementById("submitBtn");
+          const btnText = document.getElementById("btnText");
+          const loadingSpinner = document.getElementById("loadingSpinner");
+
+          submitBtn.disabled = true;
+          btnText.classList.add("hidden");
+          loadingSpinner.classList.remove("hidden");
+
+          fetch("/api/notifications/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          })
+            .then((response) => {
+              return response.json().then((data) => {
+                if (response.ok) {
+                  showToast("Notification sent successfully!", "success");
+                  document.getElementById("emailForm").reset();
+                } else {
+                  showToast("Failed to send notification", "error");
+                }
+              });
+            })
+            .catch((error) => {
+              showToast(
+                "Error sending notification: " + error.message,
+                "error"
+              );
+            })
+            .finally(() => {
+              submitBtn.disabled = false;
+              btnText.classList.remove("hidden");
+              loadingSpinner.classList.add("hidden");
+            });
+        });
+
+      function showToast(message, type) {
+        const toastContainer = document.getElementById("toast-container");
+
+        const toast = document.createElement("div");
+        toast.className = `alert ${
+          type === "success" ? "alert-success" : "alert-error"
+        } shadow-lg`;
+        toast.innerHTML = `<span>${message}</span>`;
+
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

@@ -61,4 +61,10 @@ public class DoctorService {
         return doctorDAL.findById(doctorId);
     }
 
+    public List<Appointment> getAppointmentsByDoctorId(Long doctorId) {
+        return appointmentDAL.findByDoctorId(doctorId);
+    }
+    
+    
+
 }

@@ -1,12 +1,13 @@
 package com.example.hospital.controllers;
 
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.hospital.controllers.helpers.AuthUser;
+import com.example.hospital.models.Appointment;
 import com.example.hospital.models.Doctor;
 import com.example.hospital.models.User;
 import com.example.hospital.services.DoctorService;
@@ -21,7 +22,6 @@ public class _BaseController {
         this.doctorService = doctorService;
     }
 
-
     @GetMapping("/home")
     public ModelAndView homePage() {
         User user = authUser.getLoggedUser();
@@ -34,6 +34,25 @@ public class _BaseController {
     @GetMapping("/doctors")
     public ModelAndView doctorsPage() {
         ModelAndView mav = new ModelAndView("doctors");
+        return mav;
+    }
+
+    @GetMapping("/profileDoctor")
+    public ModelAndView profilePage() {
+        User user = authUser.getLoggedUser();
+        ModelAndView mav = new ModelAndView("profileDoctor");
+        mav.addObject("user", user); // Add user object to display profile details
+        mav.addObject("roles", user.getRolesName());
+        return mav;
+    }
+
+
+    @GetMapping("/profilePatient")
+    public ModelAndView profilePagePatient() {
+        User user = authUser.getLoggedUser();
+        ModelAndView mav = new ModelAndView("profilePatient");
+        mav.addObject("user", user); // Add user object to display profile details
+        mav.addObject("roles", user.getRolesName());
         return mav;
     }
 
@@ -61,6 +80,12 @@ public class _BaseController {
         ModelAndView mav = new ModelAndView("doctor-details");
         mav.addObject("doctor", doctor);
         mav.addObject("loggedUserId", user.getId());
+        return mav;
+    }
+
+    @GetMapping("/send-email")
+    public ModelAndView sendEmailPage() {
+        ModelAndView mav = new ModelAndView("send-email");
         return mav;
     }
 }
