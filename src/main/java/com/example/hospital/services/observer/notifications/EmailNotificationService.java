@@ -29,7 +29,7 @@ public class EmailNotificationService implements INotificationObserver {
             User user = userIterator.next();
             emailSenderService.sendEmail(
                 user.getEmail(),
-                "Notification from Hospital",
+                subject,
                 message
             );
             System.out.println("Email sent to: " + user.getEmail());
